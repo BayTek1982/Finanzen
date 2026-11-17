@@ -14,14 +14,14 @@
 <style>
 :root{
   --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
-  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --lime:#a3e635; --pink:#ff4f9a; --indigo:#8c9eff;
   --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 [data-theme="light"]{
   --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
-  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#0e7490; --lime:#4d7c0f; --pink:#be185d; --indigo:#3949ab;
   --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
 }
 *{box-sizing:border-box}
@@ -153,7 +153,7 @@ canvas{display:block;width:100%}
 .rsel button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13.5px}
 .rsel button.on{border-color:var(--gold);color:var(--gold)}
 .calc select{width:100%;margin-top:4px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:16px}
-.calc.o h3{color:var(--orange)}.calc.p h3{color:var(--purple)}
+.calc.o h3{color:var(--orange)}.calc.a h3{color:var(--aqua)}.calc.l h3{color:var(--lime)}.calc.k h3{color:var(--pink)}.calc.p h3{color:var(--purple)}
 .big .bi svg{display:block}
 </style>
 </head>
@@ -175,8 +175,8 @@ canvas{display:block;width:100%}
 "use strict";
 /* ============ Farben & Helfer ============ */
 const THEMES={
- dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',up:'#1fcf8f',down:'#f0605d',text:'#e6ecf3',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',mute:'#7f8b9c',sep:'#1b2532',pillBg:'rgba(2,4,7,.9)',card:'#0f1620',soft:'#b9c4d2',line2:'#2a3647'},
- light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',up:'#087f5b',down:'#c62f2c',text:'#131a26',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',mute:'#5d6879',sep:'#dde3ec',pillBg:'rgba(255,255,255,.95)',card:'#f1f4f8',soft:'#3d4757',line2:'#c9d2de'}};
+ dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',up:'#1fcf8f',down:'#f0605d',text:'#e6ecf3',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',mute:'#7f8b9c',sep:'#1b2532',pillBg:'rgba(2,4,7,.9)',card:'#0f1620',soft:'#b9c4d2',line2:'#2a3647',aqua:'#22d3ee',lime:'#a3e635',pink:'#ff4f9a',indigo:'#8c9eff'},
+ light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',up:'#087f5b',down:'#c62f2c',text:'#131a26',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',mute:'#5d6879',sep:'#dde3ec',pillBg:'rgba(255,255,255,.95)',card:'#f1f4f8',soft:'#3d4757',line2:'#c9d2de',aqua:'#0e7490',lime:'#4d7c0f',pink:'#be185d',indigo:'#3949ab'}};
 const C=Object.assign({},THEMES.dark);
 function setCanvasTheme(t){Object.assign(C,THEMES[t]||THEMES.dark);}
 const MONO="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace",SANS="'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
@@ -225,7 +225,7 @@ const CATINFO={
  aktien:{d:'Was eine Aktie ist, wie der Kurs entsteht, Dividende, KGV und Crashs.',acc:'var(--up)',hex:'#1fcf8f'},
  etf:{d:'Ein Korb voller Aktien: Index, Streuung, Kosten und die Frage „ausschüttend oder thesaurierend?“.',acc:'var(--purple)',hex:'#b388ff'},
  sparplan:{d:'Sparplan, Cost-Average-Effekt, Einmalanlage, Steuern und dein Sparziel.',acc:'var(--orange)',hex:'#ff9f43'}};
-const CATCOL=ck=>C[{basis:'blue',zins:'gold',inflation:'down',aktien:'up',etf:'purple',sparplan:'orange'}[ck]];
+const CATCOL=ck=>C[{basis:'blue',zins:'gold',inflation:'down',aktien:'up',etf:'purple',sparplan:'orange',anleihen:'aqua',rente:'lime',kredit:'pink',praxis:'indigo'}[ck]];
 const LESSONS=[];
 function L(o){LESSONS.push(o);}
 /* ---------- GELD-GRUNDLAGEN ---------- */
@@ -651,6 +651,357 @@ L({id:'ziel',cat:'sparplan',g:'🎯',title:'Dein Sparziel',sub:'Der Weg zur erst
  },
  box:{was:'Ein Sparziel macht Vermögensaufbau greifbar: Du legst Zielbetrag, Zeitraum und erwartete Rendite fest und rechnest aus, wie viel du monatlich sparen musst.',h2:'So geht’s',erkennen:['Ziel festlegen (z. B. 100.000 €)','Zeitraum und Rendite annehmen','Monatsrate mit dem Rechner berechnen'],bedeutung:'Der Zinseszins arbeitet am Ende am stärksten: Die letzten Jahre bringen den größten Zuwachs. Durchhalten lohnt sich.',tipp:'7 % sind nur eine Annahme, keine Garantie. Rechne lieber auch mit 5 % – und plane Inflation mit ein.'}});
 
+/* ================= ERWEITERUNG: 4 neue Pakete ================= */
+Object.assign(CATS,{anleihen:'Anleihen & Zinsen',rente:'Altersvorsorge & Rente',kredit:'Kredite & Baufinanzierung',praxis:'ETF-Praxis & Psychologie'});
+Object.assign(CATINFO,{
+ anleihen:{d:'Anleihen, Kupon, warum Kurse bei steigenden Zinsen fallen, Rating, Fest- und Tagesgeld, Einlagensicherung.',acc:'var(--aqua)',hex:'#00e5ff'},
+ rente:{d:'Rentenlücke, drei Säulen, Betriebsrente, Altersvorsorgedepot, Entnahme im Alter und das Kinderdepot.',acc:'var(--lime)',hex:'#a3e635'},
+ kredit:{d:'Effektivzins, Annuitätendarlehen, Tilgung, Sondertilgung, Dispo und Schufa – mit Tilgungsrechner.',acc:'var(--pink)',hex:'#ff4f9a'},
+ praxis:{d:'Depot eröffnen, Ordertypen, Weltportfolio, Rebalancing, Gefühle an der Börse und Betrug erkennen.',acc:'var(--indigo)',hex:'#8c9eff'}});
+const _cc=CATCOL;
+/* ---------- ANLEIHEN & ZINSEN ---------- */
+L({id:'anleihe',cat:'anleihen',g:'📜',title:'Was ist eine Anleihe?',sub:'Du leihst Geld und bekommst Zinsen',calc:'anleihe',
+ lead:'Mit einer Anleihe leihst du einem Staat oder Unternehmen Geld. Dafür bekommst du feste Zinsen – und am Ende dein Geld zurück.',
+ steps:[['Du leihst einem Unternehmen 1.000 € für 5 Jahre. Dafür bekommst du eine Anleihe.'],['Jedes Jahr zahlt es dir 3 % Zinsen – den Kupon: 30 € pro Jahr.',3800],['Am Ende der Laufzeit bekommst du die 1.000 € zurück (Rückzahlung zum Nennwert).'],['Insgesamt: 5 × 30 € = 150 € Zinsen plus deine 1.000 € zurück. Voraussetzung: Der Schuldner bleibt zahlungsfähig.']],
+ draw(g){const a=C.aqua,p0=g.k(0);box(24,40,120,70,{fill:hexA(a,.14),stroke:a,r:10,a:p0});T(84,62,'DU',{size:12,col:a,a:p0});T(84,86,'1.000 €',{size:15,a:p0});
+  box(316,40,124,70,{fill:C.card,stroke:C.line2,r:10,a:p0});T(378,62,'UNTERNEHMEN',{size:11,col:C.mute,a:p0});T(378,86,'🏭',{size:20,a:p0});
+  arrow(150,60,308,60,a,g.k(0,1100,300),2.5);T(229,48,'GELD LEIHEN',{size:10,col:C.mute,a:g.k(0,500,900)});
+  const X0=70,dx=72,base=232;X.save();X.strokeStyle=C.line2;X.lineWidth=1.5;X.globalAlpha=p0;X.beginPath();X.moveTo(40,base);X.lineTo(440,base);X.stroke();X.restore();
+  for(let j=1;j<=5;j++){const q=g.k(1,500,(j-1)*600),x=X0+j*dx-30;T(x,base+16,'J'+j,{size:10,col:C.mute,a:p0});if(q>0){coin(x,base-14-(1-q)*60,11,C.gold,q,'30');}}
+  const r=g.k(2,1200);if(r>0){box(X0+5*dx-62,base-30-70*r,64,Math.max(0,70*r-6),{fill:a,r:6,a:.9});T(X0+5*dx-30,base-33-35*r,'1.000 €',{size:10.5,col:C.bg,a:r});}
+  pill(150,150,'KUPON 3 % = 30 € / JAHR',C.gold,g.k(1,600),{size:11});
+  if(g.on(3))pill(VW/2,272,'GESAMT: 150 € ZINSEN + 1.000 € ZURÜCK',a,g.k(3),{size:11});
+ },
+ box:{was:'Eine Anleihe (auch Rentenpapier oder Bond) ist ein Kredit, den du einem Staat oder Unternehmen gibst. Der Schuldner zahlt dir einen festen Zins (Kupon) und am Ende den Nennwert zurück.',h2:'So geht’s',erkennen:['Nennwert: der Betrag, der zurückgezahlt wird','Kupon: der jährliche Zins','Laufzeit: wann du das Geld zurückbekommst'],bedeutung:'Anleihen schwanken meist weniger als Aktien und bringen planbare Zinsen. Das Risiko: Der Schuldner kann pleitegehen – dann ist das Geld ganz oder teilweise weg.',tipp:'Statt einzelner Anleihen kaufen viele Anleger Anleihen-ETFs – breit gestreut über viele Schuldner.'},
+ qpic:{q:'Was zeigt dieses Bild?',ans:'Eine Anleihe mit jährlichem Kupon und Rückzahlung',wrong:['Einen Sparplan mit Aktien','Einen Ratenkredit','Eine Dividende']}});
+
+L({id:'zinskurs',cat:'anleihen',g:'⇵',title:'Zinsen steigen – Kurse fallen',sub:'Die Wippe am Anleihenmarkt',calc:'anleihe',
+ lead:'Anleihen können an der Börse verkauft werden. Ihr Preis hängt davon ab, wie hoch die Zinsen für neue Anleihen sind.',
+ steps:[['Du hast eine Anleihe: 1.000 € Nennwert, 2 % Kupon, noch 5 Jahre Laufzeit.'],['Plötzlich steigen die Marktzinsen: Neue Anleihen bringen jetzt 4 %.'],['Wer kauft da noch deine 2-%-Anleihe zum vollen Preis? Niemand! Ihr Kurs muss fallen.',3400],['Der faire Preis sinkt auf rund 911 €. Dann bringt sie dem Käufer insgesamt auch etwa 4 % pro Jahr.'],['Umgekehrt gilt: Fallen die Zinsen, steigen die Kurse alter Anleihen. Hältst du bis zum Ende, bekommst du trotzdem 1.000 € zurück.']],
+ draw(g){const cx=VW/2,cy=200,tilt=(g.k(1,1200)*.2)*(1-0)-0;const ang=g.on(4)?lerp(.2,-.14,g.k(4,1400)):tilt;const p0=g.k(0);
+  X.save();X.globalAlpha=p0;X.fillStyle=C.line2;X.beginPath();X.moveTo(cx-16,cy+40);X.lineTo(cx+16,cy+40);X.lineTo(cx,cy+6);X.closePath();X.fill();
+  X.translate(cx,cy);X.rotate(ang);X.fillStyle=C.mute;rr(-190,-4,380,8,4);X.fill();
+  const lab=(x,c,t1,t2)=>{X.fillStyle=hexA(c,.16);X.strokeStyle=c;X.lineWidth=1.5;rr(x-62,-62,124,54,10);X.fill();X.stroke();X.fillStyle=c;X.font=font(11);X.textAlign='center';X.textBaseline='middle';X.fillText(t1,x,-44);X.font=font(15);X.fillText(t2,x,-24);};
+  const zinsTxt=g.on(4)?pc(lerp(4,1.5,g.k(4,1400)),1):g.on(1)?pc(lerp(2,4,g.k(1,1200)),0):'2 %';
+  lab(-120,C.aqua,'MARKTZINS',zinsTxt);
+  const kurs=g.on(4)?lerp(911,1067,g.k(4,1400)):g.on(2)?lerp(1000,911,g.k(2,1600)):1000;lab(120,g.on(4)?C.up:g.on(2)?C.down:C.text,'KURS ANLEIHE',eur(kurs));
+  X.restore();
+  box(24,22,190,52,{fill:C.card,stroke:C.line2,r:10,a:p0});T(119,40,'DEINE ANLEIHE',{size:10.5,col:C.mute,a:p0});T(119,60,'2 % · 5 JAHRE',{size:13,col:C.aqua,a:p0});
+  if(g.on(1)){const q=g.k(1);box(246,22,190,52,{fill:C.card,stroke:C.gold,r:10,a:q});T(341,40,'NEUE ANLEIHEN',{size:10.5,col:C.mute,a:q});T(341,60,'4 % · 5 JAHRE',{size:13,col:C.gold,a:q});}
+  if(g.on(3))pill(VW/2,272,'ZINS ↑ = KURS ↓',C.down,g.k(3)*(g.on(4)?0:1),{size:12});
+  if(g.on(4))pill(VW/2,272,'ZINS ↓ = KURS ↑',C.up,g.k(4,500,1200),{size:12});
+ },
+ box:{was:'Anleihekurse und Marktzinsen bewegen sich entgegengesetzt. Steigen die Zinsen, werden alte Anleihen mit niedrigem Kupon weniger wert – und umgekehrt.',h2:'So geht’s',erkennen:['Zinsen ↑ → Anleihekurse ↓','Zinsen ↓ → Anleihekurse ↑','Lange Laufzeit = stärkere Schwankung'],bedeutung:'Auch „sichere“ Anleihen können zwischendurch an Wert verlieren. Wer bis zum Laufzeitende hält, bekommt aber den Nennwert zurück (wenn der Schuldner zahlt).',tipp:'Mit dem Anleihen-Rechner unten siehst du, wie stark sich der Kurs bei anderen Zinsen ändert.'},
+ qpic:{q:'Welcher Zusammenhang wird mit dieser Wippe gezeigt?',ans:'Steigende Zinsen lassen Anleihekurse fallen',wrong:['Steigende Zinsen lassen Aktien immer steigen','Inflation und Lohn','Angebot und Nachfrage bei Aktien']}});
+
+L({id:'rating',cat:'anleihen',g:'AAA',title:'Bonität und Rating',sub:'Wie sicher ist der Schuldner?',
+ lead:'Ratingagenturen bewerten, wie wahrscheinlich ein Schuldner seine Anleihen zurückzahlt. Je unsicherer, desto höher der Zins.',
+ steps:[['Ratingagenturen vergeben Noten von AAA (beste Bonität) bis D (zahlungsunfähig).'],['AAA und AA: sehr sichere Schuldner – zum Beispiel Deutschland. Dafür gibt es wenig Zinsen.'],['A und BBB: noch „Investment Grade“ – solide, aber etwas mehr Risiko und etwas mehr Zins.'],['Ab BB abwärts: „High Yield“ oder Ramschanleihen. Hohe Zinsen – aber auch hohes Ausfallrisiko.'],['Merke: Ein hoher Zins ist meist eine Risikoprämie. Er zeigt, dass Anleger dem Schuldner weniger trauen.']],
+ draw(g){const r=[['AAA',1,C.up],['AA',1,C.up],['A',2,C.up],['BBB',2,C.gold],['BB',3,C.orange],['B',3,C.orange],['CCC',3,C.down],['D',0,C.down]];
+  const Y=v=>246-v*24,x0=60,bw=40;T(24,30,'ZINS (BEISPIEL)',{size:10,col:C.mute,al:'left',a:g.k(0)});
+  r.forEach(([n,st,c],i)=>{const x=x0+i*50,z=[1,1.4,2,3,4.5,6,8.5,0][i],p=st===0?g.k(0):g.k(st,700,(i%2)*300);T(x+bw/2,262,n,{size:13,col:c,a:g.k(0)});
+   if(st&&p>0){box(x,Y(z*p),bw,246-Y(z*p),{fill:c,r:4});T(x+bw/2,Y(z*p)-10,'~'+de(z,1)+' %',{size:9.5,col:c,a:p});}
+   if(i===7)T(x+bw/2,230,'✗',{size:22,col:C.down,a:g.k(0)});});
+  X.save();X.setLineDash([4,4]);X.strokeStyle=C.mute;X.globalAlpha=g.k(2);X.beginPath();X.moveTo(x0+4*50-5,60);X.lineTo(x0+4*50-5,250);X.stroke();X.restore();
+  T(x0+4*50-12,66,'INVESTMENT GRADE',{size:9.5,col:C.up,al:'right',a:g.k(2)});T(x0+4*50+2,66,'HIGH YIELD',{size:9.5,col:C.down,al:'left',a:g.k(3)});
+  if(g.on(4))pill(VW/2,36,'HOHER ZINS = HOHES RISIKO',C.gold,g.k(4),{size:12});
+ },
+ box:{was:'Die Bonität beschreibt, wie kreditwürdig ein Schuldner ist. Ratingagenturen wie S&P, Moody’s oder Fitch fassen sie in Noten von AAA bis D zusammen.',h2:'So erkennst du es',erkennen:['AAA bis BBB: Investment Grade','BB und schlechter: High Yield („Ramsch“)','D: Zahlungsausfall'],bedeutung:'Je schlechter das Rating, desto mehr Zins verlangen Anleger als Ausgleich für das Risiko. Die Zinssätze in der Grafik sind nur Beispiele – sie ändern sich ständig.',tipp:'Für den sicheren Teil deines Geldes eignen sich Anleihen bester Bonität oder Tagesgeld. Hohe Zinsen lieber nur mit kleinem Anteil.'}});
+
+L({id:'festgeld',cat:'anleihen',g:'🔒',title:'Tagesgeld oder Festgeld?',sub:'Flexibel oder festgelegt',
+ lead:'Zwei beliebte Konten für sicheres Sparen – mit einem wichtigen Unterschied: Wie schnell kommst du an dein Geld?',
+ steps:[['Tagesgeld: Du kannst jeden Tag Geld einzahlen und abheben. Der Zins kann sich aber jederzeit ändern.',3400],['Festgeld: Du legst das Geld für eine feste Zeit an, z. B. 1 oder 2 Jahre. Der Zins ist für diese Zeit garantiert.',3400],['Dafür kommst du vor Ende der Laufzeit meist nicht an dein Geld.'],['Tagesgeld passt für den Notgroschen. Festgeld für Geld, das du sicher eine Weile nicht brauchst.']],
+ draw(g){const lane=(y,lab,c,st,fixed)=>{const p=g.k(st);box(24,y,412,96,{fill:hexA(c,.08),stroke:c,r:12,a:p});T(40,y+18,lab,{size:12,col:c,al:'left',a:p});
+   const X0=44,W=372;X.save();X.globalAlpha=p;X.strokeStyle=C.line2;X.beginPath();X.moveTo(X0,y+80);X.lineTo(X0+W,y+80);X.stroke();X.restore();
+   const pts=[];for(let i=0;i<=24;i++){const z=fixed?2.6:2.6+Math.sin(i/3)*0.7-(i>14?.6:0);pts.push([X0+i*W/24,y+76-z*12]);}path(pts,c,g.l(st,2200),2.4);
+   if(!fixed){for(let i=0;i<4;i++){const q=g.k(st,400,1200+i*250);const x=X0+40+i*90;arrow(x,y+50,x,y+(i%2?28:64),i%2?C.up:C.down,q,2);}T(X0+W,y+18,'ZINS VARIABEL',{size:10,col:C.mute,al:'right',a:p});}
+   else{T(X0+W,y+18,'ZINS FEST',{size:10,col:C.mute,al:'right',a:p});const q=g.k(2);if(q>0){box(X0+60,y+30,W-120,30,{fill:C.card,stroke:C.down,r:8,a:q});T(X0+W/2,y+45,'🔒 GESPERRT BIS LAUFZEITENDE',{size:11,col:C.down,a:q});}}};
+  lane(26,'TAGESGELD',C.up,0,false);lane(146,'FESTGELD',C.aqua,1,true);
+  if(g.on(3)){pill(120,132,'→ NOTGROSCHEN',C.up,g.k(3),{size:10.5});pill(340,252,'→ GELD MIT PLAN',C.aqua,g.k(3,500,500),{size:10.5});}
+ },
+ box:{was:'Tagesgeld ist ein verzinstes Konto ohne feste Laufzeit. Festgeld ist eine Einlage mit fester Laufzeit und festem Zins.',h2:'So geht’s',erkennen:['Tagesgeld: täglich verfügbar, Zins variabel','Festgeld: Laufzeit fest, Zins garantiert','Beide fallen unter die Einlagensicherung'],bedeutung:'Festgeld bringt Planungssicherheit, Tagesgeld Flexibilität. Liegt der Zins unter der Inflation, verlierst du bei beiden real an Kaufkraft.',tipp:'Eine „Festgeld-Treppe“: Geld auf mehrere Laufzeiten verteilen (z. B. 1, 2, 3 Jahre) – so wird regelmäßig etwas frei.'}});
+
+L({id:'einlagen',cat:'anleihen',g:'🛡',title:'Die Einlagensicherung',sub:'100.000 € pro Person und Bank',
+ lead:'Was passiert mit deinem Geld auf dem Konto, wenn eine Bank pleitegeht? In der EU gibt es dafür einen gesetzlichen Schutz.',
+ steps:[['Guthaben auf Giro-, Tages- und Festgeldkonten sind in der EU gesetzlich geschützt.'],['Bis 100.000 € pro Person und pro Bank bekommst du dein Geld zurück, wenn die Bank pleitegeht.'],['Hast du 150.000 € bei einer Bank, sind 50.000 € nicht gesetzlich abgesichert.',3400],['Lösung: Große Beträge auf mehrere Banken verteilen. Wertpapiere im Depot sind sowieso Sondervermögen und davon unabhängig.']],
+ draw(g){const Y=v=>250-v/160000*190,p0=g.k(0);T(24,30,'GUTHABEN BEI EINER BANK',{size:10.5,col:C.mute,al:'left',a:p0});
+  const lim=Y(100000);X.save();X.setLineDash([5,4]);X.strokeStyle=C.up;X.lineWidth=2;X.globalAlpha=g.k(1);X.beginPath();X.moveTo(40,lim);X.lineTo(440,lim);X.stroke();X.restore();
+  T(44,lim-10,'100.000 € GRENZE',{size:10.5,col:C.up,al:'left',a:g.k(1)});
+  const b=(x,v,st,lab)=>{const p=g.k(st,1100);if(p<=0)return;const vv=v*p,w=110;const safe=Math.min(vv,100000);box(x,Y(safe),w,250-Y(safe),{fill:C.up,r:6,a:.9});if(vv>100000)box(x,Y(vv),w,Y(100000)-Y(vv),{fill:C.down,r:6});T(x+w/2,265,lab,{size:10.5,col:C.mute,a:p});T(x+w/2,Y(vv)-10,eur(vv),{size:12,a:p});};
+  b(70,80000,1,'BANK A');b(250,150000,2,'BANK B');
+  if(g.on(1))T(125,Y(40000),'🛡 GESCHÜTZT',{size:11,col:C.bg,a:g.k(1,600,800)});
+  if(g.on(2))pill(305,Y(125000),'50.000 € UNGESCHÜTZT',C.down,g.k(2,500,1200),{size:10.5});
+  if(g.on(3))pill(330,30,'AUF MEHRERE BANKEN VERTEILEN',C.aqua,g.k(3),{size:11});
+ },
+ box:{was:'Die gesetzliche Einlagensicherung schützt Bankguthaben bis 100.000 € pro Kunde und Bank – in allen Ländern der EU.',h2:'So geht’s',erkennen:['Gilt für Giro-, Tages-, Festgeld, Sparbuch','Nicht für Aktien/ETFs – die sind Sondervermögen','Gemeinschaftskonto: je Person 100.000 €'],bedeutung:'Bis 100.000 € pro Bank musst du dir um eine Bankpleite kaum Sorgen machen. Darüber lohnt es sich, das Geld aufzuteilen.',tipp:'Bei ausländischen Banken schützt die Sicherung des jeweiligen Landes – auf die Stärke des Staates dahinter achten.'}});
+
+/* ---------- ALTERSVORSORGE & RENTE ---------- */
+L({id:'rentenluecke',cat:'rente',g:'⊟',title:'Die Rentenlücke',sub:'Warum die gesetzliche Rente oft nicht reicht',calc:'rentenluecke',
+ lead:'Im Alter bekommst du meist deutlich weniger Rente, als du vorher verdient hast. Die Differenz heißt Rentenlücke.',
+ steps:[['Beispiel: Kurz vor der Rente hast du 2.800 € netto im Monat.'],['Um deinen Lebensstandard zu halten, brauchst du im Alter etwa 80 % davon: 2.240 €.'],['Deine gesetzliche Rente beträgt nach Abzügen vielleicht 1.400 €.',3400],['Die Rentenlücke: 840 € im Monat. Die musst du selbst schließen – mit Betriebsrente, Depot oder Immobilie.'],['Gut zu wissen: Das Rentenniveau liegt bei 48 % – gemessen an einem Durchschnittsverdiener mit 45 Beitragsjahren, vor Steuern.']],
+ draw(g){const Y=v=>250-v/3000*200,w=96,xs=[60,182,304];
+  const bar=(x,v,c,st,lab,inside)=>{const p=g.k(st,1000);if(p<=0)return;box(x,Y(v*p),w,250-Y(v*p),{fill:c,r:6});T(x+w/2,inside?Y(v*p)+16:Y(v*p)-11,eur(v*p),{size:12.5,a:p,col:inside?C.bg:C.text});T(x+w/2,265,lab,{size:10,col:C.mute,a:p});};
+  bar(xs[0],2800,C.blue,0,'NETTO HEUTE');bar(xs[1],2240,C.gold,1,'BEDARF (80 %)');bar(xs[2],1400,C.lime,2,'RENTE',true);
+  if(g.on(3)){const p=g.k(3,1200);box(xs[2],Y(2240),w,Y(1400)-Y(2240),{stroke:C.down,dash:[5,4],r:6,a:p,lw:2,fill:hexA(C.down,.18*p)});pill(xs[2]+w/2,Y(1820),'LÜCKE 840 €',C.down,p,{size:12});
+   X.save();X.setLineDash([3,4]);X.strokeStyle=C.gold;X.globalAlpha=p;X.beginPath();X.moveTo(xs[1]+w,Y(2240));X.lineTo(xs[2]+w,Y(2240));X.stroke();X.restore();}
+  if(g.on(4))pill(VW/2,28,'RENTENNIVEAU: 48 % (BIS 2031 GESICHERT)',C.lime,g.k(4),{size:11});
+ },
+ box:{was:'Die Rentenlücke ist der Unterschied zwischen dem Geld, das du im Alter brauchst, und dem, was du aus der gesetzlichen Rente bekommst.',h2:'So geht’s',erkennen:['Renteninformation der DRV ansehen','Bedarf: ca. 70–80 % vom letzten Netto','Steuern und Krankenkasse abziehen'],bedeutung:'Das Rentenniveau von 48 % ist bis 2031 gesetzlich festgeschrieben, danach soll es voraussichtlich sinken. Private Vorsorge wird damit noch wichtiger.',tipp:'Die jährliche Renteninformation der Deutschen Rentenversicherung zeigt deine voraussichtliche Rente. Davon gehen noch Steuern und Kranken-/Pflegeversicherung ab.'}});
+
+L({id:'saeulen',cat:'rente',g:'🏛',title:'Die drei Säulen',sub:'Gesetzlich, betrieblich, privat',
+ lead:'Eine gute Altersvorsorge steht auf mehreren Beinen. In Deutschland spricht man von drei Säulen.',
+ steps:[['Säule 1: die gesetzliche Rente. Beiträge zahlen du und dein Arbeitgeber automatisch vom Lohn.'],['Säule 2: die betriebliche Altersvorsorge (Betriebsrente) über deinen Arbeitgeber.'],['Säule 3: die private Vorsorge – zum Beispiel ETF-Sparplan, Altersvorsorgedepot, Immobilie.'],['Zusammen tragen die drei Säulen deine Rente. Je mehr Säulen, desto stabiler das Dach.']],
+ draw(g){const cols=[['GESETZLICH',C.blue,0],['BETRIEBLICH',C.lime,1],['PRIVAT',C.gold,2]];const base=250;
+  box(40,base,380,14,{fill:C.line2,r:3,a:g.k(0)});
+  cols.forEach(([n,c,st],i)=>{const p=g.k(st,1200),x=70+i*120,h=150*p;box(x,base-h,80,h,{fill:hexA(c,.85),r:4});T(x+40,base-h/2,'',{});if(p>0){X.save();X.translate(x+40,base-h/2);X.rotate(-Math.PI/2);X.font=font(13);X.fillStyle=C.bg;X.textAlign='center';X.textBaseline='middle';X.globalAlpha=p;X.fillText(n,0,0);X.restore();}
+   T(x+40,base+28-2,`SÄULE ${i+1}`,{size:10,col:c,a:p});});
+  if(g.on(3)){const p=g.k(3,1000);X.save();X.globalAlpha=p;X.fillStyle=C.text;X.beginPath();X.moveTo(36,96);X.lineTo(424,96);X.lineTo(230,40);X.closePath();X.fill();X.restore();T(230,80,'DEINE RENTE',{size:13,col:C.bg,a:p});}
+ },
+ box:{was:'Das Drei-Säulen-Modell teilt die Altersvorsorge in gesetzliche Rente, betriebliche Altersvorsorge und private Vorsorge auf.',h2:'So geht’s',erkennen:['Säule 1: Pflicht für Angestellte','Säule 2: über den Arbeitgeber','Säule 3: selbst organisiert'],bedeutung:'Die gesetzliche Rente allein reicht für die meisten nicht, um den Lebensstandard zu halten. Säule 2 und 3 schließen die Lücke.',tipp:'Frag in deiner Personalabteilung, welche Betriebsrente angeboten wird und ob der Arbeitgeber etwas dazugibt.'}});
+
+L({id:'bav',cat:'rente',g:'🏢',title:'Die Betriebsrente',sub:'Sparen aus dem Bruttolohn',
+ lead:'Bei der Entgeltumwandlung wird ein Teil deines Bruttolohns direkt in die Altersvorsorge gesteckt – mit Steuer- und Abgabenvorteil.',
+ steps:[['Du wandelst 100 € deines Bruttolohns in eine Betriebsrente um.'],['Darauf zahlst du jetzt keine Lohnsteuer und keine Sozialabgaben. Dein Netto sinkt deshalb nur um etwa 50–60 € (Beispiel).',3600],['Der Arbeitgeber spart Sozialabgaben und muss in der Regel 15 % dazugeben: 15 €.',3400],['In deinen Vertrag fließen also 115 € – dich kostet es nur rund 55 €.'],['Aber: Im Alter ist die Betriebsrente steuer- und meist auch krankenkassenpflichtig. Und die Kosten des Vertrags zählen.']],
+ draw(g){const Y=v=>250-v*1.6,w=80;
+  const b=(x,v,c,st,lab,dl=0)=>{const p=g.k(st,900,dl);if(p<=0)return;box(x,Y(v*p),w,250-Y(v*p),{fill:c,r:6});T(x+w/2,Y(v*p)-11,eur(v*p),{size:12.5,a:p});T(x+w/2,265,lab,{size:10,col:C.mute,a:p});};
+  b(40,100,C.blue,0,'BRUTTO');b(150,55,C.lime,1,'NETTO-AUFWAND');
+  if(g.on(1))pill(190,30,'STEUER + ABGABEN GESPART',C.up,g.k(1,500,900)*(g.on(4)?0:1),{size:10});
+  if(g.on(2)){const p=g.k(2,900);box(260,Y(115*p),w,Y(100*p)-Y(115*p),{fill:C.gold,r:4});box(260,Y(100*p),w,250-Y(100*p),{fill:C.blue,r:4});T(300,265,'IM VERTRAG',{size:10,col:C.mute,a:p});T(300,Y(115*p)-11,eur(115*p),{size:12.5,a:p});pill(348,Y(108),'+15 € VOM CHEF',C.gold,g.k(2,500,900),{size:10,al:'left'});}
+  if(g.on(4))pill(VW/2,26,'IM ALTER: STEUER + KV FÄLLIG',C.down,g.k(4),{size:11});
+ },
+ box:{was:'Die betriebliche Altersvorsorge (bAV) ist eine Rente über den Arbeitgeber. Bei der Entgeltumwandlung zahlst du aus dem Bruttolohn ein – der Staat fördert das über Steuer- und Abgabenfreiheit.',h2:'So geht’s',erkennen:['Personalabteilung nach Angebot fragen','Arbeitgeberzuschuss (meist 15 %) prüfen','Kosten und Rendite des Vertrags vergleichen'],bedeutung:'Besonders lohnend ist die bAV, wenn der Arbeitgeber großzügig dazuzahlt. Ohne Zuschuss und mit teurem Vertrag kann ein eigener ETF-Sparplan besser sein.',tipp:'Die genauen Netto-Kosten hängen von deinem Steuersatz ab. Lass dir von der Personalabteilung eine Beispielrechnung geben.'}});
+
+L({id:'avdepot',cat:'rente',g:'AV',title:'Das Altersvorsorgedepot',sub:'Der Riester-Nachfolger ab 2027',
+ lead:'Ab 2027 ersetzt ein neues, staatlich gefördertes Altersvorsorgedepot die Riester-Rente – mit Fonds und ETFs, aber ohne Garantiezwang.',
+ steps:[['Die Riester-Rente war kompliziert und oft teuer. Viele Verträge brachten kaum Rendite.'],['Ab 1. Januar 2027 gibt es das neue Altersvorsorgedepot. Darin kannst du in Fonds und ETFs sparen.',3400],['Der Staat gibt eine Zulage dazu – bis zu 540 € im Jahr. Für Kinder und junge Sparer gibt es extra Zuschläge.',3600],['Für Kinder ist zusätzlich die Frühstart-Rente geplant: 10 € im Monat vom Staat in ein eigenes Depot.',3400],['Bestehende Riester-Verträge dürfen weiterlaufen. Prüfe vor einem Wechsel genau die Kosten.']],
+ draw(g){const p0=g.k(0);box(24,30,180,90,{fill:hexA(C.down,.1),stroke:C.down,r:12,a:p0*(g.on(1)?.5:1)});T(114,58,'RIESTER (ALT)',{size:12,col:C.down,a:p0});T(114,84,'teuer · kompliziert',{size:11,col:C.mute,a:p0,sans:true,w:600});
+  if(g.on(1)){const p=g.k(1);arrow(212,75,252,75,C.lime,p,2.5);box(256,30,180,90,{fill:hexA(C.lime,.12),stroke:C.lime,r:12,a:p});T(346,58,'AV-DEPOT',{size:13,col:C.lime,a:p});T(346,84,'ab 2027 · ETFs & Fonds',{size:11,col:C.mute,a:p,sans:true,w:600});}
+  if(g.on(2)){const p=g.k(2,1200);for(let i=0;i<6;i++){const q=clamp(p*1.6-i*.12);coin(80+i*28,175-(1-q)*30,12,C.gold,q,'€');}pill(140,210,'ZULAGE BIS 540 € / JAHR',C.gold,g.k(2,500,900),{size:11});}
+  if(g.on(3)){const p=g.k(3);box(282,150,154,76,{fill:C.card,stroke:C.blue,r:12,a:p});T(359,172,'FRÜHSTART-RENTE',{size:10.5,col:C.blue,a:p});T(359,198,'10 € / MONAT',{size:14,a:p});T(359,215,'für Kinder ab 6',{size:10,col:C.mute,a:p,sans:true,w:600});}
+  if(g.on(4))pill(VW/2,262,'ALTVERTRÄGE: KOSTEN PRÜFEN',C.lime,g.k(4),{size:11});
+ },
+ box:{was:'Das Altersvorsorgedepot ist die neue staatlich geförderte private Altersvorsorge ab 2027. Es ersetzt die Riester-Förderung für neue Verträge und erlaubt Anlagen in Fonds und ETFs ohne Pflicht zur Beitragsgarantie.',h2:'So geht’s',erkennen:['Start: 1. Januar 2027','Staatliche Zulage bis zu 540 € pro Jahr','Auszahlung im Alter steuerpflichtig'],bedeutung:'Durch die Zulage bekommst du „Gratisgeld“ vom Staat. Durch ETFs sind langfristig höhere Renditen möglich als bei vielen Riester-Verträgen – mit Schwankungen.',tipp:'Die Details (Anbieter, Kosten, Frühstart-Rente) werden gerade umgesetzt. Vor Abschluss Angebote vergleichen, z. B. bei der Verbraucherzentrale.'}});
+
+L({id:'entnahme',cat:'rente',g:'4%',title:'Entnahme im Alter',sub:'Die 4-%-Regel',calc:'entnahme',
+ lead:'Wie viel kannst du jedes Jahr aus deinem Depot entnehmen, ohne dass das Geld zu früh aufgebraucht ist?',
+ steps:[['Du gehst mit einem Depot von 500.000 € in Rente.'],['Die 4-%-Regel: Im ersten Jahr entnimmst du 4 % = 20.000 € (rund 1.667 € im Monat).'],['Jedes Jahr erhöhst du die Entnahme um die Inflation (hier 2 %), damit die Kaufkraft gleich bleibt.'],['Bei 5 % Rendite pro Jahr reicht das Geld in diesem Beispiel über 40 Jahre – es sind sogar noch rund 300.000 € übrig.',3800],['Achtung: Die Regel stammt aus US-Studien. Schlechte Börsenjahre am Anfang der Rente sind gefährlich – ein Puffer hilft.']],
+ draw(g){const Y=plot({max:600000,ticks:3,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(440-66)/40;const vals=[500000];let v=500000,w=20000;for(let y=1;y<=40;y++){v=v*1.05-w;w*=1.02;vals.push(v);}
+  const pts=vals.map((v,i)=>[X0+i*dx,Y(v)]);dot(X0,Y(500000),C.lime,5,g.k(0));pill(X0+8,Y(500000)-20,'500.000 € DEPOT',C.lime,g.k(0)*(g.on(3)?0:1),{al:'left',size:11});
+  if(g.on(1)){const p=g.k(1);for(let i=0;i<5;i++){const q=clamp(p*1.5-i*.12);coin(150+i*30,lerp(100,170,q),10,C.gold,q*(g.on(3)?0:1),'€');}pill(220,206,'4 % = 20.000 € / JAHR',C.gold,p*(g.on(3)?0:1),{size:11});}
+  if(g.on(2))pill(330,92,'+2 % INFLATIONSAUSGLEICH',C.orange,g.k(2)*(g.on(3)?0:1),{size:10.5});
+  if(g.on(3)){const p=g.l(3,2800);area(pts,Y(0),C.lime,p,.14);path(pts,C.lime,p,2.8);pill(440,Y(vals[40])-18,'NACH 40 J.: ~299 T€',C.lime,g.k(3,500,2600),{al:'right',size:11});}
+  xlabels([[X0,'67'],[X0+10*dx,'77'],[X0+20*dx,'87'],[X0+30*dx,'97'],[X0+40*dx,'107']]);
+ },
+ box:{was:'Die 4-%-Regel ist eine Faustformel für die Entnahmephase: Im ersten Rentenjahr 4 % des Depots entnehmen, danach jedes Jahr um die Inflation anpassen.',h2:'So geht’s',erkennen:['Entnahme/Jahr = 4 % vom Startdepot','Benötigtes Depot ≈ Jahresbedarf × 25','Breit gestreut anlegen, Puffer halten'],bedeutung:'Damit lässt sich abschätzen, wie groß dein Depot sein muss: Wer 10.000 € im Jahr zusätzlich braucht, sollte rund 250.000 € anstreben.',tipp:'Viele planen 1–3 Jahresentnahmen als Puffer auf dem Tagesgeld ein. So muss man im Crash keine Aktien verkaufen.'},
+ qpic:{q:'Was zeigt dieses Diagramm?',ans:'Entnahme aus dem Depot im Ruhestand',wrong:['Einen Aktien-Crash','Die Tilgung eines Kredits','Einen Sparplan in der Ansparphase']}});
+
+L({id:'kinderdepot',cat:'rente',g:'👶',title:'Das Kinderdepot',sub:'Früh anfangen für die Kinder',
+ lead:'Ein Depot auf den Namen des Kindes nutzt die längste Zeit, die es gibt: von der Geburt bis zum 18. Geburtstag – und weit darüber hinaus.',
+ steps:[['Du sparst ab der Geburt 50 € im Monat in einen breit gestreuten ETF.'],['Bis zum 18. Geburtstag zahlst du 10.800 € ein.',3200],['Bei angenommenen 6 % pro Jahr ist das Depot dann rund 19.048 € wert.',3400],['Kinder haben einen eigenen Sparerpauschbetrag von 1.000 € – Erträge bleiben so oft steuerfrei.'],['Wichtig: Das Geld gehört rechtlich dem Kind. Mit 18 darf es selbst darüber entscheiden.']],
+ draw(g){const Y=plot({max:20000,ticks:4,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(440-66)/18;const s=sparVerlauf(50,18,.06);
+  const e=[...Array(19)].map((_,i)=>[X0+i*dx,Y(600*i)]),pts=s.map((v,i)=>[X0+i*dx,Y(v)]);
+  const p1=g.l(1,2400),p2=g.l(2,2400);area(e,Y(0),C.blue,p1,.25);path(e,C.blue,p1,2.2,[5,4]);area(pts,Y(0),C.lime,p2,.14);path(pts,C.lime,p2,2.8);
+  pill(440,Y(10800)+18,'EINGEZAHLT 10.800 €',C.blue,g.k(1,500,2200),{al:'right',size:10.5});pill(430,Y(s[18])-18,'MIT 18: ~19.048 €',C.lime,g.k(2,500,2200),{al:'right',size:11});
+  T(X0+6,62,'👶 50 € / MONAT',{size:12,col:C.lime,al:'left',a:g.k(0)});
+  if(g.on(3))pill(180,110,'FREIBETRAG KIND: 1.000 €',C.gold,g.k(3),{size:10.5});
+  xlabels([[X0,'0'],[X0+6*dx,'6'],[X0+12*dx,'12'],[X0+18*dx,'18 J.']]);
+ },
+ box:{was:'Ein Kinderdepot ist ein Wertpapierdepot auf den Namen des Kindes. Eltern verwalten es, bis das Kind volljährig ist.',h2:'So geht’s',erkennen:['Depot auf Namen des Kindes eröffnen','Freistellungsauftrag fürs Kind stellen','ETF-Sparplan mit kleinem Betrag'],bedeutung:'Durch den langen Zeitraum wirkt der Zinseszins enorm. Wer das Depot bis zur Rente weiterlaufen lässt, kann daraus eine große Summe machen.',tipp:'Soll das Geld sicher für einen bestimmten Zweck bleiben, kann ein Depot auf den Namen der Eltern sinnvoller sein – das Geld gehört dann aber den Eltern.'}});
+
+/* ---------- KREDITE & BAUFINANZIERUNG ---------- */
+L({id:'effektivzins',cat:'kredit',g:'eff',title:'Sollzins vs. Effektivzins',sub:'Was ein Kredit wirklich kostet',
+ lead:'Zwei Kreditangebote mit unterschiedlichen Zinsen – welches ist günstiger? Der Effektivzins verrät es.',
+ steps:[['Angebot A wirbt mit 4,9 % Sollzins. Angebot B mit 5,2 %.'],['Der Sollzins ist nur der reine Zins auf die Schuld.'],['Bei A kommen noch Gebühren hinzu, z. B. eine Bearbeitungs- oder Vermittlungsgebühr.',3400],['Der Effektivzins rechnet alle Pflichtkosten mit ein: A kostet effektiv 5,6 %, B nur 5,3 %.',3600],['Darum gilt: Kredite immer nach dem effektiven Jahreszins vergleichen – der muss in jedem Angebot stehen.']],
+ draw(g){const Y=v=>250-v*30,w=70;const b=(x,v,c,st,lab,dl=0)=>{const p=g.k(st,900,dl);if(p<=0)return;box(x,Y(v*p),w,250-Y(v*p),{fill:c,r:5});T(x+w/2,Y(v*p)-11,pc(v*p,1),{size:12.5,a:p});T(x+w/2,265,lab,{size:10,col:C.mute,a:p});};
+  T(110,22,'ANGEBOT A',{size:13,col:C.pink,a:g.k(0)});T(330,22,'ANGEBOT B',{size:13,col:C.blue,a:g.k(0)});
+  b(40,4.9,hexA(C.pink,.6),0,'SOLLZINS');b(260,5.2,hexA(C.blue,.6),0,'SOLLZINS');
+  if(g.on(2)){const p=g.k(2);pill(110,48,'+ GEBÜHREN',C.down,p,{size:10.5});}
+  b(130,5.6,C.pink,3,'EFFEKTIV');b(350,5.3,C.blue,3,'EFFEKTIV',300);
+  if(g.on(4))pill(330,48,'B IST GÜNSTIGER',C.up,g.k(4),{size:11});
+ },
+ box:{was:'Der Sollzins ist der vereinbarte Zins auf die Kreditsumme. Der effektive Jahreszins enthält zusätzlich alle Pflichtkosten (z. B. Gebühren) und macht Angebote vergleichbar.',h2:'So geht’s',erkennen:['Immer den effektiven Jahreszins vergleichen','Laufzeit und Kreditsumme gleich halten','Optionale Versicherungen sind oft nicht drin'],bedeutung:'Ein niedriger Werbezins kann durch Gebühren teurer werden als ein Angebot mit höherem Sollzins.',tipp:'Restschuldversicherungen werden gern „mitverkauft“ und machen Kredite deutlich teurer. Sie sind meist freiwillig.'}});
+
+L({id:'annuitaet',cat:'kredit',g:'🏠',title:'Das Annuitätendarlehen',sub:'Gleiche Rate, wechselnder Anteil',calc:'tilgung',
+ lead:'Die typische Baufinanzierung: Du zahlst jeden Monat die gleiche Rate. Darin steckt Zins und Tilgung – das Verhältnis ändert sich aber.',
+ steps:[['Du leihst 300.000 € für dein Haus. Zins 3,5 %, anfängliche Tilgung 2 %.'],['Monatsrate: 300.000 € × 5,5 % ÷ 12 = 1.375 €. Sie bleibt immer gleich.'],['Am Anfang besteht die Rate fast nur aus Zinsen (pink). Nur wenig tilgt die Schuld (grün).',3600],['Mit jeder Rate sinkt die Restschuld – damit sinken die Zinsen, und der Tilgungsanteil wächst.',3600],['Nach rund 29 Jahren ist das Haus abbezahlt. Gezahlte Zinsen insgesamt: rund 177.600 €.']],
+ draw(g){const Y=v=>250-v/1375*168,P=300000,r=.035/12,rate=1375;const yrs=[];let s=P;for(let y=0;y<29;y++){let zi=0,ti=0;for(let m=0;m<12;m++){const i=s*r;const t=Math.min(rate-i,s);zi+=i;ti+=t;s-=t;}yrs.push([zi/12,ti/12]);}
+  const n=g.on(2)?Math.round(1+(yrs.length-1)*clamp(g.l(2,1)*0+g.l(3,3000))):(g.on(1)?1:0);const bw=10.5;
+  for(let i=0;i<29;i++){const x=66+i*13;const vis=i===0?g.k(1):clamp((g.l(3,3000)*29)-i+1);if(vis<=0)continue;const [zi,ti]=yrs[i];box(x,Y(zi+ti),bw,Y(zi)-Y(zi+ti),{fill:C.up,r:2,a:vis});box(x,Y(zi),bw,250-Y(zi),{fill:C.pink,r:2,a:vis});}
+  T(24,30,'MONATSRATE 1.375 €',{size:12,col:C.text,al:'left',a:g.k(1)});
+  box(250,22,9,9,{fill:C.pink,r:2,a:g.k(2)});T(263,27,'ZINS',{size:10,col:C.mute,al:'left',a:g.k(2)});box(310,22,9,9,{fill:C.up,r:2,a:g.k(2)});T(323,27,'TILGUNG',{size:10,col:C.mute,al:'left',a:g.k(2)});
+  if(g.on(2))pill(120,Y(600),'JAHR 1: 875 € ZINS · 500 € TILGUNG',C.pink,g.k(2,500,600)*(g.on(3)?0:1),{size:10,al:'left'});
+  if(g.on(4))pill(VW/2,56,'ZINSEN GESAMT: ~177.600 €',C.pink,g.k(4),{size:11});
+  xlabels([[66+5,'J1'],[66+9*13+5,'J10'],[66+19*13+5,'J20'],[66+28*13+5,'J29']]);
+ },
+ box:{was:'Beim Annuitätendarlehen zahlst du eine gleichbleibende Rate (Annuität). Sie besteht aus Zins und Tilgung. Weil die Schuld sinkt, wird der Zinsanteil kleiner und der Tilgungsanteil größer.',h2:'So geht’s',erkennen:['Rate = Darlehen × (Zins + Tilgung) ÷ 12','Zinsbindung z. B. 10, 15 oder 20 Jahre','Nach der Zinsbindung: Anschlussfinanzierung'],bedeutung:'Je höher die anfängliche Tilgung, desto schneller bist du schuldenfrei – und desto weniger Zinsen zahlst du insgesamt.',tipp:'Achte auf die Restschuld am Ende der Zinsbindung. Steigen die Zinsen bis dahin, wird die Anschlussfinanzierung teurer.'},
+ qpic:{q:'Was zeigen die Balken?',ans:'Zins- und Tilgungsanteil eines Annuitätendarlehens',wrong:['Dividenden einer Aktie','Einen ETF-Sparplan','Die Inflation pro Jahr']}});
+
+L({id:'tilgung',cat:'kredit',g:'⏬',title:'Die Tilgung macht’s',sub:'1 %, 2 % oder 3 % Tilgung',calc:'tilgung',
+ lead:'Die anfängliche Tilgung entscheidet, wie lange du abzahlst – und wie viele Zinsen du insgesamt an die Bank zahlst.',
+ steps:[['Dreimal 300.000 € zu 3,5 % Zins – nur die anfängliche Tilgung ist anders.'],['1 % Tilgung: Rate 1.125 €. Du zahlst rund 43 Jahre und etwa 281.000 € Zinsen!',3600],['2 % Tilgung: Rate 1.375 €. Rund 29 Jahre und etwa 177.600 € Zinsen.',3400],['3 % Tilgung: Rate 1.625 €. Nur rund 22 Jahre und etwa 131.400 € Zinsen.',3400],['500 € mehr Rate im Monat sparen hier fast 150.000 € Zinsen. Höher tilgen lohnt sich enorm.']],
+ draw(g){const Y=plot({max:300000,ticks:3,lab:v=>v?de(v/1000)+' T':'0',x0:66});const X0=66,dx=(440-66)/44;
+  const run=t=>{const rate=300000*(.035+t)/12,r=.035/12;let s=300000;const o=[[X0,Y(s)]];let m=0;while(s>0&&m<600){s=s*(1+r)-rate;m++;if(m%12===0||s<=0)o.push([X0+m/12*dx,Y(Math.max(0,s))]);}return o;};
+  [[.01,C.down,1,'1 %: 43 J. · 281 T€ ZINS'],[.02,C.gold,2,'2 %: 29 J. · 178 T€'],[.03,C.up,3,'3 %: 22 J. · 131 T€']].forEach(([t,c,st,lab],i)=>{const pts=run(t);path(pts,c,g.l(st,2400),2.8);pill(444,62+i*26,lab,c,g.k(st,500,2200),{al:'right',size:10.5});});
+  T(X0,30,'RESTSCHULD',{size:10,col:C.mute,al:'left',a:g.k(0)});
+  if(g.on(4))pill(444,148,'HÖHER TILGEN = WENIGER ZINSEN',C.pink,g.k(4),{size:10.5,al:'right',solid:true});
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30'],[X0+40*dx,'40 J.']]);
+ },
+ box:{was:'Die anfängliche Tilgung ist der Prozentsatz der Darlehenssumme, der im ersten Jahr zurückgezahlt wird. Sie bestimmt Rate und Laufzeit.',h2:'So geht’s',erkennen:['Mindestens 2 % Tilgung empfohlen','Höhere Tilgung = höhere Rate, kürzere Laufzeit','Rate muss dauerhaft bezahlbar bleiben'],bedeutung:'Niedrige Tilgung wirkt verlockend günstig, kostet am Ende aber sehr viel mehr Zinsen und verlängert die Schuld bis ins Rentenalter.',tipp:'Vereinbare Tilgungssatzwechsel: Dann kannst du die Tilgung später anpassen, z. B. nach einer Gehaltserhöhung.'}});
+
+L({id:'sondertilgung',cat:'kredit',g:'+€',title:'Sondertilgung',sub:'Extra-Zahlungen sparen Jahre',calc:'tilgung',
+ lead:'Viele Baukredite erlauben zusätzlich zur Rate eine Sondertilgung pro Jahr – meist 5 % der Darlehenssumme ohne Gebühr.',
+ steps:[['Ausgangslage: 300.000 €, 3,5 % Zins, 2 % Tilgung, Rate 1.375 €. Laufzeit rund 29 Jahre.',3400],['Du zahlst zusätzlich jedes Jahr 5 % Sondertilgung: 15.000 €.',3200],['Ergebnis: Das Haus ist schon nach rund 12 Jahren abbezahlt!',3400],['Die Zinsen sinken von rund 177.600 € auf etwa 68.900 €. Schon kleine Sondertilgungen helfen.']],
+ draw(g){const Y=plot({max:300000,ticks:3,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(440-66)/30;
+  const run=st=>{const rate=1375,r=.035/12;let s=300000;const o=[[X0,Y(s)]];let m=0;while(s>0&&m<400){s=s*(1+r)-rate;m++;if(m%12===0){if(st)s-=Math.min(Math.max(s,0),15000);o.push([X0+m/12*dx,Y(Math.max(0,s))]);}else if(s<=0)o.push([X0+m/12*dx,Y(0)]);}return o;};
+  const a=run(false),b=run(true);path(a,C.gold,g.l(0,2600),2.6);pill(440,Y(40000)-24,'OHNE: ~29 J.',C.gold,g.k(0,500,2400),{al:'right',size:11});
+  if(g.on(1)){for(let i=0;i<4;i++){const q=g.k(1,500,i*350);coin(X0+(i+1)*dx*2.5,Y(260000-i*50000)-20,11,C.pink,q,'5%');}}
+  path(b,C.pink,g.l(2,2400),2.8);pill(X0+12*dx+6,Y(0)-18,'MIT: ~12 J.',C.pink,g.k(2,500,2200),{al:'left',size:11});
+  if(g.on(3))pill(VW/2,40,'ZINSEN: 177.600 € → 68.900 €',C.up,g.k(3),{size:11});
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30 J.']]);
+ },
+ box:{was:'Eine Sondertilgung ist eine zusätzliche Rückzahlung neben der normalen Rate. Viele Banken erlauben jährlich 5 % der Darlehenssumme kostenlos.',h2:'So geht’s',erkennen:['Sondertilgungsrecht im Vertrag vereinbaren','Bonus, Steuererstattung oder Erbe nutzen','Nicht genutzte Rechte verfallen meist'],bedeutung:'Jeder Euro Sondertilgung spart sofort Zinsen für die gesamte restliche Laufzeit – eine sichere „Rendite“ in Höhe des Kreditzinses.',tipp:'Erst Notgroschen aufbauen, dann sondertilgen. Geld, das im Haus steckt, kommt man nur schwer wieder heran.'}});
+
+L({id:'dispo',cat:'kredit',g:'−€',title:'Dispo und Ratenkredit',sub:'Teure Schulden vermeiden',
+ lead:'Der Dispokredit ist bequem – aber einer der teuersten Kredite überhaupt. Ein Ratenkredit ist meist deutlich günstiger.',
+ steps:[['Dein Girokonto ist mit 2.000 € im Minus – ein ganzes Jahr lang.'],['Dispozinsen liegen oft über 10 %. Bei 12 % zahlst du rund 240 € Zinsen im Jahr.',3400],['Ein Ratenkredit über 2.000 € mit z. B. 6 % kostet deutlich weniger Zinsen.',3400],['Noch besser: Schulden schnell abbauen und Konsum nicht auf Pump finanzieren. Auch „Später bezahlen“ ist ein Kredit.']],
+ draw(g){const p0=g.k(0);box(24,30,180,70,{fill:C.card,stroke:C.down,r:12,a:p0});T(114,52,'GIROKONTO',{size:11,col:C.mute,a:p0});T(114,78,'−2.000 €',{size:20,col:C.down,a:p0});
+  const Y=v=>250-v*0.5,w=90;const b=(x,v,c,st,lab)=>{const p=g.k(st,1000);if(p<=0)return;box(x,Y(v*p),w,250-Y(v*p),{fill:c,r:6});T(x+w/2,Y(v*p)-11,eur(v*p),{size:13,a:p});T(x+w/2,265,lab,{size:10,col:C.mute,a:p});};
+  b(110,240,C.down,1,'DISPO 12 %');b(260,120,C.gold,2,'RATENKREDIT 6 %');
+  T(320,60,'ZINSEN PRO JAHR',{size:10.5,col:C.mute,a:g.k(1)});
+  if(g.on(3))pill(340,118,'SCHULDEN SCHNELL ABBAUEN',C.pink,g.k(3),{size:11});
+ },
+ box:{was:'Der Dispokredit ist ein Überziehungsrahmen auf dem Girokonto. Ein Ratenkredit ist ein Darlehen mit festen Monatsraten und fester Laufzeit.',h2:'So geht’s',erkennen:['Dispo: flexibel, aber sehr teuer','Ratenkredit: fester Plan, meist günstiger','Effektivzinsen vergleichen'],bedeutung:'Wer dauerhaft im Dispo steckt, verschenkt jedes Jahr viel Geld. Ein Umschulden in einen günstigeren Ratenkredit kann helfen.',tipp:'Erst teure Schulden tilgen, dann investieren: Kaum eine Geldanlage bringt sicher so viel, wie ein Dispo kostet.'}});
+
+L({id:'schufa',cat:'kredit',g:'S',title:'Die Schufa',sub:'Dein Kredit-Zeugnis',
+ lead:'Die Schufa sammelt Daten darüber, wie zuverlässig du Rechnungen und Kredite bezahlst. Banken prüfen sie vor jedem Kredit.',
+ steps:[['Die Schufa ist eine Auskunftei. Sie speichert Konten, Kredite, Handy-Verträge und Zahlungsprobleme.'],['Pünktlich bezahlte Kredite und lange bestehende Konten wirken sich gut aus.'],['Schlecht sind nicht bezahlte Rechnungen nach Mahnungen, Inkasso oder Kündigungen von Krediten.'],['Daraus berechnet die Schufa einen Score. Je höher, desto leichter und günstiger bekommst du Kredite.',3400],['Du darfst jederzeit eine kostenlose Datenkopie anfordern und falsche Einträge korrigieren lassen.']],
+ draw(g){const cx=230,cy=210,R=110;const p0=g.k(0);
+  X.save();X.globalAlpha=p0;X.lineWidth=18;X.lineCap='butt';[[C.down,0,.33],[C.gold,.33,.66],[C.up,.66,1]].forEach(([c,a0,a1])=>{X.strokeStyle=c;X.beginPath();X.arc(cx,cy,R,Math.PI+a0*Math.PI,Math.PI+a1*Math.PI);X.stroke();});X.restore();
+  const sc=g.on(3)?lerp(.5,.86,g.k(3,1600)):.5;const ang=Math.PI+sc*Math.PI;X.save();X.globalAlpha=p0;X.strokeStyle=C.text;X.lineWidth=4;X.lineCap='round';X.beginPath();X.moveTo(cx,cy);X.lineTo(cx+Math.cos(ang)*(R-26),cy+Math.sin(ang)*(R-26));X.stroke();X.restore();dot(cx,cy,C.text,7,p0);
+  T(cx,cy+30,'SCORE',{size:11,col:C.mute,a:p0});
+  [['✓ Pünktlich bezahlt',1,C.up],['✓ Altes Girokonto',1,C.up]].forEach(([s,st,c],i)=>pill(24,40+i*30,s,c,g.k(st,500,i*300),{al:'left',size:10.5}));
+  [['✗ Inkasso',2,C.down],['✗ Kredit gekündigt',2,C.down]].forEach(([s,st,c],i)=>pill(436,40+i*30,s,c,g.k(st,500,i*300),{al:'right',size:10.5}));
+  if(g.on(4))pill(cx,270,'KOSTENLOSE DATENKOPIE ANFORDERN',C.pink,g.k(4),{size:11});
+ },
+ box:{was:'Die Schufa (Schutzgemeinschaft für allgemeine Kreditsicherung) ist die bekannteste Auskunftei in Deutschland. Sie bewertet die Kreditwürdigkeit mit einem Score.',h2:'So geht’s',erkennen:['Rechnungen pünktlich zahlen','Nicht unnötig viele Konten und Kredite','Einträge regelmäßig prüfen'],bedeutung:'Ein guter Score bringt günstigere Zinsen und mehr Chancen bei Kredit, Wohnung und Handyvertrag.',tipp:'Die kostenlose Datenkopie nach Art. 15 DSGVO bekommst du direkt bei der Schufa – kostenpflichtige Abos brauchst du dafür nicht.'}});
+
+/* ---------- ETF-PRAXIS & PSYCHOLOGIE ---------- */
+L({id:'depoteroeffnen',cat:'praxis',g:'🗂',title:'Depot eröffnen',sub:'In 4 Schritten zum ersten ETF',
+ lead:'Um Aktien oder ETFs zu kaufen, brauchst du ein Depot. So läuft die Eröffnung ab.',
+ steps:[['Schritt 1: Anbieter wählen – Online-Broker, Neobroker oder Hausbank. Achte vor allem auf die Kosten.'],['Schritt 2: Antrag ausfüllen und Identität bestätigen, meist per Video-Ident oder App.'],['Schritt 3: Geld aufs Verrechnungskonto überweisen. Von dort werden Käufe bezahlt.'],['Schritt 4: ETF suchen (Name oder ISIN), Sparplan anlegen oder einmal kaufen. Fertig!'],['Kosten vergleichen: Depotgebühr, Ordergebühren, Sparplan-Kosten. Viele Online-Broker sind sehr günstig.']],
+ draw(g){const st=[['ANBIETER','🏦'],['IDENT','🪪'],['EINZAHLEN','€'],['ETF KAUFEN','📈']];
+  st.forEach(([n,ic],i)=>{const p=g.k(i,800),x=30+i*104,y=90;box(x,y,90,100,{fill:i<=g.s?hexA(C.indigo,.14):C.card,stroke:C.indigo,r:12,a:p});T(x+45,y+38,ic,{size:28,a:p});T(x+45,y+78,n,{size:10.5,col:C.indigo,a:p});T(x+45,y-14,String(i+1),{size:16,col:C.indigo,a:p});if(i<3)arrow(x+92,y+50,x+102,y+50,C.indigo,g.k(i+1,400),2);});
+  if(g.on(4)){const p=g.k(4);['DEPOTGEBÜHR','ORDERKOSTEN','SPARPLAN-KOSTEN'].forEach((s,i)=>pill(80+i*150,240,s,C.gold,g.k(4,500,i*300),{size:10}));}
+ },
+ box:{was:'Ein Depot ist ein Konto für Wertpapiere. Dazu gehört ein Verrechnungskonto für Geld, mit dem Käufe bezahlt und Erträge gutgeschrieben werden.',h2:'So geht’s',erkennen:['Anbieter vergleichen (Kosten, Angebot)','Online-Antrag + Identifizierung','Freistellungsauftrag direkt mit anlegen'],bedeutung:'Ein günstiges Depot spart über die Jahre viel Geld. Dein Vermögen im Depot ist Sondervermögen und bei einer Pleite des Brokers geschützt.',tipp:'Die ISIN ist die eindeutige Kennnummer eines Wertpapiers – damit findest du genau den richtigen ETF.'}});
+
+L({id:'ordertypen',cat:'praxis',g:'⇄',title:'Ordertypen',sub:'Market, Limit und Stop',
+ lead:'Beim Kauf oder Verkauf kannst du festlegen, zu welchem Preis die Order ausgeführt werden soll.',
+ steps:[['Market-Order: sofort zum aktuellen Preis kaufen oder verkaufen – egal, wie hoch er gerade ist.'],['Limit-Order: Du legst einen Höchstpreis zum Kaufen fest, z. B. 98 €. Erst wenn der Kurs dort ist, wird gekauft.',3600],['Stop-Loss: Fällt der Kurs unter z. B. 92 €, wird automatisch verkauft. Das begrenzt Verluste.',3600],['Tipp: Bei ETFs mit Limit kaufen, damit du nicht versehentlich zu teuer kaufst – besonders außerhalb der Börsenzeiten.']],
+ draw(g){const Y=v=>262-(v-90)/(102-90)*200;const raw=[100,101,100.5,99.6,99,98.4,97.9,98.2,99.1,100,100.8,99.9,98.8,97,95.4,94,92.8,91.6,92.4,93.5];const pts=raw.map((v,i)=>[50+i*20,Y(v)]);
+  const p=g.on(2)?1:g.on(1)?12/19*g.l(1,2600)+0.05:.05;path(pts,C.text,g.on(2)?.55+.45*g.l(2,2600):p,2.4);
+  T(40,Y(100),'100 €',{size:10,col:C.mute,al:'right',a:g.k(0)});
+  dot(pts[0][0],pts[0][1],C.blue,6,g.k(0));pill(pts[0][0]+10,pts[0][1]-22,'MARKET: SOFORT',C.blue,g.k(0)*(g.s===0?1:.5),{al:'left',size:10.5});
+  if(g.on(1)){const q=g.k(1);X.save();X.setLineDash([6,4]);X.strokeStyle=C.up;X.lineWidth=2;X.globalAlpha=q;X.beginPath();X.moveTo(40,Y(98));X.lineTo(440,Y(98));X.stroke();X.restore();pill(440,Y(98)-16,'LIMIT 98 €',C.up,q,{al:'right',size:10.5});if(g.l(1,2600)>.6)dot(pts[6][0],Y(98),C.up,6,1);}
+  if(g.on(2)){const q=g.k(2);X.save();X.setLineDash([6,4]);X.strokeStyle=C.down;X.lineWidth=2;X.globalAlpha=q;X.beginPath();X.moveTo(40,Y(92));X.lineTo(440,Y(92));X.stroke();X.restore();pill(440,Y(92)+16,'STOP 92 €',C.down,q,{al:'right',size:10.5});if(g.l(2,2600)>.85)dot(pts[16][0]+8,Y(92),C.down,6,1);}
+  if(g.on(3))pill(VW/2,30,'ETF: MIT LIMIT KAUFEN',C.indigo,g.k(3),{size:11});
+ },
+ box:{was:'Ordertypen bestimmen, wie und zu welchem Preis eine Kauf- oder Verkaufsorder ausgeführt wird.',h2:'So geht’s',erkennen:['Market: sofort, Preis offen','Limit: fester Höchst-/Mindestpreis','Stop-Loss: Verkauf bei Unterschreiten'],bedeutung:'Limits schützen vor bösen Überraschungen bei starken Schwankungen oder großen Spannen zwischen Kauf- und Verkaufspreis.',tipp:'Sparpläne werden automatisch ausgeführt – dort brauchst du kein Limit.'}});
+
+L({id:'weltportfolio',cat:'praxis',g:'🌍',title:'Das Weltportfolio',sub:'Einfach und breit gestreut',
+ lead:'Mit einem oder zwei ETFs kannst du in fast alle großen Unternehmen der Welt investieren.',
+ steps:[['Variante 1: ein einziger ETF auf einen Welt-Index mit Industrie- und Schwellenländern (z. B. MSCI ACWI oder FTSE All-World).'],['Variante 2: zwei ETFs – etwa 70 % Industrieländer (MSCI World) und 30 % Schwellenländer (Emerging Markets).',3600],['Für weniger Schwankung kommt ein sicherer Teil dazu, z. B. Tagesgeld oder Anleihen.',3400],['Die Aufteilung zwischen Aktien und sicherem Teil hängt von deiner Risikobereitschaft und deinem Zeitraum ab.']],
+ draw(g){const pie=(cx,cy,R,seg,p)=>{let a0=-Math.PI/2;seg.forEach(([v,c,l])=>{const a1=a0+v/100*2*Math.PI*p;X.save();X.fillStyle=c;X.beginPath();X.moveTo(cx,cy);X.arc(cx,cy,R,a0,a1);X.closePath();X.fill();X.strokeStyle=C.bg;X.lineWidth=2;X.stroke();X.restore();a0=a0+v/100*2*Math.PI;});};
+  const p0=g.k(0,1100);pie(110,140,70,[[100,C.indigo]],p0);T(110,140,'1 ETF',{size:14,col:C.bg,a:p0});T(110,232,'ALL-WORLD',{size:11,col:C.indigo,a:p0});
+  const p1=g.k(1,1100);pie(340,140,70,[[70,C.purple],[30,C.orange]],p1);T(340,232,'70 / 30',{size:11,col:C.purple,a:p1});
+  if(p1>.8){T(366,166,'70 %',{size:12,col:C.bg});T(306,112,'30 %',{size:11,col:C.bg});}
+  pill(340,48,'WORLD + EMERGING MARKETS',C.purple,g.k(1,500,800),{size:10});
+  if(g.on(2)){const q=g.k(2);box(160,250,140,26,{fill:hexA(C.up,.16),stroke:C.up,r:8,a:q});T(230,263,'+ SICHERER TEIL',{size:11,col:C.up,a:q});}
+ },
+ box:{was:'Ein Weltportfolio streut dein Geld über Tausende Unternehmen weltweit – mit sehr wenigen, günstigen ETFs.',h2:'So geht’s',erkennen:['1 ETF: z. B. MSCI ACWI / FTSE All-World','2 ETFs: World + Emerging Markets','Plus sicherer Teil nach Bedarf'],bedeutung:'Einfacher geht Streuung kaum. Du brauchst keine Einzelaktien auszuwählen und musst wenig Zeit investieren.',tipp:'Nicht zu viele ETFs mischen – oft überschneiden sie sich stark und machen das Depot nur unübersichtlich.'}});
+
+L({id:'rebalancing',cat:'praxis',g:'⚖',title:'Rebalancing',sub:'Die Aufteilung wiederherstellen',
+ lead:'Mit der Zeit verschiebt sich die Aufteilung in deinem Depot. Rebalancing bringt sie zurück ins Gleichgewicht.',
+ steps:[['Du startest mit 80 % Aktien und 20 % Tagesgeld – zusammen 10.000 €.'],['Nach einem starken Börsenjahr sind die Aktien gestiegen: jetzt 88 % Aktien, nur noch 12 % Tagesgeld.',3400],['Dein Risiko ist dadurch größer geworden, als du es eigentlich wolltest.'],['Beim Rebalancing schichtest du um – zurück auf 80 / 20. Am einfachsten über die neuen Sparraten statt Verkäufe.',3600]],
+ draw(g){const bar=(x,a,lab,p)=>{const H=200,base=250;box(x,base-H,90,H*(1-a/100),{fill:C.up,r:6,a:p});box(x,base-H*a/100,90,H*a/100,{fill:C.indigo,r:6,a:p});T(x+45,base-H*a/100+16,`${a} %`,{size:13,col:C.bg,a:p});T(x+45,base-H+16,`${100-a} %`,{size:12,col:C.bg,a:p});T(x+45,265,lab,{size:10,col:C.mute,a:p});};
+  bar(40,80,'START',g.k(0));
+  if(g.on(1)){const a=Math.round(lerp(80,88,g.k(1,1400)));bar(185,a,'NACH BOOM',g.k(1,400));}
+  if(g.on(2))pill(300,30,'RISIKO ZU HOCH',C.down,g.k(2),{size:11});
+  if(g.on(3)){const q=g.k(3);arrow(282,150,322,150,C.gold,q,2.5);bar(330,80,'REBALANCED',q);}
+  box(40,14,10,10,{fill:C.indigo,r:2,a:g.k(0)});T(56,19,'AKTIEN',{size:10,col:C.mute,al:'left',a:g.k(0)});box(120,14,10,10,{fill:C.up,r:2,a:g.k(0)});T(136,19,'TAGESGELD',{size:10,col:C.mute,al:'left',a:g.k(0)});
+ },
+ box:{was:'Rebalancing heißt, die ursprünglich gewählte Aufteilung zwischen riskanten und sicheren Anlagen regelmäßig wiederherzustellen.',h2:'So geht’s',erkennen:['Einmal im Jahr prüfen','Erst handeln, wenn die Abweichung groß ist (z. B. 5 %-Punkte)','Möglichst über Sparraten umschichten'],bedeutung:'So bleibt dein Risiko so, wie du es geplant hast. Nebenbei verkaufst du automatisch etwas „teuer“ und kaufst „günstig“.',tipp:'Verkäufe können Steuern auslösen – deshalb ist Umschichten über neue Einzahlungen oft die bessere Wahl.'}});
+
+L({id:'psychologie',cat:'praxis',g:'🧠',title:'Gefühle an der Börse',sub:'Gier, Angst und FOMO',
+ lead:'Der größte Feind des Anlegers ist oft der eigene Kopf. Gefühle verleiten dazu, teuer zu kaufen und billig zu verkaufen.',
+ steps:[['Die Kurse steigen – Optimismus, dann Begeisterung. Alle reden über Aktien.',3400],['Ganz oben herrscht Euphorie und FOMO – die Angst, etwas zu verpassen. Viele kaufen jetzt besonders viel.',3400],['Dann fällt der Markt. Erst Hoffnung, dann Angst, schließlich Panik – viele verkaufen ganz unten.',3600],['Wer ruhig bleibt und seinen Plan durchzieht, schneidet langfristig meist besser ab.']],
+ draw(g){const Y=v=>250-v*1.9;const raw=[];for(let i=0;i<=60;i++){const t=i/60;let v;if(t<.4)v=30+t/.4*70;else if(t<.75)v=100-(t-.4)/.35*80;else v=20+(t-.75)/.25*50;v+=Math.sin(i*1.4)*3;raw.push(v);}const pts=raw.map((v,i)=>[40+i*6.5,Y(v)]);
+  const p=(24*g.l(0,2800)+0*1+21*g.l(2,3000)+15*g.l(3,2200))/60+(g.on(1)?0:0);path(pts,C.indigo,Math.max(p,g.on(1)&&!g.on(2)?24/60:0),2.6);
+  const lab=[[8,'OPTIMISMUS',C.up,0],[16,'BEGEISTERUNG',C.up,0],[24,'EUPHORIE / FOMO',C.gold,1],[32,'HOFFNUNG',C.orange,2],[40,'ANGST',C.down,2],[45,'PANIK',C.down,2],[54,'ERHOLUNG',C.up,3]];
+  lab.forEach(([i,s,c,st],k)=>{const q=g.k(st,500,st===0?k*900:st===2?(k-3)*800:0);if(q<=0)return;dot(pts[i][0],pts[i][1],c,4.5,q);const above=i<=24||i>50;pill(pts[i][0],pts[i][1]+(above?-18:18),s,c,q,{size:9.5});});
+  if(g.on(2)){const q=g.k(2,500,2400);pill(pts[45][0],pts[45][1]+42,'HIER VERKAUFEN VIELE',C.down,q,{size:9.5,solid:true});}
+  if(g.on(1)){const q=g.k(1,500,1200);pill(pts[24][0],pts[24][1]-42,'HIER KAUFEN VIELE',C.gold,q*(g.on(3)?.6:1),{size:9.5,solid:true});}
+ },
+ box:{was:'Die Börsenpsychologie beschreibt, wie Gefühle wie Gier und Angst Anlageentscheidungen beeinflussen. FOMO heißt „Fear of missing out“ – die Angst, etwas zu verpassen.',h2:'So erkennst du es',erkennen:['„Alle werden gerade reich“ → Vorsicht','Panik in den Nachrichten → nicht verkaufen','Schlaflose Nächte → Risiko zu hoch'],bedeutung:'Viele Privatanleger schneiden schlechter ab als ihre eigenen ETFs, weil sie zur falschen Zeit kaufen und verkaufen.',tipp:'Schreib dir deinen Anlageplan auf und schau in Krisen nicht täglich ins Depot. Ein Sparplan nimmt dir viele Entscheidungen ab.'},
+ qpic:{q:'Was zeigt dieses Bild?',ans:'Den Gefühlszyklus von Anlegern an der Börse',wrong:['Den Zinseszins-Effekt','Die Tilgung eines Kredits','Die Inflation eines Jahres']}});
+
+L({id:'betrug',cat:'praxis',g:'⚠',title:'Betrug erkennen',sub:'Warnsignale für Abzocke',
+ lead:'Unseriöse Angebote versprechen schnellen Reichtum. Mit ein paar Warnsignalen erkennst du die meisten Fallen.',
+ steps:[['Warnsignal 1: Garantierte hohe Renditen – „20 % im Monat, ohne Risiko“.'],['Warnsignal 2: Zeitdruck – „Nur heute!“, „Nur noch 3 Plätze frei!“'],['Warnsignal 3: Kontakt über WhatsApp, Telegram oder soziale Medien – oft mit gefälschten Promi-Werbungen.'],['Warnsignal 4: Unbekannte Plattform oder Auszahlung nur gegen weitere „Gebühren“.'],['Prüfen: Hat der Anbieter eine Erlaubnis der BaFin? Steht er auf einer Warnliste? Im Zweifel: Finger weg!']],
+ draw(g){const items=[['💰 GARANTIERT 20 %/MONAT',0],['⏰ NUR HEUTE!',1],['💬 WHATSAPP-GRUPPE',2],['🔒 AUSZAHLUNG GEGEN GEBÜHR',3]];
+  items.forEach(([s,st],i)=>{const p=g.k(st,700),y=34+i*48;box(30,y,300,38,{fill:hexA(C.down,.1),stroke:C.down,r:10,a:p});T(46,y+19,s,{size:12,col:C.text,al:'left',a:p});T(312,y+19,'⚠',{size:16,col:C.down,a:p});});
+  if(g.on(4)){const p=g.k(4);box(346,60,96,150,{fill:hexA(C.up,.12),stroke:C.up,r:12,a:p});T(394,96,'🛡',{size:30,a:p});T(394,140,'BaFin',{size:13,col:C.up,a:p});T(394,162,'PRÜFEN',{size:12,col:C.up,a:p});pill(VW/2,240+18,'IM ZWEIFEL: FINGER WEG',C.down,p,{size:12,solid:true});}
+ },
+ box:{was:'Anlagebetrug lockt mit unrealistischen Gewinnen. Oft sind die Plattformen gefälscht, das Geld wird nie investiert – und ist am Ende weg.',h2:'So erkennst du es',erkennen:['Garantierte hohe Rendite','Zeitdruck und Geheimhaltung','Kontakt über Messenger und Social Media','Auszahlung nur gegen weitere Zahlungen'],bedeutung:'Seriöse Anbieter versprechen keine sicheren hohen Gewinne. Was zu gut klingt, um wahr zu sein, ist es fast immer auch.',tipp:'Die BaFin bietet eine Unternehmensdatenbank und Warnungen vor unerlaubten Anbietern. Bei Betrug: sofort Bank informieren und Anzeige bei der Polizei erstatten.'}});
+
+/* ---------- Zusätzliche Rechner ---------- */
+const EXTRA_CALCS={
+ anleihe:{t:'Anleihen-Rechner',c:'a',f:[['nenn','NENNWERT (€)','1.000'],['kupon','KUPON (%)','2'],['jahre','RESTLAUFZEIT (JAHRE)','5'],['markt','MARKTZINS (%)','4']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=50))return null;const m=v.markt/100,c=v.nenn*v.kupon/100;let pv=0;for(let t=1;t<=n;t++)pv+=c/Math.pow(1+m,t);pv+=v.nenn/Math.pow(1+m,n);
+   return{res:[['FAIRER KURS',eur(pv,2),pv<v.nenn?'down':'up'],['IN % VOM NENNWERT',pc(pv/v.nenn*100,1)],['ZINSEN GESAMT',eur(c*n,2)],['ÄNDERUNG',(pv>=v.nenn?'+':'')+eur(pv-v.nenn,2)]],note:'Vereinfacht: ein Kupon pro Jahr, Abzinsung mit dem Marktzins. Ohne Stückzinsen und Gebühren.'};}},
+ rentenluecke:{t:'Rentenlücken-Rechner',c:'l',f:[['netto','NETTO HEUTE (€/MONAT)','2.800'],['bedarf','BEDARF IM ALTER (%)','80'],['rente','ERWARTETE RENTE NETTO (€)','1.400']],
+  run(v){const need=v.netto*v.bedarf/100,gap=Math.max(0,need-v.rente);
+   return{res:[['BEDARF IM ALTER',eur(need)],['RENTENLÜCKE',eur(gap)+' / Monat','down'],['PRO JAHR',eur(gap*12)],['NÖTIGES DEPOT (4 %)',eur(gap*12/.04),'gold']],note:'Nötiges Depot nach der 4-%-Regel (Jahreslücke × 25). Inflation bis zur Rente ist nicht eingerechnet – der Betrag ist in heutiger Kaufkraft.'};}},
+ entnahme:{t:'Entnahme-Rechner',c:'l',f:[['depot','DEPOT ZUM RENTENBEGINN (€)','500.000'],['monat','ENTNAHME (€/MONAT)','1.667'],['rend','RENDITE (%)','5'],['infl','INFLATION (%)','2']],
+  run(v){let d=v.depot,w=v.monat*12;const line=[d];let y=0;while(d>0&&y<60){d=d*(1+v.rend/100)-w;w*=1+v.infl/100;y++;line.push(Math.max(0,d));}
+   return{res:[['REICHT FÜR',d>0?'über 60 Jahre':y+' Jahre',d>0||y>=30?'up':'down'],['ENTNAHMEQUOTE',pc(v.monat*12/v.depot*100,2)],['ENTNAHME IN 20 J.',eur(v.monat*Math.pow(1+v.infl/100,20))+' / Monat']],chart:{line:line.slice(0,Math.min(line.length,61)),ll:'Depotwert'},note:'Vereinfacht mit gleichmäßiger Rendite. Echte Börsenjahre schwanken – schlechte Jahre zu Beginn sind besonders riskant.'};}},
+ tilgung:{t:'Tilgungsrechner',c:'k',f:[['summe','DARLEHEN (€)','300.000'],['zins','SOLLZINS (%)','3,5'],['tilg','ANFÄNGLICHE TILGUNG (%)','2'],['sonder','SONDERTILGUNG (€/JAHR)','0']],
+  run(v){if(!(v.summe>0)||!(v.tilg>0))return null;const rate=v.summe*(v.zins+v.tilg)/100/12,r=v.zins/100/12;let s=v.summe,m=0,zi=0;const line=[s];let r10=null;
+   while(s>0.005&&m<1200){const i=s*r;zi+=i;s=s+i-rate;m++;if(m%12===0){if(v.sonder>0)s-=Math.min(Math.max(s,0),v.sonder);line.push(Math.max(0,s));if(m===120)r10=Math.max(0,s);}}
+   if(s>0.005&&m>=1200)return{res:[['HINWEIS','Die Rate deckt die Zinsen nicht – bitte Tilgung erhöhen.','down']]};
+   return{res:[['MONATSRATE',eur(rate,2),'gold'],['LAUFZEIT','ca. '+de(m/12,1)+' Jahre'],['ZINSEN GESAMT',eur(zi),'down'],['RESTSCHULD NACH 10 J.',r10==null?'0 €':eur(r10)]],chart:{line:line.concat(line[line.length-1]>0?[0]:[]),ll:'Restschuld'},note:'Annuitätendarlehen mit monatlicher Rate und gleichbleibendem Zins über die ganze Laufzeit (vereinfacht).'};}}
+};
+const EXTRA_TQ=[
+ {q:'Du kaufst eine Anleihe über 1.000 € mit 3 % Kupon. Wie viel Zinsen bekommst du pro Jahr?',a:['30 €','3 €','300 €','103 €'],e:'1.000 € × 3 % = 30 € pro Jahr.',l:'anleihe'},
+ {q:'Die Marktzinsen steigen. Was passiert meist mit dem Kurs bestehender Anleihen?',a:['Er fällt','Er steigt','Er bleibt gleich','Er verdoppelt sich'],e:'Alte Anleihen mit niedrigerem Kupon werden weniger attraktiv – ihr Kurs sinkt.',l:'zinskurs'},
+ {q:'Welches Rating steht für die beste Bonität?',a:['AAA','BBB','D','CCC'],e:'AAA ist die Bestnote, D bedeutet Zahlungsausfall.',l:'rating'},
+ {q:'Warum bieten Ramschanleihen hohe Zinsen?',a:['Als Ausgleich für ein hohes Ausfallrisiko','Weil der Staat sie garantiert','Weil sie keine Laufzeit haben','Weil sie steuerfrei sind'],e:'Der höhere Zins ist eine Risikoprämie.',l:'rating'},
+ {q:'Wie hoch ist die gesetzliche Einlagensicherung in der EU?',a:['100.000 € pro Person und Bank','50.000 € pro Konto','1 Mio. € pro Bank','Unbegrenzt'],e:'Guthaben bis 100.000 € pro Kunde und Bank sind geschützt.',l:'einlagen'},
+ {q:'Was unterscheidet Festgeld von Tagesgeld?',a:['Feste Laufzeit und fester Zins','Es ist nicht verzinst','Es ist eine Aktie','Man kann jederzeit abheben'],e:'Festgeld ist für die Laufzeit gebunden, der Zins steht vorher fest.',l:'festgeld'},
+ {q:'Netto 3.000 €, Bedarf im Alter 80 %, Rente 1.500 €. Wie groß ist die Rentenlücke?',a:['900 €','1.500 €','600 €','2.400 €'],e:'80 % von 3.000 € = 2.400 €. 2.400 € − 1.500 € = 900 €.',l:'rentenluecke'},
+ {q:'Bis wann ist das Rentenniveau von 48 % gesetzlich gesichert?',a:['Bis 2031','Bis 2026','Für immer','Bis 2050'],e:'Das Rentenpaket sichert die Haltelinie von 48 % bis 2031.',l:'rentenluecke'},
+ {q:'Welche drei Säulen hat die Altersvorsorge?',a:['Gesetzlich, betrieblich, privat','Aktien, Anleihen, Gold','Lohn, Steuer, Rente','Bank, Börse, Versicherung'],e:'Gesetzliche Rente, Betriebsrente und private Vorsorge.',l:'saeulen'},
+ {q:'Was zahlt der Arbeitgeber bei der Entgeltumwandlung in der Regel dazu?',a:['15 %','50 %','0 %','100 %'],e:'Meist muss er 15 % zuschießen, weil er Sozialabgaben spart.',l:'bav'},
+ {q:'Was löst ab 2027 die Riester-Rente für neue Verträge ab?',a:['Das Altersvorsorgedepot','Die Lebensversicherung','Das Bausparen','Die Mütterrente'],e:'Ab 1. Januar 2027 startet das geförderte Altersvorsorgedepot.',l:'avdepot'},
+ {q:'Nach der 4-%-Regel: Wie viel darfst du aus 400.000 € im ersten Jahr entnehmen?',a:['16.000 €','4.000 €','40.000 €','1.600 €'],e:'4 % von 400.000 € = 16.000 €.',l:'entnahme'},
+ {q:'Du brauchst 12.000 € im Jahr aus dem Depot. Wie groß sollte es nach der 4-%-Regel sein?',a:['300.000 €','120.000 €','48.000 €','1.200.000 €'],e:'12.000 € × 25 = 300.000 €.',l:'entnahme'},
+ {q:'Wie hoch ist der Sparerpauschbetrag eines Kindes?',a:['1.000 €','0 €','500 €','2.000 €'],e:'Auch Kinder haben einen eigenen Sparerpauschbetrag von 1.000 €.',l:'kinderdepot'},
+ {q:'Welcher Zins macht Kreditangebote vergleichbar?',a:['Der effektive Jahreszins','Der Sollzins','Der Leitzins','Der Dispozins'],e:'Der Effektivzins enthält alle Pflichtkosten.',l:'effektivzins'},
+ {q:'Darlehen 200.000 €, Zins 3 %, Tilgung 2 %. Wie hoch ist die Monatsrate?',a:['833,33 €','500 €','1.000 €','666,67 €'],e:'200.000 € × 5 % ÷ 12 = 833,33 €.',l:'annuitaet'},
+ {q:'Was passiert beim Annuitätendarlehen mit dem Zinsanteil der Rate?',a:['Er sinkt mit der Zeit','Er steigt mit der Zeit','Er bleibt gleich','Er wird erst am Ende fällig'],e:'Die Restschuld sinkt, also auch die Zinsen – der Tilgungsanteil wächst.',l:'annuitaet'},
+ {q:'Was bewirkt eine höhere anfängliche Tilgung?',a:['Kürzere Laufzeit und weniger Zinsen','Niedrigere Rate','Höhere Gesamtzinsen','Gar nichts'],e:'Die Rate steigt, aber die Schuld ist viel schneller weg.',l:'tilgung'},
+ {q:'Wie viel Sondertilgung erlauben viele Banken pro Jahr kostenlos?',a:['5 % der Darlehenssumme','50 %','0,5 %','100 %'],e:'Üblich sind 5 % pro Jahr, wenn es im Vertrag vereinbart ist.',l:'sondertilgung'},
+ {q:'2.000 € Dispo zu 12 % für ein Jahr – wie viel Zinsen ungefähr?',a:['240 €','24 €','120 €','2.400 €'],e:'2.000 € × 12 % = 240 €.',l:'dispo'},
+ {q:'Wie kommst du kostenlos an deine Schufa-Daten?',a:['Über die kostenlose Datenkopie (Art. 15 DSGVO)','Nur mit einem Abo','Über die Hausbank','Gar nicht'],e:'Die Datenkopie ist kostenlos – ein Abo ist nicht nötig.',l:'schufa'},
+ {q:'Was ist eine ISIN?',a:['Die eindeutige Kennnummer eines Wertpapiers','Eine Gebühr','Ein Steuerformular','Ein Ordertyp'],e:'Mit der ISIN findest du genau das richtige Wertpapier.',l:'depoteroeffnen'},
+ {q:'Was macht eine Limit-Order beim Kauf?',a:['Sie kauft höchstens zu deinem festgelegten Preis','Sie kauft sofort zu jedem Preis','Sie verkauft bei Verlusten','Sie kauft nur am Monatsende'],e:'Das Limit ist der Höchstpreis, den du zahlen willst.',l:'ordertypen'},
+ {q:'Wozu dient ein Stop-Loss?',a:['Verluste begrenzen durch automatischen Verkauf','Gewinne verdoppeln','Steuern sparen','Dividenden erhöhen'],e:'Fällt der Kurs unter den Stop, wird automatisch verkauft.',l:'ordertypen'},
+ {q:'Welche Aufteilung ist ein klassisches Zwei-ETF-Weltportfolio?',a:['70 % World + 30 % Emerging Markets','50 % DAX + 50 % Gold','100 % Einzelaktien','90 % Tagesgeld + 10 % Krypto'],e:'Industrieländer und Schwellenländer etwa nach Börsenwert.',l:'weltportfolio'},
+ {q:'Aus 80/20 wurde nach einem Boom 88/12. Was macht Rebalancing?',a:['Zurück auf 80/20 umschichten','Alles in Aktien stecken','Alles verkaufen','Nichts tun'],e:'Rebalancing stellt die geplante Aufteilung wieder her.',l:'rebalancing'},
+ {q:'Was bedeutet FOMO?',a:['Die Angst, etwas zu verpassen','Ein ETF-Typ','Eine Steuerart','Ein Ordertyp'],e:'„Fear of missing out“ – verleitet zum Kauf zu hohen Preisen.',l:'psychologie'},
+ {q:'Jemand bietet per WhatsApp 15 % Gewinn pro Monat garantiert. Was tust du?',a:['Finger weg – typischer Betrug','Sofort investieren','Freunde einladen','Erst 1.000 € testen'],e:'Garantierte hohe Renditen + Messenger-Kontakt sind klare Warnsignale.',l:'betrug'}
+];
+
 /* ============ Symbole ============ */
 function catIcon(ck,s=58){const c=CATINFO[ck]?CATINFO[ck].hex:'#9aa6b6';const P={
  basis:`<rect x="10" y="30" width="36" height="7" rx="3" fill="${c}"/><rect x="12" y="22" width="36" height="7" rx="3" fill="${c}" opacity=".75"/><rect x="9" y="14" width="36" height="7" rx="3" fill="${c}" opacity=".5"/><circle cx="46" cy="12" r="8" fill="none" stroke="#f5c542" stroke-width="2.4"/><text x="46" y="16" font-size="10" text-anchor="middle" fill="#f5c542" font-family="monospace" font-weight="700">€</text>`,
@@ -659,6 +1010,10 @@ function catIcon(ck,s=58){const c=CATINFO[ck]?CATINFO[ck].hex:'#9aa6b6';const P=
  aktien:`<line x1="14" y1="10" x2="14" y2="44" stroke="#f0605d" stroke-width="2"/><rect x="9" y="18" width="10" height="16" rx="1.5" fill="#f0605d"/><line x1="30" y1="6" x2="30" y2="40" stroke="${c}" stroke-width="2"/><rect x="25" y="12" width="10" height="20" rx="1.5" fill="${c}"/><line x1="46" y1="4" x2="46" y2="30" stroke="${c}" stroke-width="2"/><rect x="41" y="8" width="10" height="16" rx="1.5" fill="${c}"/>`,
  etf:`<path d="M8 20 H50 L45 46 H13 Z" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><path d="M15 20 A14 14 0 0 1 43 20" fill="none" stroke="${c}" stroke-width="2.6"/>`+[[16,28,'#1fcf8f'],[25,30,'#4c9aff'],[34,28,'#f5c542'],[42,30,'#ff9f43'],[20,38,'#f0605d'],[30,39,c],[39,38,'#1fcf8f']].map(([x,y,f])=>`<circle cx="${x}" cy="${y}" r="4" fill="${f}"/>`).join(''),
  sparplan:`<rect x="6" y="10" width="38" height="34" rx="5" fill="none" stroke="${c}" stroke-width="2.4"/><line x1="6" y1="19" x2="44" y2="19" stroke="${c}" stroke-width="2.4"/><line x1="15" y1="6" x2="15" y2="13" stroke="${c}" stroke-width="2.4"/><line x1="35" y1="6" x2="35" y2="13" stroke="${c}" stroke-width="2.4"/>`+[0,1,2,3,4,5].map(i=>`<circle cx="${14+(i%3)*11}" cy="${27+Math.floor(i/3)*9}" r="3" fill="${c}"/>`).join('')+`<circle cx="47" cy="44" r="8" fill="#f5c542"/><text x="47" y="48" font-size="10" text-anchor="middle" fill="#1b1505" font-family="monospace" font-weight="800">€</text>`,
+ anleihen:`<rect x="8" y="8" width="34" height="42" rx="4" fill="none" stroke="${c}" stroke-width="2.4"/><line x1="14" y1="18" x2="36" y2="18" stroke="${c}" stroke-width="2"/><line x1="14" y1="26" x2="32" y2="26" stroke="${c}" stroke-width="2"/><line x1="14" y1="34" x2="28" y2="34" stroke="${c}" stroke-width="2"/><circle cx="44" cy="42" r="9" fill="#f5c542"/><text x="44" y="46" font-size="10" text-anchor="middle" fill="#1b1505" font-family="monospace" font-weight="800">%</text>`,
+ rente:`<rect x="8" y="44" width="42" height="5" rx="2" fill="${c}"/><rect x="12" y="20" width="7" height="24" fill="#4c9aff"/><rect x="25" y="20" width="7" height="24" fill="${c}"/><rect x="38" y="20" width="7" height="24" fill="#f5c542"/><path d="M6 18 L29 5 L52 18 Z" fill="${c}"/>`,
+ kredit:`<path d="M8 28 L29 10 L50 28" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><rect x="14" y="27" width="30" height="22" fill="none" stroke="${c}" stroke-width="2.6"/><rect x="25" y="35" width="8" height="14" fill="${c}"/><text x="46" y="16" font-size="12" text-anchor="middle" fill="${c}" font-family="monospace" font-weight="800">%</text>`,
+ praxis:`<circle cx="22" cy="26" r="14" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M14 30 L20 24 L25 28 L31 20" fill="none" stroke="${c}" stroke-width="2.4"/><line x1="32" y1="36" x2="46" y2="50" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`,
  rechner:`<rect x="12" y="4" width="34" height="46" rx="6" fill="none" stroke="#f5c542" stroke-width="2.4"/><rect x="17" y="9" width="24" height="10" rx="2" fill="#f5c542" opacity=".8"/>`+[0,1,2,3,4,5,6,7,8].map(i=>`<rect x="${17+(i%3)*8.5}" y="${23+Math.floor(i/3)*8.5}" width="6" height="6" rx="1.5" fill="${i===8?'#1fcf8f':'#9aa6b6'}"/>`).join('')};
  return `<svg width="${s}" height="${s}" viewBox="0 0 56 56">${P[ck]||''}</svg>`;}
 const glyph=(l,size=15)=>`<span style="font-family:var(--mono);font-weight:800;font-size:${l.g.length>3?11:size}px;color:${CATINFO[l.cat].acc}">${l.g}</span>`;
@@ -749,7 +1104,7 @@ function showHome(){
  current=null;P.L=null;P.cv=null;
  const tiles=Object.keys(CATS).map(ck=>{const ls=LESSONS.filter(l=>l.cat===ck),n=ls.length,sn=ls.filter(l=>seen[l.id]).length,ci=CATINFO[ck];
   return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
- const rech=`<button class="big" data-h="rechner" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi">${catIcon('rechner')}</div><h2>Rechner</h2><p>Zinseszins, Sparplan, Sparziel, Inflation, Realzins, Kosten, Dividende und Steuern – selbst ausprobieren.</p><div class="ft"><span>${Object.keys(CALCS).length} RECHNER</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
+ const rech=`<button class="big" data-h="rechner" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi">${catIcon('rechner')}</div><h2>Rechner</h2><p>Zinseszins, Sparplan, Sparziel, Inflation, Kosten, Steuern, Anleihen, Rentenlücke, Entnahme, Tilgung und mehr – selbst ausprobieren.</p><div class="ft"><span>${Object.keys(CALCS).length} RECHNER</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
  const quiz=`<button class="big" data-h="quiz" style="--acc:var(--text);--glow:rgba(127,139,156,.16)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
  view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>Geld verstehen</h1>
  <p class="lead">Jede Lektion ist ein kleines Video: Das Diagramm baut sich Schritt für Schritt auf und wird erklärt. Mit Rechnern zum Ausprobieren und einem Quiz.</p>
@@ -802,10 +1157,11 @@ const CALCS={
   run(v){const tf=v.art/100,stb=Math.max(0,v.gewinn*(1-tf)-v.frei),st=stb*.26375;
    return{res:[['STEUERPFLICHTIG',eur(stb,2)],['STEUER',eur(st,2),'down'],['NETTO',eur(v.gewinn-st,2),'up'],['EFFEKTIV',pc(v.gewinn>0?st/v.gewinn*100:0,2)]],note:'25 % Abgeltungsteuer + 5,5 % Soli = 26,375 %. Ohne Kirchensteuer. Keine Steuerberatung.'};}}
 };
-const CLS={y:'y',o:'o',r:'r',p:'p',g:'g',b:'b'};
+Object.assign(CALCS,EXTRA_CALCS);
+const CLS={y:'y',o:'o',r:'r',p:'p',g:'g',b:'b',a:'a',l:'l',k:'k'};
 function calcHTML(k){const c=CALCS[k];return `<div class="box calc ${CLS[c.c]}" data-calc="${k}"><h3>Rechner: ${c.t}</h3>
  <div class="grid">${c.f.map(([id,lab,val])=>Array.isArray(val)?`<div><label>${lab}</label><select data-f="${id}">${val.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select></div>`:`<div><label>${lab}</label><input data-f="${id}" inputmode="decimal" value="${val}"></div>`).join('')}</div>
- <div class="res"></div>${['zins','sparplan','ziel','inflation','kosten'].includes(k)?'<canvas></canvas>':''}<div class="note"></div></div>`;}
+ <div class="res"></div>${['zins','sparplan','ziel','inflation','kosten','entnahme','tilgung'].includes(k)?'<canvas></canvas>':''}<div class="note"></div></div>`;}
 function initCalc(k){const el=view.querySelector(`.calc[data-calc="${k}"]`);if(!el)return;el.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',()=>runCalc(el)));runCalc(el);}
 function runCalc(el){const c=CALCS[el.dataset.calc],v={};let ok=true;el.querySelectorAll('[data-f]').forEach(i=>{v[i.dataset.f]=num(i.value);if(!isFinite(v[i.dataset.f])||v[i.dataset.f]<0)ok=false;});
  const r=ok?c.run(v):null,out=el.querySelector('.res'),note=el.querySelector('.note'),cv=el.querySelector('canvas');
@@ -877,6 +1233,7 @@ const TQ=[
  {q:'Wie viel Prozent der Erträge sind bei Aktien-ETFs steuerfrei (Teilfreistellung)?',a:['30 %','15 %','50 %','0 %'],e:'Bei Aktienfonds (über 50 % Aktien) sind 30 % der Erträge steuerfrei.',l:'steuern'},
  {q:'500 € im Monat bei 7 %: Etwa wann ist die erste Million erreicht?',a:['Nach rund 37 Jahren','Nach rund 10 Jahren','Nach rund 20 Jahren','Nach rund 80 Jahren'],e:'Das zeigt die Lektion „Dein Sparziel“ – nach etwa 37 Jahren.',l:'ziel'}
 ];
+TQ.push(...EXTRA_TQ);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 let Q=null;
 function startQuiz(){
