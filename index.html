@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayazit Finanz-Schule</title>
+<meta name="theme-color" content="#05080d">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>(function(){var m='dark';try{m=localStorage.getItem('kompass-theme')||'dark'}catch(e){}var t=m==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);})();</script>
+<style>
+:root{
+  --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43;
+  --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000;
+  --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;flex:none}
+.brand{font-family:var(--mono);font-weight:800;letter-spacing:.06em;font-size:15px;line-height:1.15}
+.brand small{display:block;color:var(--mute);font-weight:500;font-size:11px;letter-spacing:.12em}
+.theme{margin-left:auto;display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex:none}
+.theme button{border:0;background:none;color:var(--mute);font-family:var(--mono);font-size:12px;font-weight:700;border-radius:999px;padding:6px 10px;min-height:32px}
+.theme button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold)}
+.theme button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.prog{margin-left:12px;font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right}
+.bar{width:110px;height:5px;background:var(--line);border-radius:9px;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--up),var(--gold));width:0;transition:width .4s}
+main{display:grid;grid-template-columns:330px 1fr;max-width:1280px;margin:0 auto;min-height:calc(100vh - 60px)}
+#nav{border-right:1px solid var(--line);padding:14px 12px 40px;height:calc(100vh - 60px);overflow:auto;position:sticky;top:60px}
+#search{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:15px;outline:none}
+#search:focus{border-color:var(--gold)}
+.cat{margin:18px 4px 8px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cat::after{content:"";flex:1;height:1px;background:var(--line)}
+.item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:9px 8px;margin:2px 0}
+.item:hover{background:var(--card)}
+.item.on{background:var(--card);border-color:var(--line2)}
+.item .ic{width:36px;height:36px;flex:none;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center}
+.item b{display:block;font-size:14.5px;font-weight:600}
+.item span{display:block;font-size:12px;color:var(--mute);margin-top:1px}
+.item .ok{margin-left:auto;color:var(--up);font-size:14px;opacity:0}
+.item.seen .ok{opacity:1}
+#view{padding:18px 22px 60px;min-width:0}
+.back{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:14px;margin-bottom:12px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
+h1{font-family:var(--mono);font-weight:800;letter-spacing:.03em;font-size:clamp(24px,4.4vw,36px);margin:4px 0 4px;text-transform:uppercase}
+.lead{color:var(--soft);margin:0 0 14px;font-size:15.5px;line-height:1.5;max-width:760px}
+.player{background:var(--chart);border:1px solid var(--line);border-radius:16px;overflow:hidden;max-width:700px}
+.cwrap{position:relative;cursor:pointer}
+canvas{display:block;width:100%}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .25s}
+.overlay.show{opacity:1}
+.overlay div{background:var(--veil);border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.06em}
+.caption{padding:12px 16px 4px;min-height:74px;border-top:1px solid var(--line)}
+.caption .no{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em}
+.caption p{margin:5px 0 0;font-size:15.5px;line-height:1.45;transition:opacity .25s}
+.ctrl{display:flex;align-items:center;gap:8px;padding:8px 12px 12px}
+.cb{background:var(--card);border:1px solid var(--line);border-radius:9px;min-width:40px;height:38px;padding:0 10px;font-family:var(--mono);font-size:14px;font-weight:700}
+.cb:hover{border-color:var(--line3)}
+#seek{flex:1;accent-color:var(--down);height:28px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 14px}
+.chip{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.chip.on{border-color:var(--gold);color:var(--gold)}
+.chip.done{color:var(--text)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:16px;max-width:900px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.box h3{margin:0 0 8px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.box p,.box li{font-size:14.5px;line-height:1.5;color:var(--soft2);margin:0}
+.box ul{margin:0;padding-left:18px}.box li{margin:3px 0}
+.box.g h3{color:var(--up)}.box.y h3{color:var(--gold)}.box.b h3{color:var(--blue)}.box.r h3{color:var(--down)}
+.pn{display:flex;justify-content:space-between;gap:10px;margin-top:18px;max-width:900px}
+.pn button{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;font-size:14px}
+.pn button:last-child{text-align:right}
+.pn small{display:block;color:var(--mute);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;margin-bottom:3px}
+.pn button:disabled{opacity:.35;cursor:default}
+.disc{color:var(--mute);font-size:12px;margin-top:22px;max-width:900px}
+.home{max-width:900px}
+.home .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:16px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:left}
+.tile:hover{border-color:var(--line3)}
+.tile b{display:block;font-family:var(--mono);font-size:14px;letter-spacing:.05em;text-transform:uppercase;margin:10px 0 4px}
+.tile span{color:var(--mute);font-size:13px}
+.quizbtn{background:var(--card);border-color:var(--line2) !important;margin-top:12px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:760px}
+.qbar{height:5px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}.qbar i{display:block;height:100%;background:var(--gold)}
+.qq{font-size:18px;font-weight:700;line-height:1.4;margin:0 0 12px}
+.qcv{border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;background:var(--chart)}
+.opts{display:grid;gap:8px}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;font-size:15.5px}
+.opt:hover:not(:disabled){border-color:var(--line3)}
+.opt.ok{border-color:var(--up);background:rgba(31,207,143,.12)}
+.opt.bad{border-color:var(--down);background:rgba(240,96,93,.12)}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.fb b{font-family:var(--mono)}
+.qnav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.qnav button{flex:1;min-width:140px;border-radius:12px;padding:12px;font-weight:700;border:1px solid var(--line);background:var(--panel)}
+.qnav .main{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.score{font-family:var(--mono);font-size:54px;font-weight:800;margin:6px 0}
+.calc{margin-top:12px;max-width:900px}
+.calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:8px 0 12px}
+.calc label{font-size:12px;color:var(--mute);font-family:var(--mono);letter-spacing:.06em}
+.calc input{width:100%;margin-top:4px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:16px}
+.calc .res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.calc .res div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px}
+.calc .res span{display:block;font-size:11.5px;color:var(--mute);font-family:var(--mono)}
+.calc .res b{font-family:var(--mono);font-size:18px}
+.bigtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:18px}
+.big{position:relative;overflow:hidden;text-align:left;background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;min-height:168px;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.big:hover{transform:translateY(-2px);border-color:var(--acc)}
+.big::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--acc)}
+.big::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%)}
+.big .bi{position:absolute;right:14px;top:16px;opacity:.95}
+.big h2{font-family:var(--mono);font-weight:800;font-size:clamp(17px,1.6vw + 6px,21px);letter-spacing:.03em;text-transform:uppercase;margin:0 70px 8px 0;line-height:1.2;color:var(--acc)}
+.big p{margin:0 0 14px;color:var(--soft);font-size:14.5px;line-height:1.45;max-width:85%}
+.big .ft{margin-top:auto;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.big .pb{flex:1;height:5px;background:var(--line);border-radius:9px;overflow:hidden}.big .pb i{display:block;height:100%;background:var(--acc)}
+.big .go{color:var(--acc);font-size:16px;font-weight:800}
+.lcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
+.lc{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.lc:hover{border-color:var(--acc)}
+.lc .ic{width:48px;height:48px;flex:none;border-radius:10px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center}
+.lc small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--mute)}
+.lc b{display:block;font-size:16px;margin:2px 0}
+.lc span{display:block;font-size:13px;color:var(--mute)}
+.lc .ok{margin-left:auto;color:var(--up);font-size:18px}
+.start{margin-top:16px;background:var(--up);color:var(--on-up);border:0;border-radius:12px;padding:13px 20px;font-weight:800;font-size:15px}
+@media (max-width:860px){
+  main{grid-template-columns:1fr}
+  #nav{position:static;height:auto;border-right:0;padding:12px 14px 40px}
+  #view{padding:14px 12px 50px}
+  #nav{display:none}
+  .bar{width:70px}
+  .theme button .tl{display:none}
+  .theme button{padding:6px 9px}
+  .brand small{display:none}
+}
+.calc canvas{width:100%;display:block;border-radius:10px;border:1px solid var(--line);background:var(--chart);margin-top:10px}
+.calc .note{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}
+.rsel{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px;max-width:900px}
+.rsel button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13.5px}
+.rsel button.on{border-color:var(--gold);color:var(--gold)}
+.calc select{width:100%;margin-top:4px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:16px}
+.calc.o h3{color:var(--orange)}.calc.p h3{color:var(--purple)}
+.big .bi svg{display:block}
+</style>
+</head>
+<body>
+<header>
+  <svg class="logo" viewBox="0 0 34 34"><rect width="34" height="34" rx="8" fill="#0f1620"/><rect x="6" y="21" width="5" height="7" rx="1" fill="#4c9aff"/><rect x="13" y="16" width="5" height="12" rx="1" fill="#1fcf8f"/><rect x="20" y="9" width="5" height="19" rx="1" fill="#f5c542"/><path d="M6 17 L13 12 L19 8 L28 4" stroke="#f5c542" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="28" cy="4.5" r="2" fill="#f5c542"/></svg>
+  <div class="brand" style="cursor:pointer" onclick="location.hash=''">FINANZ-SCHULE<small>BAYAZIT · GELD VERSTEHEN</small></div>
+  <div class="theme" role="group" aria-label="Darstellung"><button data-m="dark" title="Dunkel">☾<span class="tl"> Dunkel</span></button><button data-m="light" title="Hell">☀<span class="tl"> Hell</span></button><button data-m="auto" title="Automatisch">◐<span class="tl"> Auto</span></button></div>
+  <div class="prog"><span id="progtxt">0 / 0</span><div class="bar"><i id="progbar"></i></div></div>
+</header>
+<main>
+  <nav id="nav">
+    <input id="search" placeholder="Lektion suchen … z. B. Zinseszins" autocomplete="off">
+    <div id="list"></div>
+  </nav>
+  <section id="view"></section>
+</main>
+<script>
+"use strict";
+/* ============ Farben & Helfer ============ */
+const THEMES={
+ dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',up:'#1fcf8f',down:'#f0605d',text:'#e6ecf3',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',mute:'#7f8b9c',sep:'#1b2532',pillBg:'rgba(2,4,7,.9)',card:'#0f1620',soft:'#b9c4d2',line2:'#2a3647'},
+ light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',up:'#087f5b',down:'#c62f2c',text:'#131a26',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',mute:'#5d6879',sep:'#dde3ec',pillBg:'rgba(255,255,255,.95)',card:'#f1f4f8',soft:'#3d4757',line2:'#c9d2de'}};
+const C=Object.assign({},THEMES.dark);
+function setCanvasTheme(t){Object.assign(C,THEMES[t]||THEMES.dark);}
+const MONO="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace",SANS="'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+const lerp=(a,b,f)=>a+(b-a)*f;
+const de=(x,d=0)=>x.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur=(x,d=0)=>de(x,d)+' €';
+const pc=(x,d=1)=>de(x,d)+' %';
+function hexA(hex,a){if(hex.startsWith('rgba'))return hex;const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+const RM=r=>Math.pow(1+r,1/12)-1; /* Monatszins aus Jahreszins */
+function sparVerlauf(rate,jahre,r,start=0){const rm=RM(r),out=[start];let v=start;for(let m=1;m<=jahre*12;m++){v=v*(1+rm)+rate;if(m%12===0)out.push(v);}return out;}
+
+/* ============ Zeichen-Werkzeuge (virtuelle Fläche 460 × 290) ============ */
+const VW=460,VH=290;
+let X=null,QUIZ=false;
+function font(size,w=700,sans=false){return `${w} ${size}px ${sans?SANS:MONO}`;}
+function T(x,y,s,o={}){if((o.a??1)<=0)return;X.save();X.globalAlpha*=clamp(o.a??1);X.font=font(o.size||13,o.w||700,o.sans);X.fillStyle=o.col||C.text;X.textAlign=o.al||'center';X.textBaseline=o.bl||'middle';X.fillText(s,x,y);X.restore();}
+function tw(s,size=13,w=700,sans=false){X.save();X.font=font(size,w,sans);const v=X.measureText(s).width;X.restore();return v;}
+function rr(x,y,w,h,r){r=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);X.beginPath();X.moveTo(x+r,y);X.arcTo(x+w,y,x+w,y+h,r);X.arcTo(x+w,y+h,x,y+h,r);X.arcTo(x,y+h,x,y,r);X.arcTo(x,y,x+w,y,r);X.closePath();}
+function box(x,y,w,h,o={}){if((o.a??1)<=0||w<=0||h<=0)return;X.save();X.globalAlpha*=clamp(o.a??1);rr(x,y,w,h,o.r??5);if(o.fill){X.fillStyle=o.fill;X.fill();}if(o.stroke){X.strokeStyle=o.stroke;X.lineWidth=o.lw||1.5;if(o.dash)X.setLineDash(o.dash);X.stroke();}X.restore();}
+/* Pille: erklärende Beschriftung – im Quiz ausgeblendet */
+function pill(x,y,s,col,a=1,o={}){if(QUIZ&&!o.keep||a<=0)return;const size=o.size||12,w=tw(s,size)+16,h=size+11;let bx=o.al==='left'?x:o.al==='right'?x-w:x-w/2;bx=clamp(bx,4,VW-4-w);
+ X.save();X.globalAlpha*=clamp(a);rr(bx,y-h/2,w,h,h/2);X.fillStyle=o.solid?col:C.pillBg;X.fill();X.strokeStyle=col;X.lineWidth=1.4;X.stroke();
+ X.font=font(size);X.fillStyle=o.solid?C.bg:col;X.textAlign='center';X.textBaseline='middle';X.fillText(s,bx+w/2,y+.5);X.restore();}
+function head(x1,y1,x2,y2,col,s=8){const a=Math.atan2(y2-y1,x2-x1);X.fillStyle=col;X.beginPath();X.moveTo(x2,y2);X.lineTo(x2-s*Math.cos(a-.45),y2-s*Math.sin(a-.45));X.lineTo(x2-s*Math.cos(a+.45),y2-s*Math.sin(a+.45));X.closePath();X.fill();}
+function arrow(x1,y1,x2,y2,col,p=1,lw=2){if(p<=0)return;const x=lerp(x1,x2,p),y=lerp(y1,y2,p);X.save();X.strokeStyle=col;X.lineWidth=lw;X.lineCap='round';X.beginPath();X.moveTo(x1,y1);X.lineTo(x,y);X.stroke();if(p>.25)head(x1,y1,x,y,col);X.restore();}
+/* Linie über Punkte, p = gezeichneter Anteil */
+function path(pts,col,p=1,lw=2.5,dash){if(p<=0||pts.length<2)return;const n=(pts.length-1)*clamp(p),i=Math.floor(n),f=n-i;X.save();X.strokeStyle=col;X.lineWidth=lw;X.lineJoin='round';X.lineCap='round';if(dash)X.setLineDash(dash);X.beginPath();X.moveTo(pts[0][0],pts[0][1]);for(let k=1;k<=i;k++)X.lineTo(pts[k][0],pts[k][1]);if(i<pts.length-1)X.lineTo(lerp(pts[i][0],pts[i+1][0],f),lerp(pts[i][1],pts[i+1][1],f));X.stroke();X.restore();
+ return i<pts.length-1?[lerp(pts[i][0],pts[i+1][0],f),lerp(pts[i][1],pts[i+1][1],f)]:pts[pts.length-1];}
+function area(pts,y0,col,p=1,a=.18){if(p<=0)return;const n=Math.max(1,Math.round((pts.length-1)*clamp(p)));X.save();X.fillStyle=hexA(col,a);X.beginPath();X.moveTo(pts[0][0],y0);for(let k=0;k<=n;k++)X.lineTo(pts[k][0],pts[k][1]);X.lineTo(pts[n][0],y0);X.closePath();X.fill();X.restore();}
+function dot(x,y,col,r=4,a=1){if(a<=0)return;X.save();X.globalAlpha*=clamp(a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.strokeStyle=C.bg;X.lineWidth=1.5;X.stroke();X.restore();}
+function coin(x,y,r,col,a=1,lab){if(a<=0)return;X.save();X.globalAlpha*=clamp(a);X.fillStyle=col;X.beginPath();X.arc(x,y,r,0,7);X.fill();X.strokeStyle=hexA(col.startsWith('#')?col:'#f5c542',.5);X.lineWidth=1;X.beginPath();X.arc(x,y,r*.72,0,7);X.strokeStyle=C.bg;X.globalAlpha*=.35;X.stroke();X.restore();if(lab)T(x,y+.5,lab,{size:Math.max(8,r*.9),col:C.bg,a});}
+/* Diagrammfläche: gibt Y(v) zurück und zeichnet Raster + Beschriftung */
+function plot(o){const {x0=58,x1=448,y0=252,y1=46,max,min=0,ticks=4,lab=v=>de(v)}=o;const Y=v=>y0-(v-min)/(max-min)*(y0-y1);
+ X.save();X.lineWidth=1;for(let i=0;i<=ticks;i++){const v=min+(max-min)*i/ticks,y=Y(v);X.strokeStyle=i===0?C.line2:C.grid;X.beginPath();X.moveTo(x0,y);X.lineTo(x1,y);X.stroke();T(x0-6,y,lab(v),{size:9.5,col:C.mute,al:'right',w:500});}X.restore();return Y;}
+function xlabels(list){list.forEach(([x,s])=>T(x,265,s,{size:9.5,col:C.mute,w:500}));}
+function formula(y,s,col,a=1){if(a<=0)return;const w=Math.min(VW-16,tw(s,13)+26);box(VW/2-w/2,y-15,w,30,{fill:C.card,stroke:col,r:8,a});T(VW/2,y+.5,s,{size:13,col,a});}
+
+/* ============ Lektionen ============ */
+const CATS={basis:'Geld-Grundlagen',zins:'Zinseszins',inflation:'Inflation',aktien:'Aktien',etf:'ETFs',sparplan:'Sparpläne & Steuern'};
+const CATINFO={
+ basis:{d:'Sparen, Notgroschen, Rendite und Risiko – das Fundament für jede Geldanlage.',acc:'var(--blue)',hex:'#4c9aff'},
+ zins:{d:'Zinsen auf Zinsen: das wachsende Diagramm, die 72er-Regel und warum Zeit so wichtig ist.',acc:'var(--gold)',hex:'#f5c542'},
+ inflation:{d:'Warum dein Geld an Wert verliert, was der Realzins ist und wie du dich schützt.',acc:'var(--down)',hex:'#f0605d'},
+ aktien:{d:'Was eine Aktie ist, wie der Kurs entsteht, Dividende, KGV und Crashs.',acc:'var(--up)',hex:'#1fcf8f'},
+ etf:{d:'Ein Korb voller Aktien: Index, Streuung, Kosten und die Frage „ausschüttend oder thesaurierend?“.',acc:'var(--purple)',hex:'#b388ff'},
+ sparplan:{d:'Sparplan, Cost-Average-Effekt, Einmalanlage, Steuern und dein Sparziel.',acc:'var(--orange)',hex:'#ff9f43'}};
+const CATCOL=ck=>C[{basis:'blue',zins:'gold',inflation:'down',aktien:'up',etf:'purple',sparplan:'orange'}[ck]];
+const LESSONS=[];
+function L(o){LESSONS.push(o);}
+/* ---------- GELD-GRUNDLAGEN ---------- */
+L({id:'sparen',cat:'basis',g:'€',title:'Sparen oder investieren?',sub:'Warum Geld auf dem Konto nicht wächst',
+ lead:'Zwei Wege für dieselben 10.000 €: liegen lassen oder für dich arbeiten lassen.',
+ steps:[['Du hast 10.000 € gespart. Wohin damit?'],['Auf dem Sparkonto ohne Zinsen: Nach 10 Jahren sind es immer noch genau 10.000 €.'],['Investiert mit durchschnittlich 6 % pro Jahr wächst dasselbe Geld auf rund 17.908 €.'],['Der Unterschied: rund 7.908 € mehr – nur weil das Geld für dich gearbeitet hat.']],
+ draw(g){const Y=plot({max:20000,ticks:4,x0:70}),b=14;const xa=170,xb=330,w=90;
+  const h0=g.k(0);const va=10000*h0,vb=10000*h0+7908*g.k(2,1600);
+  box(xa-w/2,Y(va),w,Y(0)-Y(va),{fill:C.blue,r:4});box(xb-w/2,Y(vb),w,Y(0)-Y(vb),{fill:C.up,r:4});
+  if(vb>10000)box(xb-w/2,Y(vb),w,Y(10000)-Y(vb),{fill:C.gold,r:4,a:.95});
+  T(xa,Y(va)-b,eur(va),{a:h0});T(xb,Y(vb)-b,eur(vb),{a:h0,col:vb>10000?C.gold:C.text});
+  T(xa,267,'SPARKONTO 0 %',{size:10.5,col:C.mute});T(xb,267,'INVESTIERT 6 %',{size:10.5,col:C.mute});
+  pill(xa,Y(5000),'10 J. SPÄTER: GLEICH',C.blue,g.k(1),{size:11});
+  if(g.on(3)){const p=g.k(3);X.save();X.setLineDash([4,4]);X.strokeStyle=C.mute;X.globalAlpha=p;X.beginPath();X.moveTo(xa+w/2,Y(10000));X.lineTo(xb+w/2+12,Y(10000));X.stroke();X.restore();
+   arrow(xb+w/2+22,Y(10000),xb+w/2+22,Y(17908)+3,C.gold,p);pill(xb,Y(13950),'+7.908 €',C.gold,p);}
+ },
+ box:{was:'Sparen heißt: Geld zurücklegen. Investieren heißt: Geld so anlegen, dass es Erträge bringt – zum Beispiel Zinsen, Dividenden oder Kursgewinne.',h2:'So geht’s',erkennen:['Erst einen Notgroschen sparen','Was du länger nicht brauchst, investieren','Regelmäßig und langfristig denken'],bedeutung:'Geld, das nur liegt, wächst nicht – und verliert durch Inflation sogar an Wert. Investiertes Geld kann über die Jahre deutlich mehr werden.',tipp:'Die 6 % sind nur ein Beispiel. Erträge schwanken von Jahr zu Jahr – entscheidend ist der lange Zeitraum.'},
+ qpic:{q:'Was zeigt dieses Bild?',ans:'Sparen ohne Zinsen vs. investiertes Geld',wrong:['Zwei Kredite im Vergleich','Inflation in zwei Ländern','Steuern auf Zinsen']}});
+
+L({id:'notgroschen',cat:'basis',g:'🛡',title:'Der Notgroschen',sub:'Erst die Reserve, dann investieren',
+ lead:'Bevor du investierst, brauchst du ein Polster für Unvorhergesehenes – kaputtes Auto, Waschmaschine, Jobwechsel.',
+ steps:[['Rechne aus, was du im Monat zum Leben brauchst – zum Beispiel 2.000 €.'],['Lege mindestens 3 Monatsausgaben als Notgroschen zurück: 6.000 €.'],['Noch sicherer sind 6 Monatsausgaben: 12.000 €.'],['Parke ihn auf einem Tagesgeldkonto: sicher und jederzeit verfügbar.'],['Erst Geld, das darüber hinausgeht, wird langfristig angelegt.']],
+ draw(g){const x=60,w=130,h=27,base=258;
+  const n=1*g.k(0)+2*g.k(1,1400)+3*g.k(2,1600);
+  for(let i=0;i<6;i++){const f=clamp(n-i);if(f<=0)break;const y=base-(i+1)*(h+3);box(x,y+(1-f)*-30,w,h,{fill:i<3?C.blue:hexA(C.blue,.55),r:5,a:f});T(x+w/2,y+h/2+(1-f)*-30,`MONAT ${i+1} · 2.000 €`,{size:10.5,col:C.bg,a:f});}
+  const b3=base-3*(h+3),b6=base-6*(h+3);
+  pill(x+w+20,b3+44,'3 MONATE = 6.000 €',C.blue,g.k(1)*(g.s<2?1:.55),{al:'left'});
+  pill(x+w+20,b6+14,'6 MONATE = 12.000 €',C.gold,g.k(2),{al:'left'});
+  if(g.on(3)){const p=g.k(3);box(x-10,b6-12,w+20,base-b6+18,{stroke:C.up,lw:2,r:10,dash:[6,4],a:p});pill(x+w/2,base+14,'TAGESGELD',C.up,p,{size:11});}
+  if(g.on(4)){const p=g.k(4);arrow(x+w+18,170,330,170,C.up,p,2.5);box(338,145,108,50,{fill:hexA(C.up,.14),stroke:C.up,r:10,a:p});T(392,163,'ÜBERSCHUSS',{size:10.5,col:C.up,a:p});T(392,181,'INVESTIEREN',{size:11.5,col:C.up,a:p});}
+ },
+ box:{was:'Der Notgroschen ist eine Geldreserve für unerwartete Ausgaben. Er soll dich davor schützen, Anlagen im falschen Moment verkaufen oder einen Kredit aufnehmen zu müssen.',h2:'So geht’s',erkennen:['Monatliche Ausgaben ausrechnen','3–6 Monatsausgaben zurücklegen','Auf Tagesgeld oder Girokonto parken'],bedeutung:'Mit Notgroschen kannst du ruhig investieren – auch wenn die Börse mal fällt, musst du nicht verkaufen.',tipp:'Selbstständige oder Familien mit einem Verdiener planen eher mehr ein. Den Notgroschen nicht in Aktien anlegen!'},
+ qpic:{q:'Wofür steht dieser Stapel?',ans:'Den Notgroschen (3–6 Monatsausgaben)',wrong:['Eine Rentenversicherung','Einen Kredit über 12.000 €','Einen Aktien-Sparplan']}});
+
+L({id:'rendite',cat:'basis',g:'%',title:'Rendite berechnen',sub:'Wie viel hat mein Geld verdient?',
+ lead:'Die Rendite zeigt in Prozent, wie viel Gewinn (oder Verlust) eine Anlage gebracht hat.',
+ steps:[['Du legst 1.000 € an.'],['Ein Jahr später ist deine Anlage 1.080 € wert.'],['Dein Gewinn: 1.080 € − 1.000 € = 80 €.'],['Rendite = Gewinn ÷ Einsatz × 100 → 80 ÷ 1.000 × 100 = 8 %.']],
+ draw(g){const Y=plot({max:1200,ticks:4,x0:70,y1:70});const xa=170,xb=330,w=90;
+  const a=g.k(0),b=g.k(1);
+  box(xa-w/2,Y(1000*a),w,Y(0)-Y(1000*a),{fill:C.blue,r:4});T(xa,Y(1000*a)-13,eur(1000*a),{a});
+  const vb=1080*b;box(xb-w/2,Y(vb),w,Y(0)-Y(vb),{fill:C.blue,r:4,a:b});if(b>.95)box(xb-w/2,Y(1080),w,Y(1000)-Y(1080),{fill:C.up,r:2});T(xb,Y(vb)-13,eur(vb),{a:b});
+  T(xa,267,'HEUTE',{size:10.5,col:C.mute});T(xb,267,'IN 1 JAHR',{size:10.5,col:C.mute});
+  if(g.on(2)){const p=g.k(2);pill(xb+w/2+8,Y(1040),'+80 € GEWINN',C.up,p,{al:'left'});}
+  formula(30,'80 € ÷ 1.000 € × 100 = 8 %',C.gold,g.k(3));
+ },
+ box:{was:'Die Rendite ist der Ertrag einer Geldanlage im Verhältnis zum eingesetzten Geld – meist pro Jahr in Prozent angegeben.',h2:'So geht’s',erkennen:['Gewinn = Endwert − Einsatz','Rendite = Gewinn ÷ Einsatz × 100','Gebühren und Steuern abziehen'],bedeutung:'Mit der Rendite kannst du Anlagen fair vergleichen – egal ob du 100 € oder 100.000 € anlegst.',tipp:'Achte auf „Rendite pro Jahr“. 20 % in 10 Jahren sind nur rund 1,8 % pro Jahr!'}});
+
+L({id:'risiko',cat:'basis',g:'⚖',title:'Risiko und Rendite',sub:'Hohe Chance gibt es nie ohne Risiko',
+ lead:'Jede Geldanlage hat zwei Seiten: die Chance auf Ertrag und das Risiko von Schwankungen und Verlusten.',
+ steps:[['Nach rechts steigt das Risiko (wie stark der Wert schwankt), nach oben die mögliche Rendite.'],['Tagesgeld und Anleihen: wenig Schwankung, aber auch wenig Ertrag.'],['Ein weltweiter Aktien-ETF: mehr Schwankung, langfristig aber deutlich mehr Rendite.'],['Einzelaktien und Kryptowährungen: hohe Chancen, aber auch sehr starke Verluste sind möglich.'],['Merke: Hohe Rendite ohne Risiko gibt es nicht. Bei solchen Versprechen: Finger weg!']],
+ draw(g){const x0=58,x1=448,y0=252,y1=40;X.save();X.strokeStyle=C.line2;X.lineWidth=1.5;X.beginPath();X.moveTo(x0,y1);X.lineTo(x0,y0);X.lineTo(x1,y0);X.stroke();X.restore();
+  head(x0,y0,x1+6,y0,C.line2);head(x0,y0,x0,y1-6,C.line2);
+  T(x1,266,'RISIKO →',{size:10.5,col:C.mute,al:'right'});T(x0+6,y1+2,'↑ RENDITE',{size:10.5,col:C.mute,al:'left'});
+  if(g.on(4)){const p=g.k(4);X.save();X.globalAlpha=.25*p;X.strokeStyle=C.gold;X.lineWidth=16;X.lineCap='round';X.beginPath();X.moveTo(90,236);X.lineTo(lerp(90,420,p),lerp(236,52,p));X.stroke();X.restore();pill(330,226,'MEHR CHANCE = MEHR RISIKO',C.gold,p);}
+  const pts=[[100,228,'Tagesgeld',C.blue,1],[165,200,'Anleihen',C.blue,1],[260,152,'Aktien-ETF Welt',C.up,2],[335,104,'Einzelaktie',C.orange,3],[408,62,'Krypto',C.down,3]];
+  pts.forEach(([x,y,n,c,st])=>{const p=g.k(st,700);dot(x,y,c,7,p);T(st===3&&x>400?x-14:x+13,y,n,{size:12,al:st===3&&x>400?'right':'left',a:p,col:c});});
+ },
+ box:{was:'Risiko bedeutet bei Geldanlagen vor allem Schwankung: Wie stark und wie lange kann der Wert fallen? Rendite ist der Ertrag, den du dafür bekommst.',h2:'So erkennst du es',erkennen:['Starke Kursschwankungen = höheres Risiko','Garantiezins = wenig Risiko, wenig Ertrag','„Sicher und 20 % pro Jahr“ = Warnsignal'],bedeutung:'Je mehr Rendite du willst, desto mehr Schwankungen musst du aushalten. Wichtig ist, dass das Risiko zu dir und deinem Zeitraum passt.',tipp:'Geld, das du in 1–3 Jahren brauchst, gehört nicht in schwankende Anlagen.'},
+ qpic:{q:'Welcher Zusammenhang ist hier dargestellt?',ans:'Mehr Rendite-Chance bedeutet mehr Risiko',wrong:['Mehr Risiko bedeutet immer mehr Gewinn','Die Kosten verschiedener Banken','Die Inflation der letzten Jahre']}});
+
+L({id:'dreieck',cat:'basis',g:'△',title:'Das magische Dreieck',sub:'Sicherheit, Verfügbarkeit, Rendite',
+ lead:'Jede Geldanlage wird an drei Zielen gemessen – aber keine erfüllt alle drei perfekt.',
+ steps:[['Sicherheit: Wie sicher ist mein Geld vor Verlusten?'],['Liquidität: Wie schnell komme ich an mein Geld?'],['Rendite: Wie viel Ertrag bringt die Anlage?'],['Tagesgeld ist sicher und verfügbar, bringt aber wenig. Ein Aktien-ETF bringt mehr und ist täglich handelbar, schwankt aber.'],['Eine Immobilie kann sicher und rentabel sein – aber du kommst nicht schnell an das Geld. Ein Ziel bleibt immer auf der Strecke.']],
+ draw(g){const A=[230,46],B=[78,240],Cc=[382,240];
+  const p=g.k(0,1500);path([A,B,Cc,A],C.line2,p,2);
+  const cn=[[A,'SICHERHEIT',C.blue,0,0,-1],[B,'LIQUIDITÄT',C.up,1,0,1],[Cc,'RENDITE',C.gold,2,0,1]];
+  cn.forEach(([P,n,c,st,dx,dy])=>{const q=g.k(st,700);dot(P[0],P[1],c,8,q);T(P[0],P[1]+dy*22-(dy<0?0:0),n,{size:13,col:c,a:q});});
+  const ex=[[148,154,'Tagesgeld',C.blue,3],[316,176,'Aktien-ETF',C.gold,3],[262,200,'',C.up,9],[305,142,'Immobilie',C.orange,4]];
+  ex.forEach(([x,y,n,c,st])=>{if(!n)return;const q=g.k(st,700);box(x-tw(n,11)/2-8,y-11,tw(n,11)+16,22,{fill:hexA(c,.16),stroke:c,r:11,a:q});T(x,y,n,{size:11,col:c,a:q});});
+  if(g.on(3)){const q=g.k(3,900);pill(VW/2,270,'',C.mute,0);}
+ },
+ box:{was:'Das magische Dreieck der Geldanlage beschreibt drei Ziele: Sicherheit, Liquidität (Verfügbarkeit) und Rendite. Sie stehen in Konkurrenz zueinander.',h2:'So geht’s',erkennen:['Notgroschen: Sicherheit + Liquidität','Altersvorsorge: Rendite wichtiger','Fürs Haus: Sicherheit + Rendite'],bedeutung:'Es gibt nicht „die beste“ Anlage – nur die passende für dein Ziel. Deshalb teilt man sein Geld oft auf mehrere Töpfe auf.',tipp:'Frag dich bei jeder Anlage: Welches der drei Ziele gebe ich hier auf?'},
+ qpic:{q:'Wie heißt dieses Modell?',ans:'Magisches Dreieck der Geldanlage',wrong:['Börsen-Pyramide','Zinseszins-Dreieck','Dow-Theorie']}});
+
+/* ---------- ZINSESZINS ---------- */
+L({id:'zins',cat:'zins',g:'+5',title:'Einfacher Zins',sub:'Jedes Jahr der gleiche Betrag',
+ lead:'Beim einfachen Zins bekommst du jedes Jahr Zinsen nur auf den Startbetrag – der Zuwachs bleibt immer gleich.',
+ steps:[['Du legst 1.000 € zu 5 % Zinsen pro Jahr an.'],['Jedes Jahr gibt es 50 € Zinsen – immer nur vom Startbetrag.'],['Die Zinsen werden ausgezahlt, nicht wieder angelegt. Der Zuwachs bleibt jedes Jahr gleich.'],['Nach 10 Jahren: 1.000 € + 10 × 50 € = 1.500 €. Die Spitzen bilden eine gerade Linie.']],
+ draw(g){const Y=plot({max:1600,ticks:4});const n=3*g.l(1,1500)+7*g.l(2,3000),bw=24;
+  for(let i=0;i<=10;i++){const f=i===0?g.k(0):clamp(n+1-i);if(f<=0)break;const x=74+i*36.5;box(x-bw/2,Y(1000*f),bw,Y(0)-Y(1000*f),{fill:C.blue,r:3});
+   for(let j=0;j<i;j++)box(x-bw/2,Y(1000+(j+1)*50*f),bw,Y(0)-Y(50*f)-1.5,{fill:C.gold,r:1.5,a:f});}
+  xlabels([...Array(11)].map((_,i)=>[74+i*36.5,i?String(i):'J0']));
+  if(g.on(3)){const p=g.k(3);path([[74,Y(1000)],[74+365,Y(1500)]],C.mute,p,2,[5,4]);pill(74+365,Y(1500)-22,'1.500 €',C.gold,p,{al:'right'});}
+  pill(150,40,'+50 € PRO JAHR',C.gold,g.k(1),{});
+ },
+ box:{was:'Beim einfachen Zins werden die Zinsen immer nur auf den ursprünglichen Betrag berechnet. Ausgezahlte Zinsen verdienen selbst keine Zinsen.',h2:'So geht’s',erkennen:['Zinsen = Betrag × Zinssatz × Jahre','Zuwachs jedes Jahr gleich','Grafik: gerade Linie'],bedeutung:'Das Vermögen wächst linear – gleichmäßig, aber langsam. Das ist der Vergleichsmaßstab für den Zinseszins.',tipp:'Rechenbeispiel: 2.000 € × 3 % × 4 Jahre = 240 € Zinsen.'}});
+
+L({id:'zinseszins',cat:'zins',g:'×',title:'Der Zinseszins',sub:'Das wachsende Diagramm',calc:'zins',
+ lead:'Werden die Zinsen wieder angelegt, verdienen sie selbst Zinsen. So wächst dein Geld immer schneller – wie ein Schneeball.',
+ steps:[['Startkapital 10.000 €, 7 % Zinsen pro Jahr. Die Zinsen bleiben angelegt.',2600],['Nach 10 Jahren: 19.672 €. Die Zinsen bringen jetzt selbst Zinsen.',3600],['Nach 20 Jahren: 38.697 €. Die goldenen Balken (Zinsen) wachsen immer schneller.',3600],['Nach 30 Jahren: 76.123 € – davon 66.123 € nur Zinsen!',3600],['Zum Vergleich: Ohne Zinseszins wären es nur 31.000 € (gestrichelte Linie). Das ist die Kraft des Zinseszinses.',3800]],
+ draw(g){const Y=plot({max:80000,ticks:4,y1:50});const yrs=g.k(0,600)*0+10*g.l(1,2800)+10*g.l(2,2800)+10*g.l(3,2800),bw=9.2,X0=66,dx=12.6;
+  const v=n=>10000*Math.pow(1.07,n);
+  for(let i=0;i<=30;i++){const f=i===0?g.k(0,600):clamp(yrs-i+1);if(f<=0)break;const x=X0+i*dx,val=10000+(v(i)-10000)*f;
+   box(x-bw/2,Y(10000*(i===0?f:1)),bw,Y(0)-Y(10000*(i===0?f:1)),{fill:C.blue,r:2});if(i>0)box(x-bw/2,Y(val),bw,Y(10000)-Y(val),{fill:C.gold,r:2});}
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30 J.']]);
+  const cy=Math.min(30,Math.floor(yrs)),cv=yrs>=30?v(30):10000+(v(Math.floor(yrs))-10000);
+  box(VW-170,9,162,24,{fill:C.card,stroke:C.line2,r:6});T(VW-89,21.5,`JAHR ${cy} · ${eur(yrs<1?10000:v(cy))}`,{size:11.5,col:C.gold});
+  box(64,15,9,9,{fill:C.blue,r:2});T(78,20,'EINGEZAHLT',{size:9.5,col:C.mute,al:'left'});box(160,15,9,9,{fill:C.gold,r:2});T(174,20,'ZINSEN',{size:9.5,col:C.mute,al:'left'});
+  pill(X0+10*dx,Y(v(10))-22,'19.672 €',C.gold,g.k(1,600,2900)*(g.s===1?1:0));
+  pill(X0+20*dx,Y(v(20))-22,'38.697 €',C.gold,g.k(2,600,2900)*(g.s===2?1:0));
+  pill(X0+30*dx-8,Y(v(30))+18,'76.123 €',C.gold,g.k(3,600,2900),{al:'right'});
+  if(g.on(4)){const p=g.k(4,1400);path([[X0,Y(10000)],[X0+30*dx,Y(31000)]],C.text,p,2.2,[6,5]);pill(X0+30*dx,Y(31000)+20,'OHNE ZINSESZINS: 31.000 €',C.text,g.k(4,500,1300),{al:'right'});}
+ },
+ box:{was:'Zinseszins bedeutet: Du bekommst Zinsen nicht nur auf dein eingezahltes Geld, sondern auch auf die Zinsen der Vorjahre.',h2:'So geht’s',erkennen:['Endwert = Start × (1 + Zins)^Jahre','Zinsen nicht abheben, sondern anlegen','Grafik: Kurve wird immer steiler'],bedeutung:'Am Anfang wirkt der Effekt klein, nach 20–30 Jahren wird er riesig. Deshalb sind Zeit und Geduld beim Vermögensaufbau so wichtig.',tipp:'Probier den Rechner unten aus: Ändere nur die Jahre von 30 auf 40 – und staune.'},
+ qpic:{q:'Was zeigt dieses wachsende Diagramm?',ans:'Den Zinseszins-Effekt',wrong:['Einfachen Zins','Kaufkraftverlust durch Inflation','Den Cost-Average-Effekt']}});
+
+L({id:'regel72',cat:'zins',g:'72',title:'Die 72er-Regel',sub:'Wann verdoppelt sich mein Geld?',calc:'regel72',
+ lead:'Mit einer einfachen Faustregel rechnest du im Kopf aus, wie lange es dauert, bis sich dein Geld verdoppelt.',
+ steps:[['Die Regel: 72 geteilt durch den Zinssatz = Jahre bis zur Verdopplung.'],['Bei 8 % Rendite: 72 ÷ 8 = 9 Jahre. Aus 10.000 € werden 20.000 €.',3200],['Nach 18 Jahren hat es sich noch einmal verdoppelt: 40.000 €.',3200],['Nach 27 Jahren: 80.000 € – das Achtfache!',3200],['Bei 4 % dauert es doppelt so lange: 72 ÷ 4 = 18 Jahre für eine Verdopplung.',3200]],
+ draw(g){const Y=plot({max:90000,ticks:3,y1:62,lab:v=>v?de(v/1000)+' T€':'0'});const X0=66,dx=(448-66)/27,P=(r,n)=>[X0+n*dx,Y(10000*Math.pow(1+r,n))];
+  formula(26,'72 ÷ ZINSSATZ = JAHRE',C.gold,g.k(0));
+  const yr=9*g.l(1,2200)+9*g.l(2,2200)+9*g.l(3,2200);const pts=[...Array(28)].map((_,n)=>P(.08,n));
+  if(yr>0){area(pts,Y(0),C.gold,yr/27,.12);path(pts,C.gold,yr/27,2.8);}
+  [[9,'×2',1],[18,'×4',2],[27,'×8',3]].forEach(([n,s,st])=>{const p=g.k(st,500,2200);if(p<=0)return;const [x,y]=P(.08,n);X.save();X.setLineDash([3,4]);X.strokeStyle=C.mute;X.globalAlpha=p;X.beginPath();X.moveTo(x,y);X.lineTo(x,Y(0));X.stroke();X.restore();dot(x,y,C.gold,5,p);pill(x-6,y-18,`${s} · ${eur(10000*2**st)}`,C.gold,p,{al:'right',size:11});});
+  if(g.on(4)){const p=g.k(4,2000);path([...Array(28)].map((_,n)=>P(.04,n)),C.blue,p,2.4,[6,4]);pill(X0+22*dx,P(.04,22)[1]+20,'4 %: ×2 NACH 18 J.',C.blue,g.k(4,500,1600));}
+  xlabels([[X0,'0'],[X0+9*dx,'9'],[X0+18*dx,'18'],[X0+27*dx,'27 J.']]);
+ },
+ box:{was:'Die 72er-Regel ist eine Faustformel: Teilst du 72 durch den jährlichen Zinssatz, erhältst du ungefähr die Jahre, bis sich dein Geld verdoppelt.',h2:'So geht’s',erkennen:['6 % → 72 ÷ 6 = 12 Jahre','9 % → 72 ÷ 9 = 8 Jahre','Auch für Inflation: Halbierung der Kaufkraft'],bedeutung:'Du siehst sofort, wie stark der Zinssatz wirkt: Doppelt so viel Rendite heißt etwa halb so lange warten.',tipp:'Umgekehrt: Bei 3 % Inflation halbiert sich die Kaufkraft deines Bargelds in etwa 24 Jahren.'}});
+
+L({id:'frueh',cat:'zins',g:'⏱',title:'Früh anfangen',sub:'Zeit schlägt Betrag',
+ lead:'Anna und Ben sparen beide 100 € im Monat – Anna nur 10 Jahre, Ben ganze 30 Jahre. Wer hat mit 65 mehr?',
+ steps:[['Anna spart ab 25 jeden Monat 100 € – aber nur 10 Jahre lang. Dann hört sie auf.',3200],['Ihr Geld bleibt angelegt und wächst mit 7 % pro Jahr weiter – bis sie 65 ist.',3400],['Ben fängt erst mit 35 an und spart 30 Jahre lang 100 € im Monat.',3400],['Mit 65: Anna hat nur 12.000 € eingezahlt und rund 130.209 €. Ben hat 36.000 € eingezahlt und rund 116.945 €.',4200],['Zeit schlägt Betrag: Wer früh anfängt, lässt den Zinseszins viel länger für sich arbeiten.']],
+ draw(g){const Y=plot({max:140000,ticks:4,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(448-66)/40;
+  const anna=[...sparVerlauf(100,10,.07)];for(let j=1;j<=30;j++)anna.push(anna[10]*Math.pow(1.07,j));
+  const ben=sparVerlauf(100,30,.07);
+  const A=anna.map((v,i)=>[X0+i*dx,Y(v)]),B=ben.map((v,i)=>[X0+(i+10)*dx,Y(v)]);
+  const pa=(10*g.l(0,2400)+30*g.l(1,2800))/40;area(A,Y(0),C.gold,pa,.12);path(A,C.gold,pa,2.8);
+  const pb=g.l(2,2800);path(B,C.blue,pb,2.8);
+  T(X0+4,Y(anna[10])-14,'ANNA',{size:11,col:C.gold,al:'left',a:g.k(0)});T(X0+12*dx,Y(0)-12,'BEN',{size:11,col:C.blue,al:'left',a:g.k(2)});
+  if(g.on(0)){X.save();X.fillStyle=hexA(C.gold,.12*g.k(0));X.fillRect(X0,46,10*dx,Y(0)-46);X.restore();T(X0+5*dx,58,'ANNA SPART',{size:9.5,col:C.gold,a:g.k(0)*(g.s<2?1:.5)});}
+  if(g.on(2)){X.save();X.fillStyle=hexA(C.blue,.08*g.k(2));X.fillRect(X0+10*dx,46,30*dx,Y(0)-46);X.restore();T(X0+25*dx,58,'BEN SPART',{size:9.5,col:C.blue,a:g.k(2)*(g.s<3?1:.5)});}
+  pill(448,Y(anna[40])-16,'ANNA 130.209 €',C.gold,g.k(3),{al:'right'});pill(448,Y(ben[30])+20,'BEN 116.945 €',C.blue,g.k(3,700,500),{al:'right'});
+  xlabels([[X0,'25'],[X0+10*dx,'35'],[X0+20*dx,'45'],[X0+30*dx,'55'],[X0+40*dx,'65 J.']]);
+ },
+ box:{was:'Je früher du anfängst, desto mehr Jahre hat der Zinseszins Zeit zu wirken. Die ersten Jahre zählen am meisten, weil das Geld dort am längsten wächst.',h2:'So geht’s',erkennen:['So früh wie möglich starten','Lieber klein anfangen als gar nicht','Später den Betrag erhöhen'],bedeutung:'Wer zehn Jahre wartet, muss später ein Vielfaches einzahlen, um das gleiche Ergebnis zu erreichen.',tipp:'Für Kinder schon früh einen kleinen ETF-Sparplan anlegen – 25 € im Monat über 18 Jahre machen einen großen Unterschied.'},
+ qpic:{q:'Was zeigt dieses Diagramm?',ans:'Früh anfangen lohnt sich mehr als lange sparen',wrong:['Inflation frisst Ersparnisse','Ein Aktien-Crash','Zwei verschiedene Kredite']}});
+
+L({id:'zinssatz',cat:'zins',g:'2·5·8',title:'Der Zinssatz macht’s',sub:'2 %, 5 % oder 8 % – riesiger Unterschied',
+ lead:'Ein paar Prozentpunkte klingen nach wenig. Über 30 Jahre machen sie aus dem gleichen Startgeld völlig andere Beträge.',
+ steps:[['Drei Mal 10.000 € – angelegt für 30 Jahre, nur der Zinssatz ist unterschiedlich.'],['Mit 2 % pro Jahr: am Ende 18.114 €.'],['Mit 5 % pro Jahr: am Ende 43.219 €.'],['Mit 8 % pro Jahr: am Ende 100.627 € – das Zehnfache!'],['Von 5 % auf 8 %: Mehr als doppelt so viel Geld am Ende. Kosten und Rendite sind also extrem wichtig.']],
+ draw(g){const Y=plot({max:110000,ticks:4,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(430-66)/30;
+  dot(X0,Y(10000),C.text,4,g.k(0));T(X0+8,Y(10000)+14,'10.000 €',{size:10,col:C.mute,al:'left',a:g.k(0)});
+  [[.02,C.blue,1,'2 %: 18.114 €'],[.05,C.up,2,'5 %: 43.219 €'],[.08,C.gold,3,'8 %: 100.627 €']].forEach(([r,c,st,lab])=>{const pts=[...Array(31)].map((_,n)=>[X0+n*dx,Y(10000*Math.pow(1+r,n))]);const p=g.l(st,2200);path(pts,c,p,2.8);pill(448,pts[30][1]-(st===3?-6:16),lab,c,g.k(st,500,2000),{al:'right',size:11});});
+  if(g.on(4)){const p=g.k(4);arrow(300,Y(37000),300,Y(76000),C.text,p,2);pill(300,Y(84000),'MEHR ALS DOPPELT',C.text,p,{size:11});}
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30 J.']]);
+ },
+ box:{was:'Der Zinssatz (bzw. die Rendite pro Jahr) bestimmt, wie steil die Zinseszins-Kurve ansteigt. Kleine Unterschiede wirken über lange Zeit enorm.',h2:'So geht’s',erkennen:['Rendite vergleichen – nach Kosten','Langer Zeitraum verstärkt Unterschiede','Auch 1 % mehr Kosten kostet viel'],bedeutung:'Für den Vermögensaufbau zählen drei Dinge: Betrag, Zeit und Rendite. Die Rendite wirkt dabei wie ein Hebel.',tipp:'Höhere Rendite heißt meist höheres Risiko. Vergleiche daher Anlagen mit ähnlichem Risiko.'}});
+
+/* ---------- INFLATION ---------- */
+L({id:'inflation',cat:'inflation',g:'↗€',title:'Was ist Inflation?',sub:'Wenn alles teurer wird',
+ lead:'Inflation heißt: Die Preise für Waren und Dienstleistungen steigen im Durchschnitt. Für dasselbe Geld bekommst du weniger.',
+ steps:[['Dein Einkaufskorb kostet heute 100 €.'],['Bei 2 % Inflation kostet derselbe Einkauf nach einem Jahr 102 €.'],['Nach 10 Jahren sind es schon rund 121,90 € – für genau dieselben Sachen.',3400],['Dein Geld wird nicht weniger – aber du kannst weniger dafür kaufen.'],['Die Europäische Zentralbank (EZB) strebt rund 2 % Inflation pro Jahr an – das gilt als gesund.']],
+ draw(g){/* Korb */const bx=34,by=112,p0=g.k(0);
+  X.save();X.globalAlpha=p0;X.strokeStyle=C.down;X.lineWidth=3;X.lineJoin='round';X.beginPath();X.moveTo(bx,by);X.lineTo(bx+120,by);X.lineTo(bx+104,by+70);X.lineTo(bx+16,by+70);X.closePath();X.stroke();X.beginPath();X.arc(bx+60,by,42,Math.PI,0);X.stroke();
+  for(let i=1;i<4;i++){X.beginPath();X.moveTo(bx+i*30,by+8);X.lineTo(bx+i*28+6,by+62);X.globalAlpha=p0*.5;X.stroke();}X.restore();
+  coin(bx+30,by-12,11,C.gold,p0);coin(bx+58,by-18,13,C.up,p0);coin(bx+88,by-10,10,C.orange,p0);
+  const yr=1*g.l(1,1200)+9*g.l(2,2800);const price=100*Math.pow(1.02,yr);
+  box(bx+4,by+86,112,32,{fill:C.card,stroke:C.down,r:8,a:p0});T(bx+60,by+102,de(price,2)+' €',{size:15,col:C.down,a:p0});
+  T(bx+60,by+134,`JAHR ${Math.floor(yr+1e-6)}`,{size:10.5,col:C.mute,a:p0});
+  const Y=plot({x0:212,x1:448,max:125,min:95,ticks:3,y1:52,lab:v=>de(v)+' €'});const X0=226,dx=(440-226)/10;
+  const pts=[...Array(11)].map((_,n)=>[X0+n*dx,Y(100*Math.pow(1.02,n))]);
+  if(yr>0||g.on(1)){path(pts,C.down,yr/10,2.8);for(let n=0;n<=Math.floor(yr+1e-6);n++)dot(pts[n][0],pts[n][1],C.down,3.5);}
+  else dot(pts[0][0],pts[0][1],C.down,3.5,p0);
+  xlabels([[X0,'0'],[X0+5*dx,'5'],[X0+10*dx,'10 J.']]);
+  pill(pts[1][0]+6,pts[1][1]-20,'+2 %',C.down,g.k(1)*(g.s===1?1:0),{al:'left'});
+  pill(pts[10][0],pts[10][1]-20,'121,90 €',C.down,g.k(2,500,2800),{al:'right'});
+  pill(330,268-6,'',C.mute,0);
+  if(g.on(4))pill(330,236,'EZB-ZIEL: ca. 2 % PRO JAHR',C.blue,g.k(4));
+ },
+ box:{was:'Inflation ist der allgemeine Anstieg der Preise. Gemessen wird sie in Deutschland vom Statistischen Bundesamt über den Verbraucherpreisindex (VPI).',h2:'So erkennst du es',erkennen:['Einkauf kostet spürbar mehr','Gleiches Gehalt reicht für weniger','Inflationsrate in Prozent zum Vorjahr'],bedeutung:'Bei Inflation verliert Geld an Kaufkraft. Wer sein Geld ohne Zinsen liegen lässt, wird jedes Jahr ein Stück ärmer.',tipp:'Das Gegenteil heißt Deflation: Preise sinken. Klingt gut, ist aber für die Wirtschaft oft gefährlich.'}});
+
+L({id:'kaufkraft',cat:'inflation',g:'↘',title:'Kaufkraftverlust',sub:'Was 10.000 € in Zukunft noch wert sind',calc:'inflation',
+ lead:'Die Zahl auf deinem Konto bleibt gleich – aber was du dafür kaufen kannst, schrumpft Jahr für Jahr.',
+ steps:[['Du bewahrst 10.000 € als Bargeld auf. Heute kannst du dafür Waren im Wert von 10.000 € kaufen.'],['Bei 2 % Inflation pro Jahr: Nach 10 Jahren kaufst du damit nur noch so viel wie heute für 8.203 €.'],['Nach 20 Jahren: nur noch 6.730 € Kaufkraft.'],['Nach 30 Jahren: 5.521 € – die Kaufkraft hat sich fast halbiert!'],['Deshalb: Geld, das du lange nicht brauchst, sollte mindestens so viel Ertrag bringen wie die Inflation.']],
+ draw(g){const Y=plot({max:11000,ticks:4,x0:70,y1:66});const vals=[10000,8203,6730,5521],w=62;
+  vals.forEach((v,i)=>{const x=118+i*96,p=g.k(i,900);if(p<=0)return;
+   box(x-w/2,Y(10000),w,Y(0)-Y(10000),{stroke:C.mute,dash:[4,4],r:4,a:p*.8,lw:1.2});
+   const vv=10000-(10000-v)*p;box(x-w/2,Y(vv),w,Y(0)-Y(vv),{fill:i?C.down:C.blue,r:4,a:i?.85:1});
+   T(x,Y(vv)+15,eur(vv),{size:11.5,col:C.bg,a:p});if(i)pill(x,Y(10000)-15,'−'+pc(100-v/100,0),C.down,p,{size:10.5});
+   T(x,267,i?`NACH ${i*10} J.`:'HEUTE',{size:10,col:C.mute,a:p});});
+  if(g.on(4)){const p=g.k(4);pill(VW/2,24,'FAST HALBIERT!',C.down,p,{solid:true});}
+ },
+ box:{was:'Kaufkraft beschreibt, wie viele Waren und Dienstleistungen du für einen bestimmten Geldbetrag bekommst. Inflation lässt sie sinken.',h2:'So geht’s',erkennen:['Kaufkraft = Betrag ÷ (1 + Inflation)^Jahre','10.000 ÷ 1,02^10 ≈ 8.203 €','Die gestrichelte Linie zeigt den Nennwert'],bedeutung:'Bargeld und unverzinste Konten sind langfristig ein Verlustgeschäft. Ziel ist mindestens ein Inflationsausgleich.',tipp:'Mit dem Rechner unten siehst du, wie viel deine Ersparnis in 10, 20 oder 30 Jahren noch wert ist.'},
+ qpic:{q:'Was zeigt dieses Diagramm?',ans:'Kaufkraftverlust durch Inflation',wrong:['Zinseszins-Effekt','Steuern auf Kapitalerträge','Gebühren eines Fonds']}});
+
+L({id:'realzins',cat:'inflation',g:'r',title:'Der Realzins',sub:'Zinsen minus Inflation',calc:'realzins',
+ lead:'Entscheidend ist nicht, wie viel Zinsen du bekommst – sondern was nach der Inflation übrig bleibt.',
+ steps:[['Links: Du bekommst 3 % Zinsen auf dein Tagesgeld.'],['Die Inflation liegt bei 2 % und frisst einen Teil davon.'],['Realzins ≈ 3 % − 2 % = 1 %. Du wirst wirklich etwas reicher.'],['Rechts: Nur 1 % Zinsen bei 3 % Inflation …'],['… ergibt einen Realzins von ca. −2 %. Trotz Zinsen verlierst du jedes Jahr Kaufkraft!']],
+ draw(g){const z=150,u=26,Yp=p=>z-p*u,w=44;X.save();X.strokeStyle=C.line2;X.lineWidth=1.5;X.beginPath();X.moveTo(30,z);X.lineTo(450,z);X.stroke();X.restore();T(26,z,'0 %',{size:9.5,col:C.mute,al:'right'});
+  const grp=(x0,zi,inf,s0)=>{const a=g.k(s0),b=g.k(s0+1),c=g.k(s0+2,900,s0===0?0:0);const r=zi-inf;
+   box(x0,Yp(zi*a),w,Yp(0)-Yp(zi*a),{fill:C.up,r:3,a:a>0?1:0});T(x0+w/2,Yp(zi)-12,'+'+pc(zi,0),{size:11.5,col:C.up,a});T(x0+w/2,272,'ZINS',{size:9.5,col:C.mute,a});
+   box(x0+w+12,Yp(zi),w,Yp(zi-inf*b)-Yp(zi),{fill:C.down,r:3,a:b>0?1:0});T(x0+w+12+w/2,Yp(zi-inf)+13,'−'+pc(inf,0),{size:11.5,col:C.down,a:b});T(x0+w+12+w/2,272,'INFLATION',{size:9.5,col:C.mute,a:b});
+   if(b>0){X.save();X.setLineDash([3,3]);X.strokeStyle=C.mute;X.globalAlpha=b;X.beginPath();X.moveTo(x0+w,Yp(zi));X.lineTo(x0+w+12,Yp(zi));X.stroke();X.restore();}
+   const rc=r>=0?C.gold:C.down;box(x0+2*(w+12),Math.min(Yp(r*c),z),w,Math.abs(Yp(r*c)-z),{fill:rc,r:3,a:c>0?1:0});T(x0+2*(w+12)+w/2,r>=0?Yp(r)-12:Yp(r)+13,(r>0?'+':'−')+pc(Math.abs(r),0),{size:11.5,col:rc,a:c});T(x0+2*(w+12)+w/2,272,'REAL',{size:9.5,col:C.mute,a:c});};
+  grp(46,3,2,0);
+  const s=g.s>=3?1:0;if(g.on(3)){const a=g.k(3),b=g.k(4),x0=262;
+   box(x0,Yp(1*a),w,Yp(0)-Yp(1*a),{fill:C.up,r:3,a:a>0?1:0});T(x0+w/2,Yp(1)-12,'+1 %',{size:11.5,col:C.up,a});T(x0+w/2,272,'ZINS',{size:9.5,col:C.mute,a});
+   box(x0+w+12,Yp(1),w,Yp(1-3*b)-Yp(1),{fill:C.down,r:3,a:b>0?1:0});T(x0+w+12+w/2,Yp(-2)+13,'−3 %',{size:11.5,col:C.down,a:b});T(x0+w+12+w/2,272,'INFLATION',{size:9.5,col:C.mute,a:b});
+   const c=g.k(4,900,900);box(x0+2*(w+12),z,w,Yp(-2*c)-z,{fill:C.down,r:3,a:c>0?.75:0});T(x0+2*(w+12)+w/2,Yp(-2)+13,'−2 %',{size:11.5,col:C.down,a:c});T(x0+2*(w+12)+w/2,272,'REAL',{size:9.5,col:C.mute,a:c});
+   pill(360,36,'REAL VERLUST',C.down,c,{size:11});}
+  pill(120,36,'REAL GEWINN',C.gold,g.k(2),{size:11});
+ },
+ box:{was:'Der Realzins ist der Zins nach Abzug der Inflation. Er zeigt, ob dein Vermögen wirklich wächst – also ob du dir später mehr kaufen kannst.',h2:'So geht’s',erkennen:['Faustformel: Zins − Inflation','Genau: (1 + Zins) ÷ (1 + Inflation) − 1','Negativ = Kaufkraftverlust'],bedeutung:'Ein positiver Nominalzins kann trotzdem Verlust bedeuten. Nur ein positiver Realzins macht dich tatsächlich reicher.',tipp:'Steuern auf Zinsen nicht vergessen – sie senken den Realzins zusätzlich.'}});
+
+L({id:'vpi',cat:'inflation',g:'🛒',title:'Wie wird Inflation gemessen?',sub:'Der Warenkorb und der VPI',
+ lead:'Niemand misst „die“ Preise. Stattdessen wird ein typischer Warenkorb aller Haushalte jeden Monat neu bewertet.',
+ steps:[['Das Statistische Bundesamt erfasst jeden Monat die Preise von rund 650 Güterarten – den Warenkorb.'],['Den größten Anteil haben Wohnen und Energie – also Miete, Strom und Heizung.'],['Dazu kommen Verkehr, Lebensmittel sowie Freizeit und Kultur.'],['Alles andere – Kleidung, Gesundheit, Restaurants und mehr – füllt den Rest. Jeder Bereich zählt so viel, wie Haushalte im Schnitt dafür ausgeben.'],['Daraus entsteht der Verbraucherpreisindex (VPI). Seine Veränderung zum Vorjahr ist die Inflationsrate.']],
+ draw(g){const cx=128,cy=150,R=96;const seg=[['Wohnen & Energie',26,C.blue,1],['Verkehr',13,C.orange,2],['Lebensmittel',12,C.up,2],['Freizeit & Kultur',11,C.purple,2],['Sonstiges',38,C.mute,3]];
+  let a0=-Math.PI/2;const p0=g.k(0);X.save();X.globalAlpha=p0*.5;X.strokeStyle=C.line2;X.lineWidth=1.5;X.beginPath();X.arc(cx,cy,R,0,7);X.stroke();X.restore();
+  seg.forEach(([n,v,c,st],i)=>{const p=g.k(st,900,st===2?(i-1)*350:0),a1=a0+v/100*2*Math.PI;if(p>0){X.save();X.fillStyle=c;X.globalAlpha=st===3?.55:1;X.beginPath();X.moveTo(cx,cy);X.arc(cx,cy,R,a0,a0+(a1-a0)*p);X.closePath();X.fill();X.strokeStyle=C.bg;X.lineWidth=2;X.stroke();X.restore();}
+   const ly=70+i*36;box(252,ly-8,14,14,{fill:c,r:3,a:p});T(274,ly,n,{size:12,col:C.text,al:'left',a:p,sans:true,w:600});T(448,ly,pc(v,0),{size:12,col:c,al:'right',a:p});a0=a1;});
+  T(252,262,'gerundet, vereinfacht',{size:9.5,col:C.mute,al:'left',w:500,a:g.k(1)});
+  if(g.on(4)){const p=g.k(4);X.save();X.globalAlpha=p;X.fillStyle=C.bg;X.beginPath();X.arc(cx,cy,40,0,7);X.fill();X.restore();T(cx,cy-6,'VPI',{size:18,col:C.gold,a:p});T(cx,cy+13,'INDEX',{size:9.5,col:C.mute,a:p});}
+ },
+ box:{was:'Der Verbraucherpreisindex (VPI) misst die durchschnittliche Preisentwicklung aller Waren und Dienstleistungen, die private Haushalte in Deutschland kaufen.',h2:'So geht’s',erkennen:['Rund 650 Güterarten im Warenkorb','Gewichtet nach typischen Ausgaben','Inflationsrate = Veränderung zum Vorjahresmonat'],bedeutung:'Deine persönliche Inflation kann abweichen: Wer viel tankt oder heizt, spürt Energiepreise stärker als der Durchschnitt.',tipp:'Die EZB schaut für den Euroraum auf den HVPI (harmonisierter Verbraucherpreisindex) – ihr Ziel liegt bei 2 %.'}});
+
+L({id:'sachwerte',cat:'inflation',g:'🏠',title:'Schutz vor Inflation',sub:'Geldwerte vs. Sachwerte',
+ lead:'Nicht jede Anlage leidet gleich unter Inflation. Entscheidend ist, ob sie mit den Preisen mitwachsen kann.',
+ steps:[['Man unterscheidet zwei Gruppen von Geldanlagen: Geldwerte und Sachwerte.'],['Geldwerte sind Forderungen in Euro: Bargeld, Konto, Tagesgeld, Anleihen.'],['Steigen die Preise schneller als der Zins, verlieren Geldwerte an Kaufkraft.'],['Sachwerte sind echte Dinge oder Firmenanteile: Aktien, Immobilien, Gold.'],['Sachwerte können mit der Inflation mitwachsen – Firmen erhöhen ihre Preise, Mieten steigen. Dafür schwanken sie stärker.']],
+ draw(g){const col=[[34,'GELDWERTE',C.blue,['Bargeld & Konto','Tagesgeld','Anleihen'],1],[246,'SACHWERTE',C.up,['Aktien & ETFs','Immobilien','Gold'],3]];
+  col.forEach(([x,h,c,it,st])=>{const p=g.k(0);box(x,26,180,34,{fill:hexA(c,.14),stroke:c,r:9,a:p});T(x+90,43,h,{size:14,col:c,a:p});
+   it.forEach((s,i)=>{const q=g.k(st,600,i*250);box(x,80+i*42,180,32,{fill:C.card,stroke:C.line2,r:8,a:q});T(x+14,96+i*42,s,{size:13,col:C.text,al:'left',a:q,sans:true,w:600});});});
+  if(g.on(2)){const p=g.k(2);arrow(124,212,124,212+40*p,C.down,1,3);pill(124,262,'KAUFKRAFT SINKT',C.down,p,{size:11});}
+  if(g.on(4)){const p=g.k(4);arrow(336,252,336,252-40*p,C.up,1,3);pill(336,262-0,'WÄCHST MIT',C.up,p,{size:11});}
+ },
+ box:{was:'Geldwerte sind Ansprüche auf einen festen Eurobetrag (Konto, Anleihen). Sachwerte sind Anteile an echten Dingen oder Firmen (Aktien, Immobilien, Rohstoffe).',h2:'So erkennst du es',erkennen:['Fester Eurobetrag = Geldwert','Anteil an Firma/Objekt = Sachwert','Sachwerte schwanken stärker'],bedeutung:'Langfristig haben breit gestreute Sachwerte wie Aktien die Inflation in der Vergangenheit meist deutlich übertroffen – mit Schwankungen.',tipp:'Eine gute Mischung: Notgroschen als Geldwert, langfristiges Vermögen eher in Sachwerten.'}});
+
+/* ---------- AKTIEN ---------- */
+L({id:'aktie',cat:'aktien',g:'▦',title:'Was ist eine Aktie?',sub:'Ein Stück vom Unternehmen',
+ lead:'Mit einer Aktie kaufst du einen kleinen Anteil an einem echten Unternehmen – du wirst Miteigentümer.',
+ steps:[['Ein Unternehmen braucht Geld zum Wachsen. Es teilt sich dafür in viele gleich große Stücke auf: die Aktien.',3200],['Hier besteht die Firma aus 100 Aktien. Kaufst du eine davon, gehört dir 1 % des Unternehmens.'],['Als Miteigentümer bist du am Gewinn beteiligt (Dividende) und darfst auf der Hauptversammlung mitbestimmen.'],['Wächst das Unternehmen und verdient mehr, steigt meist auch der Wert deiner Aktie.']],
+ draw(g){const x0=40,y0=58,c=18.5;
+  for(let i=0;i<100;i++){const r=Math.floor(i/10),q=i%10,p=g.k(0,1800,0)*1;const f=clamp(p*1.4-(r+q)/20);if(f<=0)continue;const me=i===44&&g.on(1);box(x0+q*c,y0+r*c,c-3,c-3,{fill:me?C.gold:hexA(C.up,.55),r:3,a:f});}
+  T(x0+92,y0-16,'DIE FIRMA = 100 AKTIEN',{size:11,col:C.mute,a:g.k(0)});
+  if(g.on(1)){const p=g.k(1);arrow(x0+4*c+16,y0+4*c+10,262,108,C.gold,p,2);pill(268,108,'DEINE AKTIE = 1 %',C.gold,p,{al:'left'});}
+  if(g.on(2)){[['€ DIVIDENDE',C.up,152],['✋ STIMMRECHT',C.blue,190]].forEach(([s,cl,y],i)=>pill(268,y,s,cl,g.k(2,600,i*400),{al:'left'}));}
+  if(g.on(3)){const p=g.k(3,1600);const v=50+30*p;box(268,224,170,40,{fill:C.card,stroke:C.up,r:9,a:g.k(3,400)});T(282,244,'KURS',{size:10.5,col:C.mute,al:'left',a:g.k(3,400)});T(428,244,de(v,2)+' € ↑',{size:15,col:C.up,al:'right',a:g.k(3,400)});}
+ },
+ box:{was:'Eine Aktie ist ein Wertpapier, das dir einen Anteil an einer Aktiengesellschaft (AG) verbrieft. Du bist damit Miteigentümer des Unternehmens.',h2:'So geht’s',erkennen:['Kauf über ein Depot bei Bank oder Broker','Handel an der Börse','Rechte: Dividende, Stimmrecht'],bedeutung:'Als Aktionär profitierst du vom Erfolg des Unternehmens – trägst aber auch das Risiko bis hin zum Totalverlust, wenn die Firma pleitegeht.',tipp:'Kaufe nur, was du verstehst – oder streue breit mit einem ETF.'},
+ qpic:{q:'Was soll dieses Bild erklären?',ans:'Eine Aktie ist ein kleiner Anteil am Unternehmen',wrong:['Ein Sparplan mit 100 Raten','Die Inflation in Prozent','Der Warenkorb des VPI']}});
+
+L({id:'boerse',cat:'aktien',g:'⇅',title:'Wie entsteht der Kurs?',sub:'Angebot und Nachfrage an der Börse',
+ lead:'Der Aktienkurs ist kein fester Preis. Er entsteht jede Sekunde neu – dort, wo sich Käufer und Verkäufer einigen.',
+ steps:[['An der Börse treffen Käufer und Verkäufer aufeinander. Der Kurs liegt bei 50 €.'],['Wollen mehr Leute kaufen als verkaufen, müssen Käufer mehr bieten – der Kurs steigt.',3400],['Wollen mehr verkaufen als kaufen, müssen Verkäufer billiger anbieten – der Kurs fällt.',3400],['Der Kurs ist einfach der Preis, zu dem zuletzt gehandelt wurde. Gute oder schlechte Nachrichten verschieben die Nachfrage.']],
+ draw(g){const nb=Math.round(5+3*g.k(1)-6*g.k(2)),ns=Math.round(5-2*g.k(1)+5*g.k(2));const p0=g.k(0);
+  const ppl=(x,n,c,lab)=>{T(x+50,32,lab,{size:12,col:c,a:p0});for(let i=0;i<10;i++){const on=i<n,r=Math.floor(i/2),q=i%2;const cx=x+28+q*44,cy=62+r*30;X.save();X.globalAlpha=p0*(on?1:.15);X.fillStyle=c;X.beginPath();X.arc(cx,cy-7,6,0,7);X.fill();rr(cx-9,cy,18,10,5);X.fill();X.restore();}T(x+50,214,String(n),{size:20,col:c,a:p0});};
+  ppl(20,nb,C.up,'KÄUFER');ppl(340,ns,C.down,'VERKÄUFER');
+  const pr=50+3*g.l(1,2600)-5*g.l(2,2600);box(165,90,130,62,{fill:C.card,stroke:C.line2,r:10,a:p0});T(230,108,'KURS',{size:10.5,col:C.mute,a:p0});
+  const cc=g.s===1?C.up:g.s>=2?C.down:C.text;T(230,132,de(pr,2)+' €',{size:19,col:cc,a:p0});
+  /* Mini-Chart */const Yc=v=>262-(v-46)/(54-46)*44;const seq=[];for(let i=0;i<=40;i++){const t=i/40;let v=50;if(t>.15)v+=3*clamp((t-.15)/.35);if(t>.55)v-=5*clamp((t-.55)/.4);v+=Math.sin(i*1.7)*.35;seq.push([165+i*3.25,Yc(v)]);}
+  const prog=.15+(.35*g.l(1,2600))+(.45*g.l(2,2600));path(seq,cc,prog*p0,2);
+  if(g.on(3)){const p=g.k(3);pill(230,178,'LETZTER PREIS = KURS',C.gold,p,{size:11});}
+ },
+ box:{was:'Der Börsenkurs ist der Preis, zu dem eine Aktie zuletzt gehandelt wurde. Er ergibt sich aus Angebot (Verkäufer) und Nachfrage (Käufer).',h2:'So geht’s',erkennen:['Mehr Nachfrage → Kurs steigt','Mehr Angebot → Kurs fällt','Nachrichten verändern die Stimmung'],bedeutung:'Kurzfristig bewegen Gefühle und Nachrichten den Kurs. Langfristig folgt er meist den Gewinnen des Unternehmens.',tipp:'Kaufe mit Limit-Order: Du legst den Höchstpreis fest, den du zahlen willst.'}});
+
+L({id:'dividende',cat:'aktien',g:'💰',title:'Die Dividende',sub:'Gewinnbeteiligung für Aktionäre',calc:'dividende',
+ lead:'Viele Unternehmen geben einen Teil ihres Gewinns an die Aktionäre weiter – meist einmal im Jahr, manchmal öfter.',
+ steps:[['Du besitzt 100 Aktien zu je 50 € – zusammen also 5.000 €.'],['Das Unternehmen hat Gewinn gemacht und schüttet 2 € je Aktie aus.',3200],['100 Aktien × 2 € = 200 € Dividende (vor Steuern) landen auf deinem Konto.'],['Dividendenrendite = 2 € ÷ 50 € × 100 = 4 %.'],['Achtung: Am Tag nach der Ausschüttung sinkt der Kurs meist ungefähr um die Dividende.']],
+ draw(g){const p0=g.k(0);box(40,56,150,160,{fill:hexA(C.up,.12),stroke:C.up,r:12,a:p0});T(115,82,'DEIN DEPOT',{size:11,col:C.up,a:p0});T(115,122,'100',{size:34,col:C.text,a:p0});T(115,152,'AKTIEN × 50 €',{size:11,col:C.mute,a:p0});T(115,192,'= 5.000 €',{size:16,col:C.up,a:p0});
+  if(g.on(1)){for(let i=0;i<8;i++){const t=clamp(g.l(1,2200)*1.6-i*.08);if(t<=0)continue;const x=lerp(205,340,t)+Math.sin(i)*10,y=lerp(120,90+i*0*1,t)+Math.sin(t*Math.PI)*-40+i*9-30;coin(x,y+60,10,C.gold,t<1?1:0,'€');}}
+  const k2=g.k(2);if(g.on(1)){const n=g.k(1,600);box(300,70,140,92,{fill:hexA(C.gold,.12),stroke:C.gold,r:12,a:n});T(370,96,'DIVIDENDE',{size:11,col:C.gold,a:n});T(370,124,'2 € JE AKTIE',{size:13,col:C.text,a:n});T(370,146,k2>0?'= '+eur(200*k2):'',{size:15,col:C.gold,a:k2});}
+  formula(272-18,'2 € ÷ 50 € × 100 = 4 % RENDITE',C.gold,g.k(3));
+  if(g.on(4)){const p=g.k(4);pill(370,190,'KURS: 50 € → ca. 48 €',C.down,p,{size:11});}
+ },
+ box:{was:'Die Dividende ist der Teil des Unternehmensgewinns, den eine Aktiengesellschaft an ihre Aktionäre ausschüttet. Über die Höhe entscheidet die Hauptversammlung.',h2:'So geht’s',erkennen:['Dividende = Anzahl × Betrag je Aktie','Rendite = Dividende ÷ Kurs × 100','Steuer: Abgeltungsteuer über dem Freibetrag'],bedeutung:'Dividenden sind ein regelmäßiges Einkommen. Sie sind aber nicht garantiert – in Krisen werden sie oft gekürzt.',tipp:'Eine sehr hohe Dividendenrendite kann ein Warnsignal sein: Oft ist der Kurs stark gefallen, weil Probleme drohen.'}});
+
+L({id:'kgv',cat:'aktien',g:'KGV',title:'Das KGV',sub:'Ist die Aktie teuer oder günstig?',
+ lead:'Das Kurs-Gewinn-Verhältnis (KGV) zeigt, wie viel du für 1 € Gewinn des Unternehmens bezahlst.',
+ steps:[['Firma A: Die Aktie kostet 100 €. Pro Aktie verdient die Firma 5 € Gewinn im Jahr.'],['KGV = Kurs ÷ Gewinn je Aktie = 100 ÷ 5 = 20.',3400],['Das heißt: Bei gleichem Gewinn bräuchte es 20 Jahresgewinne, bis der Kaufpreis „verdient“ ist.'],['Firma B kostet auch 100 €, verdient aber 10 € je Aktie: KGV = 10. Sie ist im Verhältnis günstiger.'],['Aber: Ein hohes KGV kann auch heißen, dass Anleger starkes Wachstum erwarten.']],
+ draw(g){const row=(y,n,c,lab,st)=>{const p0=g.k(st,500);T(30,y-30,lab,{size:12,col:c,al:'left',a:p0});const nn=Math.floor(n*g.l(st+1,2600));
+   for(let i=0;i<n;i++){const on=i<nn,x=30+(i%10)*24,yy=y+(Math.floor(i/10))*24-12;box(x,yy,20,20,{fill:on?c:'transparent',stroke:on?c:C.line2,r:4,a:p0});if(on)T(x+10,yy+10.5,'5',{size:10,col:C.bg});}
+   };
+  row(76,20,C.up,'FIRMA A · 100 € KURS · 5 € GEWINN',0);
+  const sA=g.k(1,400,2600);box(290,50,150,60,{fill:C.card,stroke:C.up,r:10,a:sA});T(365,70,'KGV A',{size:10.5,col:C.mute,a:sA});T(365,92,'20',{size:22,col:C.up,a:sA});
+  pill(165,140,'20 JAHRESGEWINNE',C.up,g.k(2),{size:11});
+  if(g.on(3)){const p=g.k(3,500);T(30,186,'FIRMA B · 100 € KURS · 10 € GEWINN',{size:12,col:C.blue,al:'left',a:p});const nn=Math.floor(10*g.l(3,1800,400));for(let i=0;i<10;i++){const on=i<nn,x=30+i*24;box(x,204,20,20,{fill:on?C.blue:'transparent',stroke:on?C.blue:C.line2,r:4,a:p});if(on)T(x+10,214.5,'10',{size:8.5,col:C.bg});}
+   const s=g.k(3,400,2200);box(290,184,150,60,{fill:C.card,stroke:C.blue,r:10,a:s});T(365,204,'KGV B',{size:10.5,col:C.mute,a:s});T(365,226,'10',{size:22,col:C.blue,a:s});}
+  if(g.on(4))pill(VW/2,268,'HOHES KGV = HOHE ERWARTUNGEN',C.gold,g.k(4),{size:11});
+ },
+ box:{was:'Das KGV (Kurs-Gewinn-Verhältnis) teilt den Aktienkurs durch den Gewinn je Aktie. Es ist die bekannteste Kennzahl, um Aktien zu bewerten.',h2:'So geht’s',erkennen:['KGV = Kurs ÷ Gewinn je Aktie','Niedriges KGV = eher günstig','Nur innerhalb einer Branche vergleichen'],bedeutung:'Ein niedriges KGV kann eine Chance sein – oder ein Zeichen, dass die Firma Probleme hat. Ein hohes KGV zeigt hohe Erwartungen an das Wachstum.',tipp:'Rechenbeispiel: Kurs 60 €, Gewinn je Aktie 4 € → KGV 15.'}});
+
+L({id:'crash',cat:'aktien',g:'↯',title:'Schwankungen & Crashs',sub:'−50 % braucht +100 %',
+ lead:'Aktienkurse steigen langfristig – aber nie in einer geraden Linie. Crashs gehören dazu.',
+ steps:[['Über viele Jahre steigt ein breiter Aktienmarkt – mit ständigem Auf und Ab.',3400],['Dann kommt ein Crash: Der Kurs fällt von 200 auf 100 Punkte. Das sind −50 %.',3400],['Um von 100 wieder auf 200 zu kommen, braucht es +100 %! Verluste wiegen schwerer als Gewinne.',3400],['Wer im Crash verkauft, macht den Verlust endgültig. Wer durchgehalten hat, war bei breit gestreuten Indizes bisher nach einiger Zeit wieder im Plus.',3800]],
+ draw(g){const Y=plot({max:300,ticks:3,lab:v=>de(v)});const raw=[];let v=100;for(let i=0;i<=60;i++){if(i<=26)v=100+i*3.85+Math.sin(i*1.3)*6;else if(i<=34)v=200-(i-26)*12.5+Math.sin(i)*3;else v=100+(i-34)*5.2+Math.sin(i*1.1)*7;raw.push(v);}
+  raw[26]=200;raw[34]=100;const pts=raw.map((v,i)=>[60+i*6.45,Y(v)]);
+  const p=(26*g.l(0,2800)+8*g.l(1,1800)+26*g.l(2,2800))/60;area(pts,Y(0),C.up,p,.1);path(pts,C.up,p,2.4);
+  if(g.on(1)){const q=g.k(1,600,1800);dot(pts[26][0],pts[26][1],C.text,4.5,q);dot(pts[34][0],pts[34][1],C.down,5,q);pill(pts[30][0]+10,Y(170),'−50 %',C.down,q,{al:'left',size:13});}
+  if(g.on(2)){const q=g.k(2,600,1200);X.save();X.setLineDash([4,4]);X.strokeStyle=C.mute;X.globalAlpha=q;X.beginPath();X.moveTo(pts[26][0],Y(200));X.lineTo(448,Y(200));X.stroke();X.restore();pill(pts[52][0],Y(132),'+100 % NÖTIG',C.up,q,{size:13});}
+  if(g.on(3))pill(pts[46][0],Y(268),'DURCHHALTEN',C.gold,g.k(3),{size:12});
+  xlabels([[60,'Jahr 0'],[pts[30][0],'Crash'],[440,'später']]);
+ },
+ box:{was:'Ein Crash ist ein schneller, starker Kurssturz – oft 20 % bis über 50 %. Auslöser sind z. B. Wirtschaftskrisen, Panik oder Pandemien.',h2:'So geht’s',erkennen:['−10 % brauchen +11 %','−50 % brauchen +100 %','−90 % brauchen +900 %'],bedeutung:'Schwankungen sind der Preis für die höhere Rendite von Aktien. Wer langfristig anlegt und breit streut, kann Crashs aussitzen.',tipp:'Nie Geld in Aktien stecken, das du in den nächsten Jahren brauchst – dann musst du im Crash nicht verkaufen.'},
+ qpic:{q:'Was ist hier mit dem Kurs passiert?',ans:'Ein Crash mit anschließender Erholung',wrong:['Eine Dividendenzahlung','Ein Aktiensplit','Ein Sparplan-Start']}});
+
+/* ---------- ETFs ---------- */
+L({id:'etf',cat:'etf',g:'🧺',title:'Was ist ein ETF?',sub:'Ein Korb voller Aktien',
+ lead:'Statt einzelne Aktien auszuwählen, kaufst du mit einem ETF auf einen Schlag Hunderte Unternehmen.',
+ steps:[['Ein ETF ist ein Fonds, der an der Börse gehandelt wird – stell ihn dir wie einen Korb vor.'],['Im Korb liegen Aktien vieler verschiedener Unternehmen, oft Hunderte oder Tausende.',3400],['Mit einem einzigen ETF-Anteil besitzt du ein kleines Stück von allen Firmen im Korb.'],['ETF heißt „Exchange Traded Fund“. Er bildet einfach einen Index nach – ohne teuren Fondsmanager, der Aktien auswählt.'],['Wichtig: Das Fondsvermögen ist Sondervermögen. Geht der ETF-Anbieter pleite, bleibt dein Geld geschützt.']],
+ draw(g){const bx=40,by=110,p0=g.k(0);X.save();X.globalAlpha=p0;X.strokeStyle=C.purple;X.lineWidth=3;X.lineJoin='round';X.beginPath();X.moveTo(bx,by);X.lineTo(bx+200,by);X.lineTo(bx+176,by+130);X.lineTo(bx+24,by+130);X.closePath();X.stroke();X.beginPath();X.arc(bx+100,by,70,Math.PI,0);X.stroke();X.restore();
+  const cols=[C.up,C.blue,C.gold,C.orange,C.down,C.purple];let k=0;
+  for(let r=0;r<4;r++)for(let q=0;q<7-(r%2);q++){const i=k++;const t=clamp(g.l(1,2600)*1.5-i*.02);if(t<=0)continue;const x=bx+30+q*24+(r%2)*10,y=by+20+r*28;coin(x,lerp(y-90,y,ease(t)),10,cols[i%6],1);}
+  if(g.on(2)){const p=g.k(2);arrow(250,175,320,175,C.purple,p,2.5);box(328,140,112,70,{fill:hexA(C.purple,.14),stroke:C.purple,r:12,a:p});T(384,162,'1 ANTEIL',{size:12,col:C.purple,a:p});
+   for(let i=0;i<6;i++)coin(348+i*14,190,5.5,cols[i],p);}
+  if(g.on(3))pill(384,62,'BÖRSENGEHANDELTER INDEXFONDS',C.purple,g.k(3),{size:10.5,al:'right'});
+  if(g.on(4))pill(384,240,'🛡 SONDERVERMÖGEN',C.up,g.k(4),{size:11});
+ },
+ box:{was:'Ein ETF (Exchange Traded Fund) ist ein börsengehandelter Indexfonds. Er kauft automatisch alle Aktien eines Index, z. B. des MSCI World oder des DAX.',h2:'So geht’s',erkennen:['Kauf wie eine Aktie über dein Depot','Erkennbar an der ISIN (z. B. IE…, LU…)','Auch als Sparplan ab wenigen Euro'],bedeutung:'ETFs sind günstig, breit gestreut und einfach. Deshalb sind sie für viele Privatanleger die Basis für den langfristigen Vermögensaufbau.',tipp:'Achte auf: Index, Kosten (TER), Fondsgröße und Ertragsverwendung (ausschüttend/thesaurierend).'}});
+
+L({id:'index',cat:'etf',g:'Σ',title:'Was ist ein Index?',sub:'DAX, MSCI World & Co.',
+ lead:'Ein Index ist eine Art Liste, die einen Markt abbildet. Ein ETF kopiert diese Liste.',
+ steps:[['Der DAX enthält die 40 größten börsennotierten Unternehmen Deutschlands.'],['Der MSCI World enthält weit über 1.000 große Unternehmen aus 23 Industrieländern.'],['Gewichtet wird nach Börsenwert: Große Firmen haben mehr Gewicht. Darum machen US-Firmen rund 70 % aus.',3600],['Japan, Großbritannien, Kanada, Frankreich und weitere Länder teilen sich den Rest.'],['Kaufst du einen ETF auf den MSCI World, besitzt du alle diese Firmen im richtigen Verhältnis.']],
+ draw(g){const p0=g.k(0);box(24,24,130,96,{fill:C.card,stroke:C.blue,r:10,a:p0});T(89,42,'DAX',{size:14,col:C.blue,a:p0});for(let i=0;i<40;i++)dot(38+(i%10)*11.5,62+Math.floor(i/10)*13,C.blue,3.6,clamp(p0*2-i/40));
+  const p1=g.k(1);box(24,136,130,124,{fill:C.card,stroke:C.purple,r:10,a:p1});T(89,152,'MSCI WORLD',{size:12,col:C.purple,a:p1});for(let i=0;i<120;i++)dot(34+(i%15)*7.6,170+Math.floor(i/15)*10.5,C.purple,2.4,clamp(p1*2-i/120));
+  const bars=[['USA',70,C.purple,2],['Japan',5,C.blue,3],['Großbritannien',4,C.up,3],['Kanada',3,C.gold,3],['Frankreich',3,C.orange,3],['Übrige',15,C.mute,3]];
+  const x0=180,W=268;T(x0,30,'LÄNDER IM MSCI WORLD (ca.)',{size:10.5,col:C.mute,al:'left',a:g.k(2)});
+  bars.forEach(([n,v,c,st],i)=>{const p=g.k(st,900,st===3?(i-1)*220:0),y=56+i*35;T(x0,y,n,{size:11.5,col:C.text,al:'left',sans:true,w:600,a:p});const w=(W-150)*(v/70)*p;box(x0+108,y-8,Math.max(0,w),16,{fill:c,r:3,a:p>0?1:0});T(x0+112+w,y,`${v} %`,{size:11,col:c,al:'left',a:p});});
+  if(g.on(4))pill(314,268,'1 ETF = ALLE FIRMEN',C.purple,g.k(4),{size:11});
+ },
+ box:{was:'Ein Aktienindex bündelt die Kurse vieler Unternehmen zu einer Zahl. Er zeigt, wie sich ein Markt insgesamt entwickelt – z. B. Deutschland (DAX) oder die Industrieländer (MSCI World).',h2:'So erkennst du es',erkennen:['DAX: 40 deutsche Firmen','MSCI World: Industrieländer','MSCI ACWI / FTSE All-World: inkl. Schwellenländer'],bedeutung:'Je mehr Firmen und Länder ein Index enthält, desto breiter ist dein Risiko verteilt.',tipp:'Die Länderanteile ändern sich mit den Börsenwerten. Prüfe sie im Factsheet deines ETFs.'}});
+
+L({id:'streuung',cat:'etf',g:'⁘',title:'Streuung (Diversifikation)',sub:'Nicht alle Eier in einen Korb',
+ lead:'Was passiert, wenn eine Firma pleitegeht? Mit Streuung bleibt der Schaden klein.',
+ steps:[['Links: Du steckst 10.000 € in eine einzige Aktie.'],['Die Firma gerät in Schwierigkeiten – der Kurs fällt um 80 %. Dir bleiben nur 2.000 €.',3400],['Rechts: Du verteilst 10.000 € auf 100 Firmen – je 100 €.',3200],['Auch hier stürzt eine Firma um 80 % ab. Du verlierst aber nur 80 € – also 0,8 %.',3400],['Das ist Diversifikation: Das Risiko einzelner Firmen verteilt sich auf viele.']],
+ draw(g){const p0=g.k(0),f1=g.k(1,1600);T(110,30,'1 AKTIE',{size:12,col:C.orange,a:p0});const h=180*(1-.8*f1);box(55,240-h,110,h,{fill:f1>.5?C.down:C.orange,r:8,a:p0});box(55,60,110,180,{stroke:C.mute,dash:[4,4],r:8,a:p0*.7,lw:1.2});
+  T(110,256,eur(10000-8000*f1),{size:13,col:f1>.5?C.down:C.text,a:p0});pill(110,140,'−80 %',C.down,g.k(1,500,1400),{size:13});
+  const p2=g.k(2,1600);T(340,30,'100 AKTIEN (ETF)',{size:12,col:C.purple,a:p2});
+  for(let i=0;i<100;i++){const r=Math.floor(i/10),q=i%10,f=clamp(p2*1.5-i/100);if(f<=0)continue;const bad=i===37&&g.on(3);box(253+q*17.5,50+r*17,14,13,{fill:bad?C.down:C.purple,r:3,a:bad?1:f*.85});}
+  const loss=80*g.k(3,1400);T(340,256,eur(10000*p2-loss),{size:13,col:C.text,a:p2});pill(340,240-0,'',C.mute,0);
+  if(g.on(3))pill(340,234,'NUR −0,8 %',C.up,g.k(3,500,1200),{size:12});
+  if(g.on(4))pill(VW/2,276,'',C.mute,0);
+ },
+ box:{was:'Diversifikation heißt, dein Geld auf viele verschiedene Anlagen zu verteilen – über Firmen, Branchen und Länder hinweg.',h2:'So geht’s',erkennen:['Viele Firmen statt einer','Verschiedene Länder und Branchen','Ein Welt-ETF erledigt das automatisch'],bedeutung:'Streuung senkt das Risiko eines Totalverlusts fast auf null. Das allgemeine Marktrisiko (z. B. Crash) bleibt aber bestehen.',tipp:'Auch fünf Aktien aus derselben Branche sind keine echte Streuung.'},
+ qpic:{q:'Welches Prinzip zeigt dieses Bild?',ans:'Streuung (Diversifikation)',wrong:['Hebel beim Trading','Zinseszins','Inflation']}});
+
+L({id:'ter',cat:'etf',g:'TER',title:'Kosten (TER)',sub:'Kleine Gebühr, großer Unterschied',calc:'kosten',
+ lead:'Die laufenden Kosten eines Fonds werden jedes Jahr abgezogen – über Jahrzehnte macht das Zehntausende Euro aus.',
+ steps:[['10.000 € werden 30 Jahre angelegt. Vor Kosten bringt der Markt 7 % pro Jahr.'],['Ein günstiger ETF kostet 0,2 % pro Jahr (TER). Ergebnis: rund 71.968 €.',3400],['Ein teurer aktiver Fonds kostet 1,8 % pro Jahr. Ergebnis: rund 45.759 €.',3400],['Der Unterschied: rund 26.209 € – nur wegen der Kosten!'],['Die TER findest du im Factsheet jedes Fonds. Bei breiten ETFs liegt sie oft zwischen 0,1 % und 0,3 %.']],
+ draw(g){const Y=plot({max:80000,ticks:4,lab:v=>v?de(v/1000)+' T':'0'});const X0=66,dx=(430-66)/30;const P=r=>[...Array(31)].map((_,n)=>[X0+n*dx,Y(10000*Math.pow(1+r,n))]);
+  dot(X0,Y(10000),C.text,4,g.k(0));T(X0+8,Y(10000)+14,'10.000 €',{size:10,col:C.mute,al:'left',a:g.k(0)});
+  const a=P(.068),b=P(.052);path(a,C.purple,g.l(1,2400),2.8);path(b,C.down,g.l(2,2400),2.8);
+  pill(448,a[30][1]-16,'ETF 0,2 %: 71.968 €',C.purple,g.k(1,500,2200),{al:'right',size:11});pill(448,b[30][1]+18,'FONDS 1,8 %: 45.759 €',C.down,g.k(2,500,2200),{al:'right',size:11});
+  if(g.on(3)){const p=g.k(3);arrow(400,b[30][1]-4,400,a[30][1]+6,C.gold,p,2);pill(392,(a[30][1]+b[30][1])/2,'−26.209 €',C.gold,p,{al:'right',size:13});}
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30 J.']]);
+ },
+ box:{was:'Die TER (Total Expense Ratio) sind die laufenden Kosten eines Fonds pro Jahr in Prozent. Sie werden automatisch aus dem Fondsvermögen entnommen.',h2:'So geht’s',erkennen:['TER steht im Factsheet','ETF: oft 0,1–0,3 %','Aktive Fonds: oft 1–2 % + Ausgabeaufschlag'],bedeutung:'Kosten sind sicher, Rendite nicht. Jeder gesparte Prozentpunkt bleibt dir – und wächst mit Zinseszins weiter.',tipp:'Auch Depot- und Ordergebühren beachten. Viele Online-Broker bieten Sparpläne kostenlos an.'}});
+
+L({id:'thes',cat:'etf',g:'↺',title:'Ausschüttend oder thesaurierend?',sub:'Was passiert mit den Dividenden?',
+ lead:'Die Firmen im ETF zahlen Dividenden. Der ETF kann sie dir auszahlen – oder automatisch wieder anlegen.',
+ steps:[['Die Firmen im ETF zahlen Dividenden an den Fonds.'],['Ausschüttend: Der ETF zahlt dir die Erträge regelmäßig aufs Konto – z. B. jedes Quartal.',3400],['Thesaurierend: Der ETF legt die Erträge automatisch wieder an. Es werden mehr Aktien gekauft.',3400],['Der thesaurierende ETF nutzt den Zinseszins automatisch. Der ausschüttende bringt dir ein regelmäßiges Einkommen.']],
+ draw(g){const lane=(x,lab,c,st,re)=>{const p=g.k(0);box(x,40,190,26,{fill:hexA(c,.14),stroke:c,r:8,a:p});T(x+95,53,lab,{size:12,col:c,a:p});
+   const grow=re?g.k(3,1600)*30:0;box(x+45,130-grow,100,100+grow,{fill:hexA(C.purple,.25),stroke:C.purple,r:10,a:p});T(x+95,180-grow/2,'ETF',{size:16,col:C.purple,a:p});
+   const t=g.l(st,2600);if(t>0)for(let i=0;i<4;i++){const u=clamp(t*1.6-i*.2);if(u<=0||u>=1)continue;if(re){const ang=Math.PI*(1-u);coin(x+95+Math.cos(ang)*70,170-Math.sin(ang)*80,9,C.gold,1,'€');}else coin(lerp(x+145,x+175,u),lerp(150,255,u),9,C.gold,1,'€');}
+   if(!re){const q=g.k(st,500,1800);box(x+130,240,58,30,{fill:C.card,stroke:C.up,r:8,a:q});T(x+159,255,'KONTO',{size:10,col:C.up,a:q});}
+   else{const q=g.k(st,500,1800);pill(x+95,86,'WIEDER ANGELEGT',C.gold,q,{size:10.5});}};
+  lane(20,'AUSSCHÜTTEND',C.up,1,false);lane(250,'THESAURIEREND',C.gold,2,true);
+  if(g.on(0)&&!g.on(1)){const p=g.k(0);for(let i=0;i<3;i++){coin(160+i*70,100,9,C.gold,p,'€');}}
+ },
+ box:{was:'Ausschüttende ETFs zahlen Dividenden und Zinsen an dich aus. Thesaurierende ETFs (von lat. thesaurus = Schatz) behalten sie und legen sie automatisch wieder an.',h2:'So erkennst du es',erkennen:['Im Namen: „Dist“ = ausschüttend','„Acc“ = thesaurierend','Im Factsheet: „Ertragsverwendung“'],bedeutung:'In der Ansparphase ist thesaurierend bequem. Wer von den Erträgen leben will, wählt oft ausschüttend.',tipp:'Steuerlich wird bei thesaurierenden ETFs jährlich eine kleine „Vorabpauschale“ fällig – sie wird mit dem Freibetrag verrechnet.'}});
+
+/* ---------- SPARPLÄNE & STEUERN ---------- */
+L({id:'sparplan',cat:'sparplan',g:'📅',title:'Der Sparplan',sub:'Jeden Monat automatisch investieren',calc:'sparplan',
+ lead:'Mit einem Sparplan legst du jeden Monat automatisch einen festen Betrag an – ganz ohne nachzudenken.',
+ steps:[['Jeden Monat werden automatisch 100 € in einen ETF investiert.',3200],['Nach 5, 10 und 15 Jahren: Das Vermögen wächst – blau ist eingezahlt, orange sind Erträge.',3400],['Nach 20, 25 und 30 Jahren werden die Erträge immer größer als die Einzahlungen.',3400],['Eingezahlt: 36.000 €. Wert nach 30 Jahren bei 7 %: rund 116.945 €.'],['Schon kleine Beträge werden groß – Hauptsache, du bleibst dran.']],
+ draw(g){const Y=plot({max:120000,ticks:4,lab:v=>v?de(v/1000)+' T':'0'});const vals=sparVerlauf(100,30,.07);
+  if(!g.on(1)){const t=g.l(0,2600);for(let i=0;i<12;i++){const u=clamp(t*2-i*.08);if(u<=0)continue;coin(80+i*30,lerp(40,236,ease(u)),10,C.orange,1,'€');}T(VW/2,26,'100 € PRO MONAT',{size:12,col:C.orange,a:g.k(0)});}
+  for(let j=1;j<=6;j++){const st=j<=3?1:2,p=g.k(st,700,((j-1)%3)*700);if(p<=0)continue;const x=95+(j-1)*64,w=44,v=vals[j*5],e=1200*j*5;
+   box(x-w/2,Y(e*p),w,Y(0)-Y(e*p),{fill:C.blue,r:3});box(x-w/2,Y((v)*p),w,Y(e*p)-Y(v*p),{fill:C.orange,r:3});T(x,Y(v*p)-11,de(v/1000,0)+' T',{size:10.5,col:C.text,a:p});T(x,265,(j*5)+' J.',{size:10,col:C.mute,a:p});}
+  if(g.on(3)){const p=g.k(3);pill(250,40,'36.000 € → 116.945 €',C.orange,p);}
+ },
+ box:{was:'Ein Sparplan ist ein Dauerauftrag in dein Depot: Jeden Monat wird automatisch ein fester Betrag in einen ETF, Fonds oder eine Aktie investiert.',h2:'So geht’s',erkennen:['Depot bei Bank oder Broker eröffnen','ETF + Betrag + Ausführungstag wählen','Möglich oft schon ab 1–25 €'],bedeutung:'Ein Sparplan macht Vermögensaufbau zur Gewohnheit. Du musst den richtigen Zeitpunkt nicht suchen – und bleibst automatisch dran.',tipp:'Sparplan direkt nach dem Gehaltseingang ausführen lassen: Was weg ist, wird nicht ausgegeben.'}});
+
+L({id:'cae',cat:'sparplan',g:'Ø',title:'Cost-Average-Effekt',sub:'Günstig kaufen, ohne es zu planen',
+ lead:'Mit festem Monatsbetrag kaufst du automatisch mehr Anteile, wenn der Kurs niedrig ist – und weniger, wenn er hoch ist.',
+ steps:[['Du investierst 6 Monate lang jeden Monat 100 €, egal wie der Kurs steht.'],['Ist der Kurs hoch (10 €), bekommst du für 100 € genau 10 Anteile.'],['Fällt der Kurs auf 5 €, bekommst du für dieselben 100 € ganze 20 Anteile!',3400],['Am Ende: 81,67 Anteile für 600 €. Dein Ø-Kaufpreis: 7,35 € – der Ø-Kurs lag bei 7,83 €.',4000],['Das ist der Cost-Average-Effekt (Durchschnittskosteneffekt). Er hilft vor allem psychologisch – einen Gewinn garantiert er nicht.']],
+ draw(g){const pr=[10,8,5,6,8,10],x=i=>92+i*62;const Yp=v=>96-(v-4)/7*56,base=262,sh=v=>v*5;
+  T(30,34,'KURS',{size:10,col:C.mute,al:'left',a:g.k(0)});T(30,146,'ANTEILE',{size:10,col:C.mute,al:'left',a:g.k(0)});
+  const n=g.k(0,800)*1+g.l(2,2600)*5;const pts=pr.map((v,i)=>[x(i),Yp(v)]);path(pts,C.text,clamp(n-1,0,5)/5,2.2);
+  pr.forEach((v,i)=>{const p=clamp(n-i);if(p<=0)return;dot(x(i),Yp(v),v<=5?C.up:C.text,5,p);T(x(i),Yp(v)-15,de(v)+' €',{size:11,col:C.text,a:p});const s=100/v,h=sh(s)*p;box(x(i)-20,base-h,40,h,{fill:v<=6?C.up:C.orange,r:3,a:p});T(x(i),base-h-10,de(s,s%1?1:0),{size:11,col:v<=6?C.up:C.orange,a:p});});
+  pill(x(0)+20,Yp(10)+22,'100 € → 10 ANTEILE',C.orange,g.k(1)*(g.s===1?1:0),{al:'left',size:11});
+  if(g.s===2)pill(x(2)+30,Yp(5)+22,'100 € → 20 ANTEILE',C.up,g.k(2,600,1300),{size:11});
+  if(g.on(3)){const p=g.k(3);box(84,103,292,34,{fill:C.card,stroke:C.gold,r:9,a:p});T(230,120.5,'Ø-PREIS 7,35 €  <  Ø-KURS 7,83 €',{size:12,col:C.gold,a:p});}
+ },
+ box:{was:'Der Cost-Average-Effekt (Durchschnittskosteneffekt) entsteht, wenn du regelmäßig einen festen Betrag investierst: Bei tiefen Kursen kaufst du mehr, bei hohen weniger Anteile.',h2:'So geht’s',erkennen:['Fester Betrag statt fester Stückzahl','Ø-Kaufpreis liegt unter dem Ø-Kurs','Funktioniert nur mit Schwankungen'],bedeutung:'Du musst nicht den perfekten Zeitpunkt finden. Fallende Kurse sind für Sparer sogar gut – du kaufst günstiger ein.',tipp:'Rechnung: Ø-Kaufpreis = eingezahlter Betrag ÷ gekaufte Anteile = 600 € ÷ 81,67 ≈ 7,35 €.'},
+ qpic:{q:'Welcher Effekt wird hier gezeigt?',ans:'Cost-Average-Effekt',wrong:['Zinseszins-Effekt','Hebel-Effekt','Inflationseffekt']}});
+
+L({id:'einmal',cat:'sparplan',g:'1↔12',title:'Einmalanlage oder Sparplan?',sub:'Alles auf einmal – oder in Raten?',
+ lead:'Du hast 12.000 €. Alles sofort anlegen oder auf 12 Monate verteilen? Es kommt auf den Kursverlauf an.',
+ steps:[['Einmalanlage (gold): 12.000 € sofort. Sparplan (orange): 12 × 1.000 €, Rest wartet auf dem Konto.'],['Fall A – der Markt steigt stetig um 10 %: Die Einmalanlage liegt vorne (13.200 € gegen 12.641 €).',3600],['Fall B – der Markt fällt erst um 20 % und erholt sich dann: Jetzt gewinnt der Sparplan (13.299 € gegen 12.000 €).',3600],['Da Märkte langfristig öfter steigen als fallen, liegt die Einmalanlage statistisch häufiger vorne.'],['Der Sparplan nimmt dir aber die Angst vor dem falschen Zeitpunkt. Beides ist besser als gar nicht anzulegen!']],
+ draw(g){const pA=[...Array(13)].map((_,i)=>100*Math.pow(1.1,i/12)),pB=[100,95,88,82,80,82,86,90,93,96,98,99,100];
+  const ser=p=>{const L1=p.map(v=>12000*v/p[0]);const S=[];let sh=0,cash=12000;for(let t=0;t<=12;t++){if(t<12){sh+=1000/p[t];cash-=1000;}S.push(sh*p[t]+cash);}return [L1,S];};
+  const panel=(x0,p,lab,st)=>{const [L1,S]=ser(p);const w=190,Y=v=>232-(v-9000)/(14000-9000)*170;const q=g.k(st,500);
+   box(x0,36,w,212,{stroke:C.line2,r:10,a:q});T(x0+w/2,24,lab,{size:11.5,col:C.text,a:q});
+   [10000,12000,14000].forEach(v=>{X.save();X.globalAlpha=q*.6;X.strokeStyle=C.grid;X.beginPath();X.moveTo(x0+8,Y(v));X.lineTo(x0+w-8,Y(v));X.stroke();X.restore();T(x0+w-10,Y(v)-7,de(v/1000)+' T',{size:8.5,col:C.mute,al:'right',w:500,a:q});});
+   const t=g.l(st,2800);const PX=i=>x0+12+i*(w-24)/12;path(L1.map((v,i)=>[PX(i),Y(v)]),C.gold,t,2.6);path(S.map((v,i)=>[PX(i),Y(v)]),C.orange,t,2.6,[5,3]);
+   const r=g.k(st,500,2800);T(x0+w/2,261,'EINMAL '+eur(L1[12]),{size:10.5,col:C.gold,a:r});T(x0+w/2,277,'SPARPLAN '+eur(S[12]),{size:10.5,col:C.orange,a:r});
+   pill(x0+w/2,214,L1[12]>S[12]?'EINMAL VORNE':'SPARPLAN VORNE',L1[12]>S[12]?C.gold:C.orange,r,{size:10.5});};
+  panel(24,pA,'A: MARKT STEIGT',1);panel(246,pB,'B: ERST FALL, DANN ERHOLUNG',2);
+  if(!g.on(1)){const p=g.k(0);pill(130,140,'— EINMALANLAGE',C.gold,p,{size:11});pill(330,140,'--- SPARPLAN',C.orange,p,{size:11});}
+ },
+ box:{was:'Bei der Einmalanlage investierst du einen großen Betrag auf einmal. Beim Sparplan teilst du ihn in Raten auf und investierst über einen längeren Zeitraum.',h2:'So geht’s',erkennen:['Steigende Märkte: Einmalanlage vorne','Fallende Märkte: Sparplan vorne','Die Zukunft kennt niemand'],bedeutung:'Statistisch gewinnt öfter die Einmalanlage. Wer aber nervös wird, wenn es kurz nach dem Kauf fällt, schläft mit einem gestaffelten Einstieg ruhiger.',tipp:'Ein Mittelweg: den Betrag auf 3–6 Monate verteilen.'}});
+
+L({id:'steuern',cat:'sparplan',g:'§',title:'Steuern auf Kapitalerträge',sub:'Freibetrag und Abgeltungsteuer',calc:'steuer',
+ lead:'Auf Zinsen, Dividenden und Kursgewinne fallen in Deutschland Steuern an – aber erst oberhalb eines Freibetrags.',
+ steps:[['Du machst in einem Jahr 3.000 € Gewinn – aus Zinsen, Dividenden und Kursgewinnen.'],['1.000 € pro Person sind steuerfrei (Sparerpauschbetrag; Ehepaare zusammen 2.000 €). Dafür einen Freistellungsauftrag bei der Bank stellen.',3800],['Auf den Rest (2.000 €) fallen 25 % Abgeltungsteuer plus 5,5 % Solidaritätszuschlag darauf an – zusammen 26,375 %.',3800],['Steuer: 527,50 € (ohne Kirchensteuer). Dir bleiben 2.472,50 €.'],['Bei Aktien-ETFs sind 30 % der Erträge steuerfrei (Teilfreistellung). Dann wären es nur 290,13 € Steuer.',3800]],
+ draw(g){const x0=30,W=410,sc=W/3000,row=(y,lab)=>T(x0,y-20,lab,{size:10.5,col:C.mute,al:'left'});
+  const p0=g.k(0);row(56,'GEWINN IM JAHR');box(x0,52,W*p0,34,{fill:C.up,r:6});T(x0+W/2,69,'3.000 €',{size:14,col:C.bg,a:p0});
+  if(g.on(1)){const p=g.k(1);row(126,'STEUERFREI | STEUERPFLICHTIG');box(x0,122,1000*sc*p,34,{fill:C.blue,r:6});box(x0+1000*sc+4,122,(2000*sc-4)*p,34,{fill:hexA(C.text,.35),r:6});T(x0+500*sc,139,'1.000 € FREI',{size:12,col:C.bg,a:p});T(x0+2000*sc,139,'2.000 €',{size:12,col:C.text,a:p});}
+  if(g.on(2)){const p=g.k(2,1400);row(196,'STEUER: 26,375 % VON 2.000 €');const tx=527.5*sc;box(x0+1000*sc+4,192,tx*p,34,{fill:C.down,r:6});T(x0+1000*sc+tx+12,209,g.on(3)?'= 527,50 €':'',{size:13,col:C.down,al:'left',a:g.k(3)});}
+  if(g.on(3))pill(x0+W-4,252,'NETTO: 2.472,50 €',C.up,g.k(3),{al:'right',size:12});
+  if(g.on(4))pill(x0,252,'AKTIEN-ETF: NUR 290,13 €',C.purple,g.k(4),{al:'left',size:12});
+ },
+ box:{was:'Kapitalerträge werden in Deutschland mit der Abgeltungsteuer besteuert: 25 % plus 5,5 % Solidaritätszuschlag darauf (ggf. Kirchensteuer). Bis 1.000 € im Jahr pro Person bleibt alles steuerfrei.',h2:'So geht’s',erkennen:['Freistellungsauftrag bei der Bank stellen','Bis 1.000 € / 2.000 € (Ehepaar) steuerfrei','Die Bank führt die Steuer automatisch ab'],bedeutung:'Steuern fallen erst an, wenn du Gewinne realisierst oder Erträge bekommst. Solange du ETFs hältst, wächst der Großteil steuerlich unangetastet weiter.',tipp:'Freistellungsaufträge auf mehrere Banken verteilen – zusammen höchstens 1.000 € bzw. 2.000 €. Bei Fragen hilft ein Steuerberater.'}});
+
+L({id:'ziel',cat:'sparplan',g:'🎯',title:'Dein Sparziel',sub:'Der Weg zur ersten Million',calc:'ziel',
+ lead:'Wie lange dauert es mit 500 € im Monat bis 100.000 €, 500.000 € oder sogar 1 Million Euro?',
+ steps:[['Ziel: Eine Million Euro – mit 500 € im Monat und angenommenen 7 % Rendite pro Jahr.'],['Nach rund 11 Jahren knackst du die ersten 100.000 €.',3200],['Nach rund 20 Jahren: 250.000 €. Nach rund 28 Jahren schon 500.000 €.',3600],['Nach rund 37 Jahren: die Million! Die letzten 500.000 € kamen in nur 9 Jahren dazu.',3600],['Eingezahlt hast du bis dahin nur rund 223.000 € – der große Rest sind Erträge. Inflation ist hier nicht eingerechnet.']],
+ draw(g){const Y=plot({max:1200000,ticks:4,lab:v=>v?(v>=1e6?de(v/1e6,1)+' Mio':de(v/1000)+' T'):'0'});const X0=66,dx=(440-66)/40;const vals=sparVerlauf(500,40,.07);const pts=vals.map((v,i)=>[X0+i*dx,Y(v)]);
+  const yr=11.25*g.l(1,2400)+16.8*g.l(2,2800)+9.1*g.l(3,2600);area(pts,Y(0),C.orange,yr/40,.14);path(pts,C.orange,yr/40,2.8);
+  [[100000,11.25,1,'100 T · 11 J.'],[250000,19.9,2,'250 T · 20 J.'],[500000,28.1,2,'500 T · 28 J.'],[1000000,37.2,3,'1 MIO · 37 J.']].forEach(([v,y,st,lab],i)=>{const p=g.k(st,500,st===2&&i===3-1?2200:st===2?900:2200);if(p<=0)return;X.save();X.setLineDash([4,4]);X.strokeStyle=C.mute;X.globalAlpha=p*.7;X.beginPath();X.moveTo(X0,Y(v));X.lineTo(X0+y*dx,Y(v));X.stroke();X.restore();dot(X0+y*dx,Y(v),C.gold,5,p);pill(X0+y*dx-10,Y(v)-17,lab,C.gold,p,{al:'right',size:10.5});});
+  if(g.on(4)){const p=g.k(4);const e=[...Array(38)].map((_,i)=>[X0+i*dx,Y(6000*i)]);path(e,C.blue,p,2.2,[5,4]);pill(X0+37*dx,Y(222000)+18,'EINGEZAHLT',C.blue,p,{al:'right',size:10.5});}
+  xlabels([[X0,'0'],[X0+10*dx,'10'],[X0+20*dx,'20'],[X0+30*dx,'30'],[X0+40*dx,'40 J.']]);
+ },
+ box:{was:'Ein Sparziel macht Vermögensaufbau greifbar: Du legst Zielbetrag, Zeitraum und erwartete Rendite fest und rechnest aus, wie viel du monatlich sparen musst.',h2:'So geht’s',erkennen:['Ziel festlegen (z. B. 100.000 €)','Zeitraum und Rendite annehmen','Monatsrate mit dem Rechner berechnen'],bedeutung:'Der Zinseszins arbeitet am Ende am stärksten: Die letzten Jahre bringen den größten Zuwachs. Durchhalten lohnt sich.',tipp:'7 % sind nur eine Annahme, keine Garantie. Rechne lieber auch mit 5 % – und plane Inflation mit ein.'}});
+
+/* ============ Symbole ============ */
+function catIcon(ck,s=58){const c=CATINFO[ck]?CATINFO[ck].hex:'#9aa6b6';const P={
+ basis:`<rect x="10" y="30" width="36" height="7" rx="3" fill="${c}"/><rect x="12" y="22" width="36" height="7" rx="3" fill="${c}" opacity=".75"/><rect x="9" y="14" width="36" height="7" rx="3" fill="${c}" opacity=".5"/><circle cx="46" cy="12" r="8" fill="none" stroke="#f5c542" stroke-width="2.4"/><text x="46" y="16" font-size="10" text-anchor="middle" fill="#f5c542" font-family="monospace" font-weight="700">€</text>`,
+ zins:[3,4,5,7,9,12,16,21].map((h,i)=>`<rect x="${6+i*6}" y="${44-h*1.7}" width="4.5" height="${h*1.7}" rx="1" fill="${c}" opacity="${.45+i*.07}"/>`).join('')+`<path d="M6 40 Q36 38 52 6" fill="none" stroke="${c}" stroke-width="2"/>`,
+ inflation:`<circle cx="22" cy="22" r="14" fill="none" stroke="${c}" stroke-width="2.6"/><text x="22" y="27" font-size="14" text-anchor="middle" fill="${c}" font-family="monospace" font-weight="800">€</text><path d="M36 30 L50 46" stroke="${c}" stroke-width="3" stroke-linecap="round"/><path d="M50 46 L50 37 M50 46 L41 46" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`,
+ aktien:`<line x1="14" y1="10" x2="14" y2="44" stroke="#f0605d" stroke-width="2"/><rect x="9" y="18" width="10" height="16" rx="1.5" fill="#f0605d"/><line x1="30" y1="6" x2="30" y2="40" stroke="${c}" stroke-width="2"/><rect x="25" y="12" width="10" height="20" rx="1.5" fill="${c}"/><line x1="46" y1="4" x2="46" y2="30" stroke="${c}" stroke-width="2"/><rect x="41" y="8" width="10" height="16" rx="1.5" fill="${c}"/>`,
+ etf:`<path d="M8 20 H50 L45 46 H13 Z" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><path d="M15 20 A14 14 0 0 1 43 20" fill="none" stroke="${c}" stroke-width="2.6"/>`+[[16,28,'#1fcf8f'],[25,30,'#4c9aff'],[34,28,'#f5c542'],[42,30,'#ff9f43'],[20,38,'#f0605d'],[30,39,c],[39,38,'#1fcf8f']].map(([x,y,f])=>`<circle cx="${x}" cy="${y}" r="4" fill="${f}"/>`).join(''),
+ sparplan:`<rect x="6" y="10" width="38" height="34" rx="5" fill="none" stroke="${c}" stroke-width="2.4"/><line x1="6" y1="19" x2="44" y2="19" stroke="${c}" stroke-width="2.4"/><line x1="15" y1="6" x2="15" y2="13" stroke="${c}" stroke-width="2.4"/><line x1="35" y1="6" x2="35" y2="13" stroke="${c}" stroke-width="2.4"/>`+[0,1,2,3,4,5].map(i=>`<circle cx="${14+(i%3)*11}" cy="${27+Math.floor(i/3)*9}" r="3" fill="${c}"/>`).join('')+`<circle cx="47" cy="44" r="8" fill="#f5c542"/><text x="47" y="48" font-size="10" text-anchor="middle" fill="#1b1505" font-family="monospace" font-weight="800">€</text>`,
+ rechner:`<rect x="12" y="4" width="34" height="46" rx="6" fill="none" stroke="#f5c542" stroke-width="2.4"/><rect x="17" y="9" width="24" height="10" rx="2" fill="#f5c542" opacity=".8"/>`+[0,1,2,3,4,5,6,7,8].map(i=>`<rect x="${17+(i%3)*8.5}" y="${23+Math.floor(i/3)*8.5}" width="6" height="6" rx="1.5" fill="${i===8?'#1fcf8f':'#9aa6b6'}"/>`).join('')};
+ return `<svg width="${s}" height="${s}" viewBox="0 0 56 56">${P[ck]||''}</svg>`;}
+const glyph=(l,size=15)=>`<span style="font-family:var(--mono);font-weight:800;font-size:${l.g.length>3?11:size}px;color:${CATINFO[l.cat].acc}">${l.g}</span>`;
+
+/* ============ Fortschritt ============ */
+let seen={},best=0;try{seen=JSON.parse(localStorage.getItem('fs-seen')||'{}');best=+(localStorage.getItem('fs-best')||0)}catch(e){}
+function markSeen(id){if(seen[id])return;seen[id]=1;try{localStorage.setItem('fs-seen',JSON.stringify(seen))}catch(e){}renderList();updProg();}
+function updProg(){const n=LESSONS.filter(l=>seen[l.id]).length;document.getElementById('progtxt').textContent=`${n} / ${LESSONS.length} gesehen`;document.getElementById('progbar').style.width=(n/LESSONS.length*100)+'%';}
+
+/* ============ Seitenleiste ============ */
+const listEl=document.getElementById('list'),searchEl=document.getElementById('search');
+let current=null;
+function renderList(){
+ const q=searchEl.value.trim().toLowerCase();let h='';
+ for(const ck in CATS){
+  const ls=LESSONS.filter(l=>l.cat===ck&&(!q||(l.title+' '+l.sub+' '+CATS[ck]).toLowerCase().includes(q)));
+  if(!ls.length)continue;
+  h+=`<div class="cat">${CATS[ck]}</div>`;
+  ls.forEach(l=>{h+=`<button class="item ${seen[l.id]?'seen':''} ${current&&current.id===l.id?'on':''}" data-id="${l.id}"><div class="ic">${glyph(l,13)}</div><div><b>${l.title}</b><span>${l.sub}</span></div><div class="ok">✓</div></button>`;});
+ }
+ const rc=Object.keys(CALCS).filter(k=>!q||CALCS[k].t.toLowerCase().includes(q));
+ const top=q?'':`<button class="item quizbtn ${location.hash==='#quiz'?'on':''}" data-q="quiz"><div class="ic" style="font-size:18px">🎯</div><div><b>Quiz</b><span>10 Fragen${best?` · Bestwert ${best}/10`:''}</span></div></button><button class="item ${location.hash.startsWith('#rechner')?'on':''}" data-q="rechner"><div class="ic">${catIcon('rechner',26)}</div><div><b>Alle Rechner</b><span>${Object.keys(CALCS).length} Rechner zum Ausprobieren</span></div></button>`;
+ const rh=q&&rc.length?`<div class="cat">Rechner</div>`+rc.map(k=>`<button class="item" data-q="rechner-${k}"><div class="ic">${catIcon('rechner',22)}</div><div><b>${CALCS[k].t}</b><span>Rechner</span></div></button>`).join(''):'';
+ listEl.innerHTML=top+(h+rh||'<p style="color:var(--mute);padding:10px">Nichts gefunden.</p>');
+}
+listEl.addEventListener('click',e=>{const b=e.target.closest('.item');if(!b)return;location.hash=b.dataset.q||b.dataset.id;});
+searchEl.addEventListener('input',renderList);
+
+/* ============ Player ============ */
+const view=document.getElementById('view');
+const P={L:null,tl:null,t:0,playing:false,speed:1,last:0,dirty:true,cv:null,ctx:null,W:0,H:0,sc:1,stepIdx:-1};
+function buildTL(L){const st=[];let T0=300;L.steps.forEach(s=>{st.push(T0);T0+=s[1]||3000;});return{st,total:T0,steps:L.steps.map((s,i)=>({t:st[i],text:s[0]}))};}
+function makeG(tl,t){const st=tl.st,n=st.length;let s=0;st.forEach((v,i)=>{if(t>=v)s=i;});
+ const lin=(i,d=900,dl=0)=>i>=n?0:clamp((t-st[i]-dl)/d);
+ return{t,s,on:i=>i<n&&t>=st[i],l:lin,k:(i,d=900,dl=0)=>ease(lin(i,d,dl))};}
+function renderScene(ctx,L,tl,t,W,quiz){const dpr=window.devicePixelRatio||1,sc=W/VW;ctx.setTransform(dpr*sc,0,0,dpr*sc,0,0);X=ctx;QUIZ=!!quiz;ctx.fillStyle=C.bg;ctx.fillRect(0,0,VW,VH);
+ try{L.draw(makeG(tl,t));}catch(e){console.error(e);}QUIZ=false;}
+
+function openLesson(id){
+ const L=LESSONS.find(l=>l.id===id);if(!L){showHome();return;}
+ current=L;const idx=LESSONS.indexOf(L),prev=LESSONS[idx-1],next=LESSONS[idx+1],b=L.box,ci=CATINFO[L.cat];
+ view.innerHTML=`
+ <button class="back" id="back">‹ ${CATS[L.cat]}</button>
+ <div class="kicker">${CATS[L.cat]} · Lektion ${LESSONS.filter(l=>l.cat===L.cat).indexOf(L)+1} von ${LESSONS.filter(l=>l.cat===L.cat).length}</div>
+ <h1 style="color:${ci.acc}">${L.title}</h1>
+ <p class="lead">${L.lead||L.sub}</p>
+ <div class="player">
+  <div class="cwrap" id="cwrap"><canvas id="cv"></canvas><div class="overlay" id="ovl"><div id="ovltxt">▶ ABSPIELEN</div></div></div>
+  <div class="caption"><div class="no" id="stepno"></div><p id="captxt"></p></div>
+  <div class="ctrl"><button class="cb" id="play" title="Abspielen/Pause">❚❚</button><input type="range" id="seek" min="0" step="10" value="0" aria-label="Spulen"><button class="cb" id="speed" title="Geschwindigkeit">${P.speed===0.5?'½':P.speed}×</button><button class="cb" id="restart" title="Von vorne">⟲</button></div>
+  <div class="chips" id="chips"></div>
+ </div>
+ <div class="info">
+  <div class="box b"><h3>Was ist das?</h3><p>${b.was}</p></div>
+  <div class="box g"><h3>${b.h2||'So erkennst du es'}</h3><ul>${b.erkennen.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="box y"><h3>Was bedeutet es?</h3><p>${b.bedeutung}</p></div>
+  <div class="box r"><h3>Tipp</h3><p>${b.tipp}</p></div>
+ </div>
+ ${L.calc?calcHTML(L.calc):''}
+ <div class="pn"><button id="prev" ${prev?'':'disabled'}><small>‹ ZURÜCK</small>${prev?prev.title:'–'}</button><button id="next" ${next?'':'disabled'}><small>WEITER ›</small>${next?next.title:'–'}</button></div>
+ <p class="disc">Nur zu Lernzwecken – keine Anlage- oder Steuerberatung. Renditen sind Beispiele und nicht garantiert.</p>`;
+ document.getElementById('back').onclick=()=>{location.hash='kat-'+L.cat;};
+ if(prev)document.getElementById('prev').onclick=()=>location.hash=prev.id;
+ if(next)document.getElementById('next').onclick=()=>location.hash=next.id;
+ P.L=L;P.tl=buildTL(L);P.t=0;P.playing=true;P.stepIdx=-1;P.cv=document.getElementById('cv');P.ctx=P.cv.getContext('2d');
+ const seek=document.getElementById('seek');seek.max=P.tl.total;
+ seek.oninput=()=>{P.t=+seek.value;P.dirty=true;updBtn();};
+ document.getElementById('play').onclick=togglePlay;
+ document.getElementById('cwrap').onclick=togglePlay;
+ document.getElementById('restart').onclick=()=>{P.t=0;P.playing=true;P.dirty=true;updBtn();};
+ document.getElementById('speed').onclick=e=>{P.speed=P.speed===1?2:P.speed===2?0.5:1;e.target.textContent=(P.speed===0.5?'½':P.speed)+'×';};
+ document.getElementById('chips').innerHTML=P.tl.steps.map((s,i)=>`<button class="chip" data-i="${i}">${i+1}</button>`).join('');
+ document.getElementById('chips').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;P.t=P.tl.steps[+c.dataset.i].t+1;P.playing=true;P.dirty=true;updBtn();};
+ if(L.calc)initCalc(L.calc);
+ resize();updBtn();renderList();window.scrollTo(0,0);
+}
+function togglePlay(){if(!P.L)return;if(P.t>=P.tl.total){P.t=0;P.playing=true;}else P.playing=!P.playing;P.dirty=true;updBtn();}
+function updBtn(){const b=document.getElementById('play');if(!b)return;b.textContent=P.playing?'❚❚':(P.t>=P.tl.total?'⟲':'▶');
+ const o=document.getElementById('ovl');const end=P.t>=P.tl.total;o.classList.toggle('show',!P.playing);document.getElementById('ovltxt').textContent=end?'⟲ NOCHMAL ANSEHEN':'▶ WEITER';}
+function resize(){
+ if(P.cv){const w=P.cv.parentElement.clientWidth,h=Math.round(w*VH/VW),dpr=window.devicePixelRatio||1;P.cv.width=Math.round(w*dpr);P.cv.height=Math.round(h*dpr);P.cv.style.height=h+'px';P.W=w;P.H=h;P.dirty=true;}
+ document.querySelectorAll('.calc canvas').forEach(c=>drawCalcChart(c));
+}
+window.addEventListener('resize',resize);
+
+/* ============ Startseite & Bereiche ============ */
+function showHome(){
+ current=null;P.L=null;P.cv=null;
+ const tiles=Object.keys(CATS).map(ck=>{const ls=LESSONS.filter(l=>l.cat===ck),n=ls.length,sn=ls.filter(l=>seen[l.id]).length,ci=CATINFO[ck];
+  return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
+ const rech=`<button class="big" data-h="rechner" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi">${catIcon('rechner')}</div><h2>Rechner</h2><p>Zinseszins, Sparplan, Sparziel, Inflation, Realzins, Kosten, Dividende und Steuern – selbst ausprobieren.</p><div class="ft"><span>${Object.keys(CALCS).length} RECHNER</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
+ const quiz=`<button class="big" data-h="quiz" style="--acc:var(--text);--glow:rgba(127,139,156,.16)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
+ view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>Geld verstehen</h1>
+ <p class="lead">Jede Lektion ist ein kleines Video: Das Diagramm baut sich Schritt für Schritt auf und wird erklärt. Mit Rechnern zum Ausprobieren und einem Quiz.</p>
+ <div class="bigtiles">${tiles}${rech}${quiz}</div>
+ <p class="disc">Nur zu Lernzwecken – keine Anlage- oder Steuerberatung.</p></div>`;
+ view.querySelectorAll('.big').forEach(t=>t.onclick=()=>location.hash=t.dataset.h);
+ renderList();window.scrollTo(0,0);
+}
+function showCat(ck){
+ if(!CATS[ck]){showHome();return;}current=null;P.L=null;P.cv=null;
+ const ls=LESSONS.filter(l=>l.cat===ck),ci=CATINFO[ck];
+ view.innerHTML=`<div class="home" style="--acc:${ci.acc}"><button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">${ls.length} Lektionen · ${ls.filter(l=>seen[l.id]).length} gesehen</div><h1 style="color:${ci.acc}">${CATS[ck]}</h1><p class="lead">${ci.d}</p>
+ <div class="lcards">${ls.map((l,i)=>`<button class="lc" data-id="${l.id}"><div class="ic">${glyph(l,17)}</div><div><small>LEKTION ${i+1}${l.calc?' · MIT RECHNER':''}</small><b>${l.title}</b><span>${l.sub}</span></div>${seen[l.id]?'<div class="ok">✓</div>':''}</button>`).join('')}</div>
+ <p class="disc">Nur zu Lernzwecken – keine Anlage- oder Steuerberatung.</p></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.lc').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ renderList();window.scrollTo(0,0);
+}
+
+/* ============ Rechner ============ */
+const num=v=>parseFloat(String(v).trim().replace(/\./g,'').replace(',','.'));
+const CALCS={
+ zins:{t:'Zinseszins-Rechner',c:'y',f:[['start','STARTKAPITAL (€)','10.000'],['zins','ZINS PRO JAHR (%)','7'],['jahre','JAHRE','30']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=80))return null;const r=v.zins/100,a=[],b=[];for(let i=0;i<=n;i++){const w=v.start*Math.pow(1+r,i);a.push(v.start);b.push(w-v.start);}const end=a[n]+b[n];
+   return{res:[['ENDWERT',eur(end),'gold'],['DAVON ZINSEN',eur(end-v.start)],['FAKTOR','× '+de(end/v.start,2)],['OHNE ZINSESZINS',eur(v.start*(1+r*n))]],chart:{a,b,la:'Startkapital',lb:'Zinsen'},note:`Formel: Endwert = ${eur(v.start)} × (1 + ${de(v.zins,2)} %)^${n}`};}},
+ sparplan:{t:'Sparplan-Rechner',c:'o',f:[['start','STARTKAPITAL (€)','0'],['rate','MONATLICH (€)','100'],['zins','RENDITE PRO JAHR (%)','7'],['jahre','JAHRE','30']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=80))return null;const s=sparVerlauf(v.rate,n,v.zins/100,v.start),a=[],b=[];for(let i=0;i<=n;i++){const e=v.start+v.rate*12*i;a.push(e);b.push(s[i]-e);}const e=a[n],end=s[n];
+   return{res:[['ENDWERT',eur(end),'gold'],['EINGEZAHLT',eur(e)],['ERTRÄGE',eur(end-e)],['ANTEIL ERTRÄGE',pc(e?((end-e)/end*100):0,0)]],chart:{a,b,la:'Eingezahlt',lb:'Erträge'},note:'Monatliche Einzahlung, Rendite monatlich umgerechnet. Ohne Kosten, Steuern und Inflation.'};}},
+ ziel:{t:'Sparziel-Rechner',c:'o',f:[['ziel','ZIELBETRAG (€)','100.000'],['start','STARTKAPITAL (€)','0'],['zins','RENDITE PRO JAHR (%)','7'],['jahre','JAHRE','20']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=80)||v.ziel<=0)return null;const rm=RM(v.zins/100),m=n*12,f=rm?Math.pow(1+rm,m):1,ann=rm?(f-1)/rm:m;const rate=Math.max(0,(v.ziel-v.start*f)/ann);
+   const s=sparVerlauf(rate,n,v.zins/100,v.start),a=[],b=[];for(let i=0;i<=n;i++){const e=v.start+rate*12*i;a.push(e);b.push(Math.max(0,s[i]-e));}
+   return{res:[['NÖTIGE MONATSRATE',eur(rate,2),'gold'],['EINGEZAHLT',eur(v.start+rate*m)],['ERTRÄGE',eur(Math.max(0,v.ziel-v.start-rate*m))],['PRO TAG',eur(rate*12/365,2)]],chart:{a,b,la:'Eingezahlt',lb:'Erträge'},note:rate===0?'Dein Startkapital reicht schon – es wächst von allein bis zum Ziel.':'So viel musst du jeden Monat sparen, um dein Ziel zu erreichen.'};}},
+ inflation:{t:'Inflationsrechner',c:'r',f:[['betrag','BETRAG (€)','10.000'],['infl','INFLATION PRO JAHR (%)','2'],['jahre','JAHRE','20']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=80))return null;const i=v.infl/100,kk=v.betrag/Math.pow(1+i,n),line=[];for(let k=0;k<=n;k++)line.push(v.betrag/Math.pow(1+i,k));
+   return{res:[['KAUFKRAFT DANN',eur(kk),'down'],['VERLUST',pc((1-kk/v.betrag)*100,1)],['GLEICHER EINKAUF KOSTET',eur(v.betrag*Math.pow(1+i,n))],['HALBIERUNG NACH',i>0?'ca. '+de(Math.log(2)/Math.log(1+i),1)+' J.':'–']],chart:{line,ll:'Kaufkraft'},note:`Was heute ${eur(v.betrag)} kostet, kostet in ${n} Jahren ${eur(v.betrag*Math.pow(1+i,n))}.`};}},
+ realzins:{t:'Realzins-Rechner',c:'r',f:[['zins','ZINS / RENDITE (%)','3'],['infl','INFLATION (%)','2']],
+  run(v){const ex=((1+v.zins/100)/(1+v.infl/100)-1)*100,ap=v.zins-v.infl;
+   return{res:[['REALZINS (GENAU)',pc(ex,2),ex>=0?'up':'down'],['FAUSTFORMEL',pc(ap,2)],['BEDEUTUNG',ex>=0?'Du wirst real reicher':'Du verlierst Kaufkraft']],note:'Genau: (1 + Zins) ÷ (1 + Inflation) − 1. Faustformel: Zins − Inflation.'};}},
+ regel72:{t:'72er-Regel',c:'y',f:[['zins','ZINS PRO JAHR (%)','8']],
+  run(v){if(!(v.zins>0))return null;const a=72/v.zins,e=Math.log(2)/Math.log(1+v.zins/100);
+   return{res:[['72er-REGEL',de(a,1)+' Jahre','gold'],['GENAU',de(e,1)+' Jahre'],['×4 NACH','ca. '+de(2*e,1)+' J.'],['×8 NACH','ca. '+de(3*e,1)+' J.']],note:`72 ÷ ${de(v.zins,2)} = ${de(a,1)}. Die Regel ist zwischen etwa 4 % und 12 % sehr genau.`};}},
+ kosten:{t:'Kosten-Rechner (TER)',c:'p',f:[['betrag','ANLAGE (€)','10.000'],['rend','RENDITE VOR KOSTEN (%)','7'],['jahre','JAHRE','30'],['ka','KOSTEN A (%)','0,2'],['kb','KOSTEN B (%)','1,8']],
+  run(v){const n=Math.round(v.jahre);if(!(n>0&&n<=80))return null;const ra=(v.rend-v.ka)/100,rb=(v.rend-v.kb)/100,A=[],B=[];for(let i=0;i<=n;i++){A.push(v.betrag*Math.pow(1+ra,i));B.push(v.betrag*Math.pow(1+rb,i));}
+   return{res:[['MIT KOSTEN A',eur(A[n]),'purple'],['MIT KOSTEN B',eur(B[n]),'down'],['UNTERSCHIED',eur(Math.abs(A[n]-B[n])),'gold']],chart:{lines:[[A,'purple','Kosten A'],[B,'down','Kosten B']]},note:'Vereinfacht: Die Kosten werden jedes Jahr von der Rendite abgezogen.'};}},
+ dividende:{t:'Dividenden-Rechner',c:'g',f:[['anz','ANZAHL AKTIEN','100'],['div','DIVIDENDE JE AKTIE (€)','2'],['kurs','KURS (€)','50']],
+  run(v){if(!(v.kurs>0))return null;const br=v.anz*v.div;
+   return{res:[['DIVIDENDE BRUTTO',eur(br,2),'up'],['DIVIDENDENRENDITE',pc(v.div/v.kurs*100,2),'gold'],['DEPOTWERT',eur(v.anz*v.kurs,2)],['NACH STEUER*',eur(br*(1-.26375),2)]],note:'* Wenn dein Freibetrag schon aufgebraucht ist: 26,375 % (ohne Kirchensteuer). Innerhalb des Freibetrags bleibt alles steuerfrei.'};}},
+ steuer:{t:'Steuer-Rechner',c:'b',f:[['gewinn','GEWINN IM JAHR (€)','3.000'],['frei','FREIBETRAG',[['1000','1.000 € (Single)'],['2000','2.000 € (Ehepaar)'],['0','0 € (schon genutzt)']]],['art','ART DER ERTRÄGE',[['0','Zinsen / Aktien'],['30','Aktien-ETF (30 % frei)']]]],
+  run(v){const tf=v.art/100,stb=Math.max(0,v.gewinn*(1-tf)-v.frei),st=stb*.26375;
+   return{res:[['STEUERPFLICHTIG',eur(stb,2)],['STEUER',eur(st,2),'down'],['NETTO',eur(v.gewinn-st,2),'up'],['EFFEKTIV',pc(v.gewinn>0?st/v.gewinn*100:0,2)]],note:'25 % Abgeltungsteuer + 5,5 % Soli = 26,375 %. Ohne Kirchensteuer. Keine Steuerberatung.'};}}
+};
+const CLS={y:'y',o:'o',r:'r',p:'p',g:'g',b:'b'};
+function calcHTML(k){const c=CALCS[k];return `<div class="box calc ${CLS[c.c]}" data-calc="${k}"><h3>Rechner: ${c.t}</h3>
+ <div class="grid">${c.f.map(([id,lab,val])=>Array.isArray(val)?`<div><label>${lab}</label><select data-f="${id}">${val.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select></div>`:`<div><label>${lab}</label><input data-f="${id}" inputmode="decimal" value="${val}"></div>`).join('')}</div>
+ <div class="res"></div>${['zins','sparplan','ziel','inflation','kosten'].includes(k)?'<canvas></canvas>':''}<div class="note"></div></div>`;}
+function initCalc(k){const el=view.querySelector(`.calc[data-calc="${k}"]`);if(!el)return;el.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',()=>runCalc(el)));runCalc(el);}
+function runCalc(el){const c=CALCS[el.dataset.calc],v={};let ok=true;el.querySelectorAll('[data-f]').forEach(i=>{v[i.dataset.f]=num(i.value);if(!isFinite(v[i.dataset.f])||v[i.dataset.f]<0)ok=false;});
+ const r=ok?c.run(v):null,out=el.querySelector('.res'),note=el.querySelector('.note'),cv=el.querySelector('canvas');
+ if(!r){out.innerHTML='<div style="grid-column:1/-1"><span>HINWEIS</span>Bitte gültige Zahlen eingeben (Jahre zwischen 1 und 80).</div>';note.textContent='';if(cv){cv._d=null;drawCalcChart(cv);}return;}
+ out.innerHTML=r.res.map(([l,val,col])=>`<div><span>${l}</span><b ${col?`style="color:var(--${col==='down'?'down':col==='up'?'up':col})"`:''}>${val}</b></div>`).join('');note.textContent=r.note||'';
+ if(cv){cv._d=r.chart;drawCalcChart(cv);}}
+function drawCalcChart(cv){const d=cv._d,w=cv.clientWidth||cv.parentElement.clientWidth-2;if(!w)return;const h=Math.round(Math.min(260,Math.max(170,w*.42))),dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+'px';
+ const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,w,h);if(!d)return;const oldX=X;X=ctx;
+ const x0=56,x1=w-10,y0=h-24,y1=26;let max=0,n=0;if(d.a){n=d.a.length-1;d.a.forEach((v,i)=>max=Math.max(max,v+d.b[i]));}else if(d.line){n=d.line.length-1;max=Math.max(...d.line);}else{n=d.lines[0][0].length-1;d.lines.forEach(l=>max=Math.max(max,...l[0]));}
+ const mag=Math.pow(10,Math.floor(Math.log10(max||1))),step=[1,2,2.5,5,10].map(s=>s*mag).find(s=>max/s<=4)||mag*10,top=Math.ceil(max/step)*step||1;const Y=v=>y0-v/top*(y0-y1),XX=i=>x0+(n?i/n:0)*(x1-x0);
+ const lab=v=>v>=1e6?de(v/1e6,v%1e6?1:0)+' Mio':v>=1000?de(v/1000)+' T':de(v);
+ for(let v=0;v<=top+1e-9;v+=step){ctx.strokeStyle=v?C.grid:C.line2;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x0,Y(v));ctx.lineTo(x1,Y(v));ctx.stroke();ctx.fillStyle=C.mute;ctx.font=font(10,500);ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillText(lab(v),x0-6,Y(v));}
+ ctx.textAlign='center';ctx.fillStyle=C.mute;[0,Math.round(n/2),n].forEach(i=>ctx.fillText(i+' J.',XX(i),h-11));
+ const leg=[];
+ if(d.a){const bw=Math.max(1.5,(x1-x0)/(n+1)*.72);const ca=d.la==='Startkapital'?C.blue:C.blue,cb=d.lb==='Zinsen'?C.gold:C.orange;
+  for(let i=0;i<=n;i++){const x=XX(i)-bw/2;ctx.fillStyle=ca;ctx.fillRect(x,Y(d.a[i]),bw,y0-Y(d.a[i]));ctx.fillStyle=cb;ctx.fillRect(x,Y(d.a[i]+d.b[i]),bw,Y(d.a[i])-Y(d.a[i]+d.b[i]));}leg.push([d.la,ca],[d.lb,cb]);}
+ if(d.line){ctx.strokeStyle=C.down;ctx.lineWidth=2.5;ctx.beginPath();d.line.forEach((v,i)=>i?ctx.lineTo(XX(i),Y(v)):ctx.moveTo(XX(i),Y(v)));ctx.stroke();leg.push([d.ll,C.down]);}
+ if(d.lines)d.lines.forEach(([arr,c,l])=>{ctx.strokeStyle=C[c];ctx.lineWidth=2.5;ctx.beginPath();arr.forEach((v,i)=>i?ctx.lineTo(XX(i),Y(v)):ctx.moveTo(XX(i),Y(v)));ctx.stroke();leg.push([l,C[c]]);});
+ let lx=x0;ctx.font=font(10,700);ctx.textAlign='left';leg.forEach(([l,c])=>{ctx.fillStyle=c;ctx.fillRect(lx,8,9,9);ctx.fillStyle=C.mute;ctx.fillText(l.toUpperCase(),lx+13,13);lx+=ctx.measureText(l.toUpperCase()).width+30;});
+ X=oldX;}
+function showRechner(sel){current=null;P.L=null;P.cv=null;const keys=Object.keys(CALCS);if(!CALCS[sel])sel=keys[0];
+ view.innerHTML=`<div class="home"><button class="back" id="back">‹ Startseite</button><div class="kicker">${keys.length} Rechner</div><h1 style="color:var(--gold)">Rechner</h1><p class="lead">Gib deine eigenen Zahlen ein – alles wird sofort neu berechnet.</p>
+ <div class="rsel">${keys.map(k=>`<button data-k="${k}" class="${k===sel?'on':''}">${CALCS[k].t}</button>`).join('')}</div>${calcHTML(sel)}
+ ${LESSONS.find(l=>l.calc===sel)?`<p style="margin-top:14px"><button class="back" id="tolesson">📖 Passende Lektion: ${LESSONS.find(l=>l.calc===sel).title}</button></p>`:''}
+ <p class="disc">Nur zu Lernzwecken – keine Anlage- oder Steuerberatung.</p></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.rsel button').forEach(b=>b.onclick=()=>{history.replaceState(null,'','#rechner-'+b.dataset.k);showRechner(b.dataset.k);});
+ const tl=document.getElementById('tolesson');if(tl)tl.onclick=()=>location.hash=LESSONS.find(l=>l.calc===sel).id;
+ initCalc(sel);renderList();}
+
+/* ============ Quiz ============ */
+const TQ=[
+ {q:'10.000 € liegen 10 Jahre zu 0 % auf dem Konto. Wie viel sind es danach?',a:['10.000 €','10.500 €','11.000 €','9.000 €'],e:'Ohne Zinsen wächst nichts. Durch Inflation sinkt sogar die Kaufkraft.',l:'sparen'},
+ {q:'Deine Ausgaben sind 2.500 € im Monat. Wie groß sollte ein Notgroschen von 3 Monatsausgaben sein?',a:['7.500 €','2.500 €','5.000 €','25.000 €'],e:'3 × 2.500 € = 7.500 €.',l:'notgroschen'},
+ {q:'Wo parkst du deinen Notgroschen am besten?',a:['Auf einem Tagesgeldkonto','In Einzelaktien','In Kryptowährungen','In einem 10-jährigen Festgeld'],e:'Er muss sicher und sofort verfügbar sein.',l:'notgroschen'},
+ {q:'Du legst 2.000 € an und hast nach einem Jahr 2.100 €. Wie hoch ist die Rendite?',a:['5 %','10 %','2,1 %','100 %'],e:'Gewinn 100 € ÷ 2.000 € × 100 = 5 %.',l:'rendite'},
+ {q:'Jemand verspricht dir „20 % pro Jahr – völlig ohne Risiko“. Was gilt?',a:['Vorsicht – hohe Rendite gibt es nie ohne Risiko','Sofort zugreifen','Das ist bei Tagesgeld normal','Das ist gesetzlich garantiert'],e:'Hohe Renditeversprechen ohne Risiko sind ein typisches Warnsignal für Betrug.',l:'risiko'},
+ {q:'Welche drei Ziele bilden das magische Dreieck der Geldanlage?',a:['Sicherheit, Liquidität, Rendite','Zins, Steuer, Inflation','Aktien, Anleihen, Gold','Kosten, Dauer, Risiko'],e:'Keine Anlage erfüllt alle drei Ziele gleichzeitig perfekt.',l:'dreieck'},
+ {q:'1.000 € zu 4 % einfachem Zins – wie viel Zinsen gibt es in 5 Jahren?',a:['200 €','40 €','216,65 €','400 €'],e:'1.000 € × 4 % × 5 Jahre = 200 €.',l:'zins'},
+ {q:'1.000 € zu 10 % mit Zinseszins: Wie viel sind es nach 2 Jahren?',a:['1.210 €','1.200 €','1.100 €','1.020 €'],e:'1.000 × 1,1 = 1.100 → × 1,1 = 1.210 €. Im 2. Jahr gibt es auch Zinsen auf die Zinsen.',l:'zinseszins'},
+ {q:'Wie sieht Zinseszins im Diagramm aus?',a:['Eine Kurve, die immer steiler wird','Eine gerade Linie','Eine fallende Linie','Eine waagrechte Linie'],e:'Der Zuwachs wird jedes Jahr größer – exponentielles Wachstum.',l:'zinseszins'},
+ {q:'Nach der 72er-Regel: Wie lange dauert eine Verdopplung bei 6 % Rendite?',a:['Ca. 12 Jahre','Ca. 6 Jahre','Ca. 18 Jahre','Ca. 72 Jahre'],e:'72 ÷ 6 = 12 Jahre.',l:'regel72'},
+ {q:'Nach der 72er-Regel: Welche Rendite verdoppelt dein Geld in 9 Jahren?',a:['8 %','9 %','6 %','12 %'],e:'72 ÷ 9 = 8 %.',l:'regel72'},
+ {q:'Anna spart 10 Jahre ab 25, Ben 30 Jahre ab 35 (je 100 €/Monat, 7 %). Wer hat mit 65 mehr?',a:['Anna','Ben','Beide gleich viel','Keiner hat Gewinn'],e:'Anna hat nur 12.000 € eingezahlt, aber ihr Geld hatte 40 Jahre Zeit zu wachsen.',l:'frueh'},
+ {q:'Bei 2 % Inflation kostet ein Einkauf heute 100 €. Was kostet er in einem Jahr?',a:['102 €','98 €','100 €','120 €'],e:'100 € × 1,02 = 102 €.',l:'inflation'},
+ {q:'Welches Inflationsziel hat die Europäische Zentralbank?',a:['2 %','0 %','5 %','10 %'],e:'Die EZB strebt mittelfristig 2 % an.',l:'inflation'},
+ {q:'Was passiert mit Bargeld unter der Matratze bei Inflation?',a:['Es verliert an Kaufkraft','Es wird mehr wert','Nichts','Es wird automatisch verzinst'],e:'Der Betrag bleibt gleich, aber du kannst weniger dafür kaufen.',l:'kaufkraft'},
+ {q:'Zins 4 %, Inflation 3 %. Wie hoch ist der Realzins ungefähr?',a:['1 %','7 %','−1 %','12 %'],e:'Faustformel: 4 % − 3 % = 1 %.',l:'realzins'},
+ {q:'Zins 1 %, Inflation 4 %. Was bedeutet das?',a:['Du verlierst real ca. 3 % pro Jahr','Du gewinnst 5 %','Du gewinnst 1 %','Nichts passiert'],e:'Realzins ≈ 1 % − 4 % = −3 %. Die Kaufkraft sinkt.',l:'realzins'},
+ {q:'Wie heißt der Index, mit dem in Deutschland die Inflation gemessen wird?',a:['Verbraucherpreisindex (VPI)','DAX','MSCI World','Leitzins'],e:'Das Statistische Bundesamt berechnet den VPI aus einem Warenkorb.',l:'vpi'},
+ {q:'Welche Anlage ist ein Sachwert?',a:['Aktien','Tagesgeld','Sparbuch','Anleihe'],e:'Aktien sind Anteile an echten Unternehmen – also Sachwerte.',l:'sachwerte'},
+ {q:'Eine Firma hat 1.000 Aktien. Du besitzt 10 davon. Wie viel gehört dir?',a:['1 %','10 %','0,1 %','100 %'],e:'10 ÷ 1.000 × 100 = 1 %.',l:'aktie'},
+ {q:'Mehr Menschen wollen eine Aktie kaufen als verkaufen. Was passiert meist?',a:['Der Kurs steigt','Der Kurs fällt','Der Kurs bleibt gleich','Die Börse schließt'],e:'Höhere Nachfrage treibt den Preis nach oben.',l:'boerse'},
+ {q:'Du hast 200 Aktien, die Dividende beträgt 1,50 € je Aktie. Wie viel bekommst du (brutto)?',a:['300 €','150 €','200 €','1.500 €'],e:'200 × 1,50 € = 300 €.',l:'dividende'},
+ {q:'Kurs 40 €, Dividende 2 € je Aktie. Wie hoch ist die Dividendenrendite?',a:['5 %','2 %','20 %','8 %'],e:'2 € ÷ 40 € × 100 = 5 %.',l:'dividende'},
+ {q:'Kurs 120 €, Gewinn je Aktie 6 €. Wie hoch ist das KGV?',a:['20','6','72','720'],e:'KGV = 120 ÷ 6 = 20.',l:'kgv'},
+ {q:'Eine Aktie fällt um 50 %. Wie viel muss sie danach steigen, um wieder auf dem alten Stand zu sein?',a:['+100 %','+50 %','+25 %','+200 %'],e:'Von 100 auf 50 = −50 %. Von 50 zurück auf 100 = +100 %.',l:'crash'},
+ {q:'Wofür steht „ETF“?',a:['Exchange Traded Fund','Euro Trading Fonds','Extra Tax Free','Electronic Transfer Fund'],e:'Ein börsengehandelter Indexfonds.',l:'etf'},
+ {q:'Was passiert mit deinem ETF-Geld, wenn der Anbieter pleitegeht?',a:['Es ist als Sondervermögen geschützt','Es ist komplett weg','Der Staat zahlt 100.000 €','Es wird in Gold getauscht'],e:'Fondsvermögen ist Sondervermögen und gehört nicht zur Insolvenzmasse des Anbieters.',l:'etf'},
+ {q:'Wie viele Unternehmen enthält der DAX?',a:['40','30','100','500'],e:'Seit 2021 sind es 40 Unternehmen.',l:'index'},
+ {q:'Du hast 100 Firmen zu je 100 €. Eine fällt um 50 %. Wie viel verlierst du insgesamt?',a:['50 € (0,5 %)','5.000 €','500 €','100 €'],e:'Nur die eine Position mit 100 € verliert die Hälfte: 50 €.',l:'streuung'},
+ {q:'Was bedeutet TER?',a:['Die laufenden jährlichen Kosten eines Fonds','Die Steuer auf Erträge','Die Rendite pro Jahr','Die Mindestanlage'],e:'Total Expense Ratio = Gesamtkostenquote pro Jahr.',l:'ter'},
+ {q:'Was macht ein thesaurierender ETF mit den Dividenden?',a:['Er legt sie automatisch wieder an','Er zahlt sie aufs Konto','Er spendet sie','Er behält sie als Gebühr'],e:'Thesaurieren = wieder anlegen. So wirkt der Zinseszins automatisch.',l:'thes'},
+ {q:'Ein Sparplan mit 100 € im Monat – wie viel zahlst du in 30 Jahren ein?',a:['36.000 €','3.600 €','30.000 €','12.000 €'],e:'100 € × 12 × 30 = 36.000 €.',l:'sparplan'},
+ {q:'Kurs 10 € und 100 € Sparrate: Wie viele Anteile kaufst du? Und bei Kurs 5 €?',a:['10 und 20 Anteile','10 und 5 Anteile','20 und 10 Anteile','10 und 10 Anteile'],e:'100 ÷ 10 = 10 und 100 ÷ 5 = 20. Das ist der Cost-Average-Effekt.',l:'cae'},
+ {q:'In stetig steigenden Märkten liegt meist vorne …',a:['… die Einmalanlage','… der Sparplan','… das Sparbuch','… Bargeld'],e:'Das Geld ist früher komplett investiert und profitiert länger vom Anstieg.',l:'einmal'},
+ {q:'Wie hoch ist der Sparerpauschbetrag für eine einzelne Person?',a:['1.000 € pro Jahr','801 € pro Jahr','2.000 € pro Jahr','10.000 € pro Jahr'],e:'Seit 2023 sind es 1.000 € (Ehepaare 2.000 €).',l:'steuern'},
+ {q:'Gewinn 1.500 €, Freibetrag 1.000 €. Wie viel ist steuerpflichtig?',a:['500 €','1.500 €','1.000 €','0 €'],e:'1.500 € − 1.000 € = 500 €. Darauf fallen 26,375 % an (ohne Kirchensteuer).',l:'steuern'},
+ {q:'Wie viel Prozent der Erträge sind bei Aktien-ETFs steuerfrei (Teilfreistellung)?',a:['30 %','15 %','50 %','0 %'],e:'Bei Aktienfonds (über 50 % Aktien) sind 30 % der Erträge steuerfrei.',l:'steuern'},
+ {q:'500 € im Monat bei 7 %: Etwa wann ist die erste Million erreicht?',a:['Nach rund 37 Jahren','Nach rund 10 Jahren','Nach rund 20 Jahren','Nach rund 80 Jahren'],e:'Das zeigt die Lektion „Dein Sparziel“ – nach etwa 37 Jahren.',l:'ziel'}
+];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+let Q=null;
+function startQuiz(){
+ current=null;P.L=null;P.cv=null;
+ const pics=shuffle(LESSONS.filter(l=>l.qpic)).slice(0,4).map(L=>({pic:L,q:L.qpic.q,opts:shuffle([L.qpic.ans,...L.qpic.wrong]),ans:L.qpic.ans,e:L.box.was,l:L.id}));
+ const txt=shuffle(TQ.slice()).slice(0,6).map(x=>({q:x.q,opts:shuffle(x.a.slice()),ans:x.a[0],e:x.e,l:x.l}));
+ Q={list:shuffle([...pics,...txt]),i:0,score:0,wrong:[]};renderList();renderQ();
+}
+function renderQ(){
+ const it=Q.list[Q.i],n=Q.list.length;
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">Quiz · Frage ${Q.i+1} von ${n} · ${Q.score} richtig</div><h1>Teste dein Wissen</h1>
+ <div class="qcard"><div class="qbar"><i style="width:${Q.i/n*100}%"></i></div>
+ <p class="qq">${it.q}</p>${it.pic?'<div class="qcv"><canvas id="qcv"></canvas></div>':''}
+ <div class="opts">${it.opts.map((o,k)=>`<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}) ${o}</button>`).join('')}</div>
+ <div id="fb"></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ if(it.pic)drawStatic(document.getElementById('qcv'),it.pic);
+ view.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));window.scrollTo(0,0);
+}
+function answer(k){
+ const it=Q.list[Q.i],ok=it.opts[k]===it.ans;if(ok)Q.score++;else Q.wrong.push(it.l);
+ view.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(it.opts[j]===it.ans)b.classList.add('ok');else if(j===k)b.classList.add('bad');});
+ const last=Q.i===Q.list.length-1,L=LESSONS.find(x=>x.id===it.l);
+ document.getElementById('fb').innerHTML=`<div class="fb"><b style="color:${ok?'var(--up)':'var(--down)'}">${ok?'✓ RICHTIG!':'✗ LEIDER FALSCH'}</b>${ok?'':` – richtig ist: <b>${it.ans}</b>`}<br>${it.e}</div>
+ <div class="qnav"><button id="tol">📖 Lektion: ${L?L.title:''}</button><button class="main" id="nx">${last?'Ergebnis ansehen':'Weiter ›'}</button></div>`;
+ document.getElementById('tol').onclick=()=>location.hash=it.l;
+ document.getElementById('nx').onclick=()=>{if(last)renderResult();else{Q.i++;renderQ();}};
+}
+function renderResult(){
+ const n=Q.list.length,sc=Q.score;if(sc>best){best=sc;try{localStorage.setItem('fs-best',best)}catch(e){}}renderList();
+ const msg=sc===n?'Perfekt! Du bist ein echter Finanz-Profi. 🏆':sc>=8?'Sehr stark! Fast alles richtig. 💪':sc>=5?'Gut! Ein paar Lektionen kannst du noch wiederholen.':'Nicht schlimm – schau dir die Lektionen unten nochmal an und versuch es erneut.';
+ const rep=[...new Set(Q.wrong)].map(id=>LESSONS.find(l=>l.id===id)).filter(Boolean);
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button><div class="kicker">Quiz · Ergebnis</div><h1>Geschafft!</h1>
+ <div class="qcard"><div class="score" style="color:${sc>=8?'var(--up)':sc>=5?'var(--gold)':'var(--down)'}">${sc} / ${n}</div><p style="font-size:16px;margin:0 0 6px">${msg}</p>
+ <p style="color:var(--mute);font-family:var(--mono);font-size:12px;margin:0">BESTWERT: ${best} / ${n}</p>
+ ${rep.length?`<p style="margin:16px 0 6px;font-weight:700">Diese Lektionen solltest du wiederholen:</p><div class="opts">${rep.map(l=>`<button class="opt" data-id="${l.id}">📖 ${l.title}</button>`).join('')}</div>`:''}
+ <div class="qnav"><button id="home">Zur Übersicht</button><button class="main" id="again">🎯 Neues Quiz</button></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.opt[data-id]').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ document.getElementById('home').onclick=()=>{location.hash='';};
+ document.getElementById('again').onclick=()=>{startQuiz();};
+}
+function drawStatic(cv,L){const w=cv.parentElement.clientWidth,h=Math.round(w*VH/VW),dpr=window.devicePixelRatio||1;cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';
+ const tl=buildTL(L);renderScene(cv.getContext('2d'),L,tl,tl.total,w,true);}
+
+/* ---- Schleife ---- */
+function frame(ts){
+ const dt=P.last?Math.min(60,ts-P.last):0;P.last=ts;
+ if(P.L&&P.cv){
+  if(P.playing){P.t+=dt*P.speed;if(P.t>=P.tl.total){P.t=P.tl.total;P.playing=false;updBtn();markSeen(P.L.id);}P.dirty=true;}
+  if(P.dirty){
+   renderScene(P.ctx,P.L,P.tl,P.t,P.W,false);
+   const sk=document.getElementById('seek');if(sk)sk.value=P.t;
+   let si=0;P.tl.steps.forEach((s,i)=>{if(P.t>=s.t)si=i;});
+   if(si!==P.stepIdx){P.stepIdx=si;const cp=document.getElementById('captxt');cp.style.opacity=0;setTimeout(()=>{cp.textContent=P.tl.steps[si].text;cp.style.opacity=1;},120);
+    document.getElementById('stepno').textContent=`SCHRITT ${si+1} / ${P.tl.steps.length}`;
+    document.querySelectorAll('.chip').forEach((c,i)=>{c.classList.toggle('on',i===si);c.classList.toggle('done',i<si);});}
+   P.dirty=false;
+  }
+ }
+ requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{P.dirty=true;resize();});
+
+/* ============ Hell/Dunkel ============ */
+const mqLight=window.matchMedia?matchMedia('(prefers-color-scheme: light)'):null;
+function themeMode(){try{return localStorage.getItem('kompass-theme')||'dark'}catch(e){return 'dark'}}
+function applyTheme(m){const t=m==='auto'?(mqLight&&mqLight.matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);setCanvasTheme(t);
+ document.querySelectorAll('.theme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===m)));
+ const mc=document.querySelector('meta[name=theme-color]');if(mc)mc.setAttribute('content',t==='light'?'#f3f5f9':'#05080d');
+ P.dirty=true;document.querySelectorAll('.calc canvas').forEach(c=>drawCalcChart(c));const qc=document.getElementById('qcv');if(qc&&Q&&Q.list[Q.i]&&Q.list[Q.i].pic)drawStatic(qc,Q.list[Q.i].pic);}
+document.querySelectorAll('.theme button').forEach(b=>b.addEventListener('click',()=>{try{localStorage.setItem('kompass-theme',b.dataset.m)}catch(e){}applyTheme(b.dataset.m);}));
+if(mqLight&&mqLight.addEventListener)mqLight.addEventListener('change',()=>{if(themeMode()==='auto')applyTheme('auto');});
+applyTheme(themeMode());
+
+function route(){const id=decodeURIComponent(location.hash.slice(1));if(id==='quiz')startQuiz();else if(id==='rechner'||id.startsWith('rechner-'))showRechner(id.slice(8));else if(id.startsWith('kat-'))showCat(id.slice(4));else if(id)openLesson(id);else showHome();}
+window.addEventListener('hashchange',route);
+updProg();route();
+try{if("serviceWorker" in navigator&&/kompassapps\.de$/.test(location.hostname))navigator.serviceWorker.register("sw.js");}catch(e){}
+</script>
+</body>
+</html>

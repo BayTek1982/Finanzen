@@ -1,0 +1,15 @@
+{
+  "name": "Bayazit Finanz-Schule",
+  "short_name": "Finanz-Schule",
+  "description": "Geld verstehen: Aktien, ETFs, Zinseszins, Inflation und Sparpläne – mit Rechnern und Quiz.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#05080d",
+  "theme_color": "#05080d",
+  "lang": "de",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
