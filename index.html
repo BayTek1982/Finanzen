@@ -14,14 +14,14 @@
 <style>
 :root{
   --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
-  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --lime:#a3e635; --pink:#ff4f9a; --indigo:#8c9eff;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --lime:#a3e635; --pink:#ff4f9a; --indigo:#8c9eff; --teal:#2dd4bf;
   --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 [data-theme="light"]{
   --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
-  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#0e7490; --lime:#4d7c0f; --pink:#be185d; --indigo:#3949ab;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#0e7490; --lime:#4d7c0f; --pink:#be185d; --indigo:#3949ab; --teal:#0f766e;
   --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
 }
 *{box-sizing:border-box}
@@ -153,7 +153,7 @@ canvas{display:block;width:100%}
 .rsel button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13.5px}
 .rsel button.on{border-color:var(--gold);color:var(--gold)}
 .calc select{width:100%;margin-top:4px;padding:10px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:16px}
-.calc.o h3{color:var(--orange)}.calc.a h3{color:var(--aqua)}.calc.l h3{color:var(--lime)}.calc.k h3{color:var(--pink)}.calc.p h3{color:var(--purple)}
+.calc.o h3{color:var(--orange)}.calc.a h3{color:var(--aqua)}.calc.l h3{color:var(--lime)}.calc.k h3{color:var(--pink)}.calc.t h3{color:var(--teal)}.calc.p h3{color:var(--purple)}
 .big .bi svg{display:block}
 </style>
 </head>
@@ -175,8 +175,8 @@ canvas{display:block;width:100%}
 "use strict";
 /* ============ Farben & Helfer ============ */
 const THEMES={
- dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',up:'#1fcf8f',down:'#f0605d',text:'#e6ecf3',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',mute:'#7f8b9c',sep:'#1b2532',pillBg:'rgba(2,4,7,.9)',card:'#0f1620',soft:'#b9c4d2',line2:'#2a3647',aqua:'#22d3ee',lime:'#a3e635',pink:'#ff4f9a',indigo:'#8c9eff'},
- light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',up:'#087f5b',down:'#c62f2c',text:'#131a26',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',mute:'#5d6879',sep:'#dde3ec',pillBg:'rgba(255,255,255,.95)',card:'#f1f4f8',soft:'#3d4757',line2:'#c9d2de',aqua:'#0e7490',lime:'#4d7c0f',pink:'#be185d',indigo:'#3949ab'}};
+ dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',up:'#1fcf8f',down:'#f0605d',text:'#e6ecf3',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',mute:'#7f8b9c',sep:'#1b2532',pillBg:'rgba(2,4,7,.9)',card:'#0f1620',soft:'#b9c4d2',line2:'#2a3647',aqua:'#22d3ee',lime:'#a3e635',pink:'#ff4f9a',indigo:'#8c9eff',teal:'#2dd4bf'},
+ light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',up:'#087f5b',down:'#c62f2c',text:'#131a26',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',mute:'#5d6879',sep:'#dde3ec',pillBg:'rgba(255,255,255,.95)',card:'#f1f4f8',soft:'#3d4757',line2:'#c9d2de',aqua:'#0e7490',lime:'#4d7c0f',pink:'#be185d',indigo:'#3949ab',teal:'#0f766e'}};
 const C=Object.assign({},THEMES.dark);
 function setCanvasTheme(t){Object.assign(C,THEMES[t]||THEMES.dark);}
 const MONO="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace",SANS="'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
@@ -225,7 +225,7 @@ const CATINFO={
  aktien:{d:'Was eine Aktie ist, wie der Kurs entsteht, Dividende, KGV und Crashs.',acc:'var(--up)',hex:'#1fcf8f'},
  etf:{d:'Ein Korb voller Aktien: Index, Streuung, Kosten und die Frage „ausschüttend oder thesaurierend?“.',acc:'var(--purple)',hex:'#b388ff'},
  sparplan:{d:'Sparplan, Cost-Average-Effekt, Einmalanlage, Steuern und dein Sparziel.',acc:'var(--orange)',hex:'#ff9f43'}};
-const CATCOL=ck=>C[{basis:'blue',zins:'gold',inflation:'down',aktien:'up',etf:'purple',sparplan:'orange',anleihen:'aqua',rente:'lime',kredit:'pink',praxis:'indigo'}[ck]];
+const CATCOL=ck=>C[{basis:'blue',zins:'gold',inflation:'down',aktien:'up',etf:'purple',sparplan:'orange',anleihen:'aqua',rente:'lime',kredit:'pink',praxis:'indigo',haushalt:'teal'}[ck]];
 const LESSONS=[];
 function L(o){LESSONS.push(o);}
 /* ---------- GELD-GRUNDLAGEN ---------- */
@@ -1002,6 +1002,93 @@ const EXTRA_TQ=[
  {q:'Jemand bietet per WhatsApp 15 % Gewinn pro Monat garantiert. Was tust du?',a:['Finger weg – typischer Betrug','Sofort investieren','Freunde einladen','Erst 1.000 € testen'],e:'Garantierte hohe Renditen + Messenger-Kontakt sind klare Warnsignale.',l:'betrug'}
 ];
 
+/* ================= PAKET: Haushalt & Budget ================= */
+CATS.haushalt='Haushalt & Budget';
+CATINFO.haushalt={d:'50-30-20-Regel, Fixkosten senken, Sparquote, Brutto und Netto und das Konten-Modell mit Töpfen.',acc:'var(--teal)',hex:'#2dd4bf'};
+L({id:'budget503020',cat:'haushalt',g:'50',title:'Die 50-30-20-Regel',sub:'Dein Netto einfach aufteilen',calc:'budget',
+ lead:'Eine einfache Faustregel für dein Haushaltsbudget: Was du netto verdienst, teilst du in drei Töpfe auf.',
+ steps:[['Du hast 2.500 € netto im Monat.'],['50 % für Fixkosten und Grundbedarf: Miete, Strom, Versicherungen, Lebensmittel – 1.250 €.',3400],['30 % für Wünsche: Freizeit, Restaurant, Urlaub, Hobbys – 750 €.',3200],['20 % fürs Sparen und Investieren: Notgroschen, ETF-Sparplan, Schulden tilgen – 500 €.',3400],['Die Regel ist nur ein Startpunkt. Wichtig ist: Das Sparen kommt zuerst – nicht nur das, was übrig bleibt.']],
+ draw(g){const x0=30,W=400,y=120,h=56,p0=g.k(0);box(x0,y,W,h,{stroke:C.line2,r:10,a:p0,lw:2});T(VW/2,y-26,'NETTO 2.500 €',{size:16,col:C.text,a:p0});
+  const seg=[[.5,C.blue,'FIXKOSTEN','1.250 €',1],[.3,C.purple,'WÜNSCHE','750 €',2],[.2,C.teal,'SPAREN','500 €',3]];let x=x0;
+  seg.forEach(([f,c,n,v,st])=>{const p=g.k(st,1100),w=W*f;box(x,y,w*p,h,{fill:c,r:st===1?10:4});if(p>.6){T(x+w/2,y+20,Math.round(f*100)+' %',{size:15,col:C.bg});T(x+w/2,y+40,v,{size:11.5,col:C.bg});}
+   T(x+w/2,y+h+24,n,{size:11,col:c,a:g.k(st,500,700)});x+=w;});
+  const ic=[[100,'🏠 Miete · Strom · Essen',1],[285,'🎉 Freizeit · Urlaub',2],[390,'📈 ETF · Notgroschen',3]];
+  ic.forEach(([cx,s,st])=>pill(cx,214+(st-1)*24,s,[C.blue,C.purple,C.teal][st-1],g.k(st,500,1000)*(g.on(4)?0:1),{size:10}));
+  if(g.on(4))pill(VW/2,250,'ZUERST SPAREN – DANN AUSGEBEN',C.teal,g.k(4),{size:12});
+ },
+ box:{was:'Die 50-30-20-Regel teilt das Nettoeinkommen in Grundbedarf (50 %), Wünsche (30 %) und Sparen (20 %). Sie ist eine einfache Orientierung fürs Haushaltsbudget.',h2:'So geht’s',erkennen:['Ein Monat lang alle Ausgaben notieren','Den drei Töpfen zuordnen','Sparrate als Dauerauftrag am Gehaltstag'],bedeutung:'Wer seine Ausgaben kennt, findet schnell Sparpotenzial. Bei hohen Mieten passt 50 % oft nicht – dann lieber bei den Wünschen anpassen als beim Sparen.',tipp:'Ein Haushaltsbuch geht ganz einfach mit einer App, einer Tabelle oder den Umsätzen deiner Banking-App.'},
+ qpic:{q:'Welche Regel ist hier dargestellt?',ans:'Die 50-30-20-Regel fürs Budget',wrong:['Die 72er-Regel','Die 4-%-Regel','Das magische Dreieck']}});
+
+L({id:'fixkosten',cat:'haushalt',g:'✂',title:'Fixkosten senken',sub:'Einmal kündigen, jeden Monat sparen',
+ lead:'Fixkosten fallen jeden Monat automatisch an. Wer sie einmal senkt, spart dauerhaft – ohne auf etwas zu verzichten.',
+ steps:[['Handyvertrag: Statt 40 € kostet ein vergleichbarer Tarif oft nur rund 15 €.'],['Strom: Ein Anbieterwechsel kann z. B. 25 € im Monat sparen.'],['Abos: Drei Streamingdienste, die du kaum nutzt? Zwei kündigen spart 20 €.'],['Zusammen: 70 € pro Monat = 840 € pro Jahr – einfach so.'],['Investierst du die 70 € 20 Jahre lang mit 7 %, werden daraus rund 35.500 €!',3600]],
+ draw(g){const rows=[['📱 Handy',40,15,0],['⚡ Strom',120,95,1],['📺 Abos',30,10,2]];
+  rows.forEach(([n,a,b,st],i)=>{const y=50+i*56,p=g.k(st,1200);T(26,y+14,n,{size:13,col:C.text,al:'left',a:g.k(st,400)});
+   const sc=1.6;box(130,y,a*sc,26,{fill:hexA(C.down,.5),r:5,a:g.k(st,400)});box(130,y,(a-(a-b)*p)*sc,26,{fill:C.teal,r:5,a:g.k(st,400)});
+   T(130+a*sc+10,y+13,`${eur(a)} → ${eur(b)}`,{size:11.5,col:C.teal,al:'left',a:p});});
+  if(g.on(3)){const p=g.k(3);box(26,222,180,46,{fill:hexA(C.teal,.14),stroke:C.teal,r:10,a:p});T(116,238,'ERSPARNIS',{size:10,col:C.mute,a:p});T(116,256,'70 €/MONAT',{size:14,col:C.teal,a:p});}
+  if(g.on(4)){const p=g.k(4,1400);arrow(214,245,246,245,C.gold,p,2.5);box(252,222,190,46,{fill:hexA(C.gold,.14),stroke:C.gold,r:10,a:p});T(347,238,'IN 20 JAHREN (7 %)',{size:10,col:C.mute,a:p});T(347,256,'≈ '+eur(35500*p),{size:14,col:C.gold,a:p});}
+ },
+ box:{was:'Fixkosten sind regelmäßige Ausgaben, die jeden Monat in gleicher Höhe anfallen: Miete, Strom, Handy, Versicherungen, Abos, Kredite.',h2:'So geht’s',erkennen:['Kontoauszüge nach Daueraufträgen durchsuchen','Verträge vergleichen und kündigen','Jährlich wiederholen'],bedeutung:'Eine Einsparung bei den Fixkosten wirkt jeden Monat – und kann, investiert, über Jahre zu einer großen Summe werden.',tipp:'Die Ersparnis gleich als Sparplan einrichten – sonst „verschwindet“ sie im Alltag.'}});
+
+L({id:'sparquote',cat:'haushalt',g:'%',title:'Die Sparquote',sub:'Wie viel von deinem Netto sparst du?',calc:'sparquote',
+ lead:'Die Sparquote zeigt in Prozent, welchen Teil deines Einkommens du zur Seite legst. Sie ist der wichtigste Hebel für deinen Vermögensaufbau.',
+ steps:[['Formel: Sparquote = Sparbetrag ÷ Nettoeinkommen × 100.'],['Beispiel: 250 € von 2.500 € netto = 10 % Sparquote.'],['Mit 10 % werden in 20 Jahren bei 7 % rund 126.900 €.',3400],['Mit 20 % – also 500 € – sind es rund 253.800 €. Doppelt so viel!',3400],['Tipp: Erhöhe die Sparquote bei jeder Gehaltserhöhung um ein Stück. So merkst du es kaum.']],
+ draw(g){formula(28,'SPARQUOTE = SPAREN ÷ NETTO × 100',C.teal,g.k(0));
+  const Y=v=>250-v/270000*170,w=110;const b=(x,v,c,st,lab)=>{const p=g.k(st,1100);if(p<=0)return;box(x,Y(v*p),w,250-Y(v*p),{fill:c,r:6});T(x+w/2,Y(v*p)-12,eur(v*p),{size:12.5,a:p});T(x+w/2,265,lab,{size:10,col:C.mute,a:p});};
+  if(g.on(1))pill(VW/2,64,'250 € ÷ 2.500 € = 10 %',C.text,g.k(1)*(g.on(2)?0:1),{size:12});
+  b(90,126884,C.blue,2,'10 % = 250 €/MONAT');b(260,253768,C.teal,3,'20 % = 500 €/MONAT');
+  if(g.on(4))pill(175,100,'GEHALT ↑ → SPARQUOTE ↑',C.gold,g.k(4),{size:11});
+ },
+ box:{was:'Die Sparquote ist der Anteil des Nettoeinkommens, den du sparst oder investierst – angegeben in Prozent.',h2:'So geht’s',erkennen:['Sparquote = Sparen ÷ Netto × 100','Ziel für viele: 10–20 %','Tilgung von Schulden zählt auch'],bedeutung:'Die Sparquote bestimmt viel stärker als die Rendite, wie schnell dein Vermögen wächst – vor allem in den ersten Jahren.',tipp:'Mit dem Rechner unten siehst du, was deine Sparquote in 10, 20 oder 30 Jahren bringen kann.'}});
+
+L({id:'bruttonetto',cat:'haushalt',g:'B→N',title:'Brutto und Netto',sub:'Wo bleibt mein Geld?',calc:'svabzug',
+ lead:'Vom Bruttolohn gehen Sozialversicherung und Lohnsteuer ab. Übrig bleibt das Netto, das auf deinem Konto landet.',
+ steps:[['Beispiel: 3.500 € brutto im Monat (2026, mit Kind, durchschnittlicher Krankenkassen-Zusatzbeitrag).'],['Rentenversicherung: 9,3 % = 325,50 €. Arbeitslosenversicherung: 1,3 % = 45,50 €.',3400],['Krankenversicherung: 7,3 % + halber Zusatzbeitrag (1,45 %) = 306,25 €. Pflegeversicherung: 1,8 % = 63 €.',3600],['Dazu die Lohnsteuer – in Steuerklasse I hier rund 430 € (gerundet, je nach Steuerklasse ganz anders).',3400],['Übrig bleiben rund 2.330 € netto. Dein Arbeitgeber zahlt übrigens noch einmal etwa denselben Sozialversicherungs-Anteil obendrauf.']],
+ draw(g){const items=[['BRUTTO',3500,C.blue,0,0],['RENTE',-325.5,C.down,1,0],['ARBEITSLOS',-45.5,C.down,1,500],['KRANKEN',-306.25,C.down,2,0],['PFLEGE',-63,C.down,2,500],['LOHNSTEUER',-430,C.orange,3,0],['NETTO',2329.75,C.teal,4,0]];
+  const Y=v=>250-v/3500*190,bw=46;let run=3500;
+  items.forEach(([n,v,c,st,dl],i)=>{const x=24+i*61,p=g.k(st,900,dl);
+   if(i===0||i===6){if(p>0){box(x,Y(v*p),bw,250-Y(v*p),{fill:c,r:4});T(x+bw/2,Y(v)-11,eur(v,0),{size:10.5,a:p,col:c});}}
+   else{const top=Y(run),bot=Y(run+v);if(p>0){box(x,top,bw,(bot-top)*p,{fill:c,r:3});T(x+bw/2,bot+11,'−'+de(-v,0),{size:10,col:c,a:p});}run+=v;}
+   T(x+bw/2,266,n,{size:8.5,col:C.mute,a:p});});
+  if(g.on(4))pill(330,40,'AG ZAHLT ~ 740 € EXTRA',C.gold,g.k(4,500,800),{size:10.5});
+ },
+ box:{was:'Brutto ist der vereinbarte Lohn. Netto ist das, was nach Abzug von Sozialversicherung (Rente, Arbeitslosen-, Kranken-, Pflegeversicherung) und Lohnsteuer übrig bleibt.',h2:'So geht’s',erkennen:['Gehaltsabrechnung Zeile für Zeile lesen','Sozialversicherung: rund 21 % (Arbeitnehmeranteil)','Lohnsteuer hängt von Steuerklasse und Höhe ab'],bedeutung:'Eine Gehaltserhöhung kommt nie ganz an: Von jedem Euro mehr gehen Abgaben und – progressiv steigend – Steuern ab.',tipp:'Kinderlose zahlen 0,6 % mehr Pflegeversicherung. Mit dem Rechner unten siehst du deine Sozialabgaben – die Lohnsteuer berechnet z. B. der Brutto-Netto-Rechner des Bundesfinanzministeriums.'},
+ qpic:{q:'Was zeigt dieses Diagramm?',ans:'Den Weg vom Brutto- zum Nettolohn',wrong:['Die Tilgung eines Kredits','Kaufkraftverlust durch Inflation','Kosten eines Fonds']}});
+
+L({id:'toepfe',cat:'haushalt',g:'🫙',title:'Das Konten-Modell',sub:'Mit Töpfen den Überblick behalten',
+ lead:'Statt alles auf einem Konto zu mischen, verteilst du dein Geld am Gehaltstag automatisch auf mehrere Töpfe.',
+ steps:[['Am Gehaltstag landen 2.500 € auf deinem Girokonto.'],['Topf 1 – Fixkosten: Hier gehen Miete, Strom, Versicherungen ab. Er bleibt auf dem Girokonto.',3400],['Topf 2 – Alltag & Spaß: Ein festes Budget für Einkäufe und Freizeit, z. B. auf einem Unterkonto oder einer Karte.',3400],['Topf 3 – Sparen: Per Dauerauftrag direkt aufs Tagesgeld bzw. in den ETF-Sparplan.',3200],['Ist Topf 2 leer, ist Schluss – und das Sparen ist trotzdem schon erledigt. Viele Banken bieten kostenlose Unterkonten.']],
+ draw(g){const p0=g.k(0);box(150,22,160,46,{fill:hexA(C.teal,.14),stroke:C.teal,r:10,a:p0});T(230,38,'GEHALT',{size:10.5,col:C.mute,a:p0});T(230,56,'2.500 €',{size:15,col:C.teal,a:p0});
+  const pots=[[70,'FIXKOSTEN','1.250 €',C.blue,1],[230,'ALLTAG & SPASS','750 €',C.purple,2],[390,'SPAREN','500 €',C.teal,3]];
+  pots.forEach(([cx,n,v,c,st])=>{const p=g.k(st,900);arrow(230,72,cx,140,c,p,2.2);if(p<=0)return;
+   X.save();X.globalAlpha=p;X.strokeStyle=c;X.lineWidth=2.5;X.beginPath();X.moveTo(cx-52,150);X.lineTo(cx-46,248);X.quadraticCurveTo(cx,262,cx+46,248);X.lineTo(cx+52,150);X.stroke();
+   X.fillStyle=hexA(c,.22);X.beginPath();X.moveTo(cx-50,190-0);X.lineTo(cx-46,248);X.quadraticCurveTo(cx,262,cx+46,248);X.lineTo(cx+50,190);X.closePath();X.fill();X.restore();
+   T(cx,170,n,{size:10,col:c,a:p});T(cx,215,v,{size:14,a:p});});
+  if(g.on(4))pill(VW/2,104,'SPAREN IST SCHON ERLEDIGT',C.gold,g.k(4),{size:11});
+ },
+ box:{was:'Beim Konten- oder Töpfe-Modell wird das Einkommen direkt nach Eingang auf mehrere Konten bzw. Unterkonten verteilt – jedes mit einem festen Zweck.',h2:'So geht’s',erkennen:['Girokonto für Fixkosten','Unterkonto/Karte für Alltag','Daueraufträge am Gehaltstag'],bedeutung:'So siehst du jederzeit, wie viel du noch ausgeben darfst – ohne aus Versehen dein Spar- oder Mietgeld zu verbrauchen.',tipp:'Achte beim Girokonto auf Kontoführungsgebühren: 5 € im Monat sind 60 € im Jahr. Es gibt viele kostenlose Konten.'}});
+
+Object.assign(EXTRA_CALCS,{
+ budget:{t:'Budget-Rechner (50-30-20)',c:'t',f:[['netto','NETTO PRO MONAT (€)','2.500']],
+  run(v){if(!(v.netto>0))return null;return{res:[['FIXKOSTEN (50 %)',eur(v.netto*.5),'blue'],['WÜNSCHE (30 %)',eur(v.netto*.3),'purple'],['SPAREN (20 %)',eur(v.netto*.2),'teal'],['SPAREN PRO JAHR',eur(v.netto*.2*12)]],note:'Die 50-30-20-Regel ist ein Startpunkt – passe die Töpfe an dein Leben an.'};}},
+ sparquote:{t:'Sparquoten-Rechner',c:'t',f:[['netto','NETTO PRO MONAT (€)','2.500'],['spar','SPARBETRAG PRO MONAT (€)','250'],['zins','RENDITE (%)','7'],['jahre','JAHRE','20']],
+  run(v){const n=Math.round(v.jahre);if(!(v.netto>0)||!(n>0&&n<=80))return null;const s=sparVerlauf(v.spar,n,v.zins/100),a=[],b=[];for(let i=0;i<=n;i++){const e=v.spar*12*i;a.push(e);b.push(s[i]-e);}
+   return{res:[['SPARQUOTE',pc(v.spar/v.netto*100,1),'teal'],['VERMÖGEN',eur(s[n]),'gold'],['EINGEZAHLT',eur(v.spar*12*n)],['MIT +5 % QUOTE',eur(sparVerlauf(v.spar+v.netto*.05,n,v.zins/100)[n])]],chart:{a,b,la:'Eingezahlt',lb:'Erträge'},note:'„Mit +5 % Quote“ zeigt, was herauskäme, wenn du 5 % deines Nettos zusätzlich sparst.'};}},
+ svabzug:{t:'Sozialabgaben-Rechner 2026',c:'t',f:[['brutto','BRUTTO PRO MONAT (€)','3.500'],['zusatz','ZUSATZBEITRAG KRANKENKASSE (%)','2,9'],['kinder','KINDER',[['1','mit Kind(ern)'],['0','kinderlos (ab 23)']]]],
+  run(v){if(!(v.brutto>0))return null;const bR=Math.min(v.brutto,8450),bK=Math.min(v.brutto,5812.5);const rv=bR*.093,av=bR*.013,kv=bK*(.073+v.zusatz/200),pv=bK*(v.kinder?.018:.024),sum=rv+av+kv+pv;
+   return{res:[['RENTE (9,3 %)',eur(rv,2)],['ARBEITSLOS (1,3 %)',eur(av,2)],['KRANKEN',eur(kv,2)],['PFLEGE',eur(pv,2)],['SUMME',eur(sum,2),'down'],['BRUTTO MINUS SV',eur(v.brutto-sum,2),'teal']],note:'Arbeitnehmeranteile 2026 mit Beitragsbemessungsgrenzen. Ohne Lohnsteuer, Soli und Kirchensteuer. Bei mehreren Kindern unter 25 sinkt der Pflegebeitrag weiter.'};}}
+});
+EXTRA_TQ.push(
+ {q:'Nach der 50-30-20-Regel: Wie viel solltest du von 3.000 € netto sparen?',a:['600 €','300 €','900 €','1.500 €'],e:'20 % von 3.000 € = 600 €.',l:'budget503020'},
+ {q:'Wofür sind bei der 50-30-20-Regel die 30 % gedacht?',a:['Für Wünsche wie Freizeit und Urlaub','Für Miete und Strom','Fürs Sparen','Für Steuern'],e:'50 % Grundbedarf, 30 % Wünsche, 20 % Sparen.',l:'budget503020'},
+ {q:'Du sparst durch neue Verträge 70 € im Monat. Wie viel ist das im Jahr?',a:['840 €','700 €','70 €','8.400 €'],e:'70 € × 12 = 840 €.',l:'fixkosten'},
+ {q:'Netto 2.000 €, du sparst 300 €. Wie hoch ist deine Sparquote?',a:['15 %','30 %','6,7 %','20 %'],e:'300 ÷ 2.000 × 100 = 15 %.',l:'sparquote'},
+ {q:'Wie hoch ist 2026 der Arbeitnehmeranteil zur Rentenversicherung?',a:['9,3 %','18,6 %','7,3 %','1,3 %'],e:'Der Beitragssatz liegt bei 18,6 % – Arbeitnehmer und Arbeitgeber zahlen je 9,3 %.',l:'bruttonetto'},
+ {q:'Was zahlen Kinderlose (ab 23) zusätzlich zur Pflegeversicherung?',a:['0,6 %','6 %','0 %','2 %'],e:'Der Kinderlosenzuschlag beträgt 0,6 %.',l:'bruttonetto'},
+ {q:'Was ist der Vorteil des Töpfe-Modells?',a:['Sparen passiert automatisch zuerst','Man zahlt keine Steuern','Das Geld wird verzinst','Man braucht kein Girokonto'],e:'Per Dauerauftrag ist das Sparen schon erledigt, bevor du Geld ausgibst.',l:'toepfe'}
+);
+
 /* ============ Symbole ============ */
 function catIcon(ck,s=58){const c=CATINFO[ck]?CATINFO[ck].hex:'#9aa6b6';const P={
  basis:`<rect x="10" y="30" width="36" height="7" rx="3" fill="${c}"/><rect x="12" y="22" width="36" height="7" rx="3" fill="${c}" opacity=".75"/><rect x="9" y="14" width="36" height="7" rx="3" fill="${c}" opacity=".5"/><circle cx="46" cy="12" r="8" fill="none" stroke="#f5c542" stroke-width="2.4"/><text x="46" y="16" font-size="10" text-anchor="middle" fill="#f5c542" font-family="monospace" font-weight="700">€</text>`,
@@ -1014,6 +1101,7 @@ function catIcon(ck,s=58){const c=CATINFO[ck]?CATINFO[ck].hex:'#9aa6b6';const P=
  rente:`<rect x="8" y="44" width="42" height="5" rx="2" fill="${c}"/><rect x="12" y="20" width="7" height="24" fill="#4c9aff"/><rect x="25" y="20" width="7" height="24" fill="${c}"/><rect x="38" y="20" width="7" height="24" fill="#f5c542"/><path d="M6 18 L29 5 L52 18 Z" fill="${c}"/>`,
  kredit:`<path d="M8 28 L29 10 L50 28" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/><rect x="14" y="27" width="30" height="22" fill="none" stroke="${c}" stroke-width="2.6"/><rect x="25" y="35" width="8" height="14" fill="${c}"/><text x="46" y="16" font-size="12" text-anchor="middle" fill="${c}" font-family="monospace" font-weight="800">%</text>`,
  praxis:`<circle cx="22" cy="26" r="14" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M14 30 L20 24 L25 28 L31 20" fill="none" stroke="${c}" stroke-width="2.4"/><line x1="32" y1="36" x2="46" y2="50" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`,
+ haushalt:`<rect x="6" y="14" width="44" height="32" rx="5" fill="none" stroke="${c}" stroke-width="2.6"/><rect x="10" y="20" width="18" height="20" rx="2" fill="#4c9aff"/><rect x="29" y="20" width="11" height="20" rx="2" fill="#b388ff"/><rect x="41" y="20" width="5" height="20" rx="1" fill="${c}"/><text x="28" y="11" font-size="9" text-anchor="middle" fill="${c}" font-family="monospace" font-weight="800">50·30·20</text>`,
  rechner:`<rect x="12" y="4" width="34" height="46" rx="6" fill="none" stroke="#f5c542" stroke-width="2.4"/><rect x="17" y="9" width="24" height="10" rx="2" fill="#f5c542" opacity=".8"/>`+[0,1,2,3,4,5,6,7,8].map(i=>`<rect x="${17+(i%3)*8.5}" y="${23+Math.floor(i/3)*8.5}" width="6" height="6" rx="1.5" fill="${i===8?'#1fcf8f':'#9aa6b6'}"/>`).join('')};
  return `<svg width="${s}" height="${s}" viewBox="0 0 56 56">${P[ck]||''}</svg>`;}
 const glyph=(l,size=15)=>`<span style="font-family:var(--mono);font-weight:800;font-size:${l.g.length>3?11:size}px;color:${CATINFO[l.cat].acc}">${l.g}</span>`;
@@ -1158,10 +1246,10 @@ const CALCS={
    return{res:[['STEUERPFLICHTIG',eur(stb,2)],['STEUER',eur(st,2),'down'],['NETTO',eur(v.gewinn-st,2),'up'],['EFFEKTIV',pc(v.gewinn>0?st/v.gewinn*100:0,2)]],note:'25 % Abgeltungsteuer + 5,5 % Soli = 26,375 %. Ohne Kirchensteuer. Keine Steuerberatung.'};}}
 };
 Object.assign(CALCS,EXTRA_CALCS);
-const CLS={y:'y',o:'o',r:'r',p:'p',g:'g',b:'b',a:'a',l:'l',k:'k'};
+const CLS={y:'y',o:'o',r:'r',p:'p',g:'g',b:'b',a:'a',l:'l',k:'k',t:'t'};
 function calcHTML(k){const c=CALCS[k];return `<div class="box calc ${CLS[c.c]}" data-calc="${k}"><h3>Rechner: ${c.t}</h3>
  <div class="grid">${c.f.map(([id,lab,val])=>Array.isArray(val)?`<div><label>${lab}</label><select data-f="${id}">${val.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select></div>`:`<div><label>${lab}</label><input data-f="${id}" inputmode="decimal" value="${val}"></div>`).join('')}</div>
- <div class="res"></div>${['zins','sparplan','ziel','inflation','kosten','entnahme','tilgung'].includes(k)?'<canvas></canvas>':''}<div class="note"></div></div>`;}
+ <div class="res"></div>${['zins','sparplan','ziel','inflation','kosten','entnahme','tilgung','sparquote'].includes(k)?'<canvas></canvas>':''}<div class="note"></div></div>`;}
 function initCalc(k){const el=view.querySelector(`.calc[data-calc="${k}"]`);if(!el)return;el.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',()=>runCalc(el)));runCalc(el);}
 function runCalc(el){const c=CALCS[el.dataset.calc],v={};let ok=true;el.querySelectorAll('[data-f]').forEach(i=>{v[i.dataset.f]=num(i.value);if(!isFinite(v[i.dataset.f])||v[i.dataset.f]<0)ok=false;});
  const r=ok?c.run(v):null,out=el.querySelector('.res'),note=el.querySelector('.note'),cv=el.querySelector('canvas');
